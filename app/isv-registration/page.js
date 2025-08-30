@@ -219,13 +219,14 @@ if (!brand_logo) {
     newErrors.brand_logo = "File size must not exceed 1 MB.";
   }
 }
-    if (!Legal_entity_type.trim()) newErrors.Legal_entity_type = "Please select your legal entity type.";
+    if (!Legal_entity_type) {newErrors.Legal_entity_type = "Please select your legal entity type.";}
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateStep2 = () => {
+    const nameRegex = /^[A-Za-z\s]+$/;
     const newErrors = {};
     const validateEmail = (email) => {
       const companyDomin = website_url.split('www.')[1];
@@ -233,9 +234,19 @@ if (!brand_logo) {
       return companyDomin === domain
     };
 
-    if (!name.trim()) newErrors.name = "Please Provide Your Name";
+if (!name.trim()) {
+  newErrors.name = "Please provide the Personal Name";
+} else if (!nameRegex.test(name)) {
+  newErrors.name = "Personal name should only contain letters and spaces.";
+}
+if (!designation.trim()) {
+  newErrors.designation = " Please provide the Designation";
+} else if (!nameRegex.test(designation)) {
+  newErrors.designation = "Designation should only contain letters and spaces.";
+}
+    // if (!name.trim()) newErrors.name = "Please Provide Your Name";
     if (!mobile.trim()) newErrors.mobile = "Please Provide Mobile Number";
-    if (!designation.trim()) newErrors.designation = "Please Provide Your Designation";
+    // if (!designation.trim()) newErrors.designation = "Please Provide Your Designation";
     if (!password.trim()) newErrors.password = 'Password is required.';
     else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters.';
     if (!email.trim()) newErrors.email = "Please Provide Email Address";
@@ -355,8 +366,6 @@ if (!brand_logo) {
       if (headquater_country === "Other") {
         setHeadQuater(headquaterCountryData)
       }
-
-
     }
   }
 
