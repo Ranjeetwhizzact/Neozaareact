@@ -44,7 +44,7 @@ export default function Page() {
     
         document.cookie = `token=${token}; path=/; max-age=86400`;
 
-        // ✅ Role-based redirection
+        
         // switch (user.role_id) {
         //   case 1:
         //       router.push(`/`);
