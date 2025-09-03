@@ -40,7 +40,8 @@ export default function Page() {
 
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        router.push(`http://192.168.1.4:4200//auth/login-token?token=${token}`)
+        // router.push(`http://192.168.1.4:4200/auth/login-token?token=${token}`)
+        router.push(`http://app.neozaar.skilladders.com/auth/login-token?token=${token}`)
     
         document.cookie = `token=${token}; path=/; max-age=86400`;
 
@@ -110,7 +111,7 @@ export default function Page() {
             </div>
 
             <div className="text-right text-sm text-gray-400">
-              <a href="#">Forget Password?</a>
+              <Link href="/auth/forget-password">Forget Password?</Link>
             </div>
 
             <button
@@ -123,7 +124,7 @@ export default function Page() {
 
             <p className="text-sm text-center text-gray-400">
               Don’t Have an Account?{' '}
-              <Link href="register" className="text-white underline font-bold">
+              <Link href="/auth/register" className="text-white underline font-bold">
                 Sign Up
               </Link>
             </p>

@@ -41,8 +41,9 @@ export default function Page() {
         {/* Hero Section */}
         <section className="relative w-full flex flex-col items-center justify-start pt-8 px-2 sm:px-6 pb-15 min-h-screen lg:min-h-screen 2xl:min-h-auto">
           {/* Background Video */}
+          <div className='w-full h-full absolute z-1 bg-black'></div>
           <video
-            className="absolute inset-0 w-full h-full object-cover z-0"
+            className="absolute inset-0 w-full h-full object-cover z-0 "
             autoPlay
             loop
             muted
@@ -64,10 +65,10 @@ export default function Page() {
               Access cutting-edge cloud storage, bundles, and expert support from <br className="hidden sm:inline" />top ISV and service partners at unbeatable prices compared to AWS,<br className="hidden sm:inline" /> Azure, and GCP.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-              <button className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12">
+              <button className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full">
                 <span className='text-6 font-600'>Explore Now</span> <span className="pl-12 inline text-8 font-extrabold">↗</span>
               </button>
-              <button className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition">
+              <button className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
                 <img src="/assests/sparkle_png.png" alt="sparkle icon" className="hover:text-black w-6 h-6 inline-block mr-4" />Let AI Find Your Solution
               </button>
             </div>
@@ -75,9 +76,9 @@ export default function Page() {
         </section>
 
         {/* Brand Logos Carousel */}
-        <section className="w-full px-2 sm:px-8 h-auto">
+        <section className="w-full px-2 sm:px-8 h-60 ">
           <Swiper
-            className="w-full !p-0 [&>.swiper-wrapper]:!m-0 !mt-4 !h-22"
+            className="w-full !p-0 [&>.swiper-wrapper]:!m-0 !mt-4 "
             modules={[Autoplay]}
             loop={true}
             speed={4000}
@@ -126,7 +127,7 @@ export default function Page() {
           <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 mb-10 text-center leading-tight">
             The Smart Alternative to <br /> the Hyperscalers
           </h2>
-          <div className="xl:h-[427px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1240px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0">
+          <div className="xl:h-[427px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1240px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0" >
             {[
               {
                 src: '/image/dollar.png',
@@ -152,14 +153,15 @@ export default function Page() {
 
               <div
                 key={idx}
-                className="w-[295px] relative bg-black/80 border border-gray-700 rounded-[5px] p-6 mx-auto h-full"
+                className="w-[295px] h-[427px] relative bg-black/80 border border-gray-700 rounded-[5px] p-6 mx-auto "
                 style={{
-                  backgroundImage: "url('/image/smart_alternative_bg.png')",
+                  backgroundImage: "url('/assests/bacground.png')",
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
+                
                 }}
               >
-                <div className="flex items-center justify-center my-15">
+                <div className="flex items-center justify-center my-15 h-52 ">
                   <Image
                     src={item.src}
                     alt={item.title}
@@ -169,7 +171,7 @@ export default function Page() {
                       width: '100px',
                       height: 'auto',
                       borderRadius: '20px',
-                      borderWidth: '2px',
+                    
                     }}
                   />
                 </div>
@@ -217,7 +219,7 @@ export default function Page() {
             ].map((card, idx) => (
               <div
                 key={idx}
-                className={`bg-black/80 p-6 px-10 flex flex-col items-start text-left h-full ${idx !== 0 ? 'border-l-[1px] border-image-vertical' : ''
+                className={`bg-black/80 p-6 px-10 flex flex-col items-start text-left h-full ${idx !== 0 ? 'border-l-[1px] border-gray-700 border-image-vertical' : ''
                   }`}
               >
                 <Image
@@ -225,7 +227,7 @@ export default function Page() {
                   alt={card.title}
                   width={320}
                   height={160}
-                  className="mb-4 w-full rounded-[20px] border-[2px]"
+                  className="mb-4 w-full rounded-[20px] "
                   style={{ height: "232px", objectFit: "cover" }}
                 />
                 <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
@@ -278,13 +280,13 @@ export default function Page() {
                     alt={card.title}
                     width={320}
                     height={160}
-                    className="mb-4 w-full rounded-[20px] border-[2px]"
+                    className="mb-4 w-full rounded-[20px] "
                     style={{ height: "232px", objectFit: "cover" }}
                   />
                   <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
                     {card.title}
                   </h3>
-                  <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
+                  <p className=" text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                     {card.desc}
                   </p>
                   <div className="mt-auto pl-2 w-full">
@@ -298,54 +300,61 @@ export default function Page() {
           </div>
 
           {/* Mobile View */}
-          <div className="grid md:hidden grid-cols-1 w-full border-image-horizontal">
-            {[
-              {
-                img: "/image/find_exactly_1.png",
-                title: "Individual Products",
-                desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
-                btn: "Explore Products",
-              },
-              {
-                img: "/image/find_exactly_1.png",
-                title: "Curated Bundles",
-                desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
-                btn: "Discover Bundles",
-              },
-              {
-                img: "/image/find_exactly_2.png",
-                title: "Expert Services",
-                desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
-                btn: "Find a Partner",
-              },
-            ].map((card, idx) => (
-              <div
-                key={idx}
-                className={`bg-black/80 p-6 flex flex-col items-start text-left h-full ${idx !== 2 ? 'border-b-[1px] border-image-horizontal' : ''
-                  }`}
-              >
-                <Image
-                  src={card.img}
-                  alt={card.title}
-                  width={320}
-                  height={160}
-                  className="mb-4 w-full rounded-[20px] border-[2px]"
-                  style={{ height: "232px", objectFit: "cover" }}
-                />
-                <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
-                  {card.title}
-                </h3>
-                <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
-                  {card.desc}
-                </p>
-                <div className="mt-auto pl-2 w-full">
-                  <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
-                    {card.btn}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="grid md:hidden grid-cols-1 w-full border-image-horizontal">
+  {[
+    {
+      img: "/image/find_exactly_1.png",
+      title: "Individual Products",
+      desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
+      btn: "Explore Products",
+    },
+    {
+      img: "/image/find_exactly_1.png",
+      title: "Curated Bundles",
+      desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+      btn: "Discover Bundles",
+    },
+    {
+      img: "/image/find_exactly_2.png",
+      title: "Expert Services",
+      desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
+      btn: "Find a Partner",
+    },
+  ].map((card, idx) => (
+    <div
+      key={idx}
+      className="bg-black/80 p-6 flex flex-col items-start text-left h-full"
+      style={{
+        backgroundRepeat: "no-repeat",
+        backgroundImage: "url('/assests/bacground.png')",
+        backgroundSize: "contain",
+        backgroundPosition: "center",
+        // ✅ should be decimal (40% opacity), not 40
+      }}
+    >
+      <Image
+        src={card.img}
+        alt={card.title}
+        width={320}
+        height={160}
+        className="mb-4 w-full rounded-[20px]"
+        style={{ height: "232px", objectFit: "cover" }}
+      />
+      <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
+        {card.title}
+      </h3>
+      <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
+        {card.desc}
+      </p>
+      <div className="mt-auto pl-2 w-full">
+        <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+          {card.btn}
+        </button>
+      </div>
+    </div>
+  ))}
+</div>
+
 
           {/* Discover & Connect + Build & Manage */}
           <div

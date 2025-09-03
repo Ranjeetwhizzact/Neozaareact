@@ -90,7 +90,9 @@ export default function Footer() {
       </div>
 
       <div className="relative z-10 border-t border-white/10 flex justify-center py-6">
+          <Link href="/">
         <img src="/image/Logo W.png" alt="Logo" className="w-11/12 m-auto" />
+        </Link>
       </div>
 
       <div className="border-t border-white/10 mt-6 relative z-10">

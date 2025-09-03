@@ -67,13 +67,15 @@ export default function Header() {
 
   return (
     <header
-      className={`bg-black text-white px-4 sm:px-6 lg:px-10 py-3 border-b border-white/10 max-w-[1920px] m-auto ${isHomePage ? 'bg-transparent' : 'bg-black'
+      className={`bg-black text-white  border-b border-white/10 relative h-20 max-w-[1920px] m-auto ${isHomePage ? 'bg-transparent' : 'bg-black'
         }`}
     >
       {/* XL Desktop */}
-      <div className="hidden xl:flex items-center justify-between">
+      <div className="hidden xl:flex items-center  absolute z-3 w-full px-4 sm:px-6 lg:px-10 py-3  justify-between">
         <div className="flex items-center gap-6">
+              <Link href="/">
           <Image src="/image/Logo.png" alt="Logo" width={210} height={50} priority />
+          </Link>
           <div className="h-[40px] w-px bg-white/10" />
           <nav className="flex gap-6 text-sm text-zinc-400">
             {NAV_LINKS.map((link) => (
@@ -88,9 +90,14 @@ export default function Header() {
             ))}
           </nav>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center ">
           {pathname === "/" ? (
             <div>
+              <Link href="/auth/login">
+                <button className="bg-orange-600 mx-2 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-zinc-700 transition">
+                  login
+                </button>
+              </Link>
               <Link href="/market_place">
                 <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
                   Go to marketplace
@@ -148,7 +155,9 @@ export default function Header() {
       {/* LG Desktop */}
       <div className="hidden lg:flex xl:hidden items-center justify-between">
         <div className="flex items-center gap-4">
+              <Link href="/">
           <Image src="/image/Logo.png" alt="Logo" width={189} height={45} priority />
+              </Link>
           <div className="h-[35px] w-px bg-white/10" />
           <nav className="flex gap-4 text-sm text-zinc-400">
             {NAV_LINKS.map((link) => (
@@ -218,7 +227,8 @@ export default function Header() {
       </div>
 
       {/* Mobile Top Bar */}
-      <div className="lg:hidden flex items-center justify-between">
+      <div className="lg:hidden flex items-center justify-between px-3 md:px-6  py-3 md:py-7">
+            <Link href="/">
         <Image
           src="/image/Logo.png"
           alt="Logo"
@@ -227,6 +237,7 @@ export default function Header() {
           priority
           className={`transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'}`}
         />
+        </Link>
         <div className="flex items-center gap-4">
           {!isHomePage && (
             <>
@@ -306,9 +317,19 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
+                
             </nav>
             <div className="px-6 py-4">
+              <div className='mb-3'>
+
+                <Link href="/auth/login" >
+                 <button className="bg-orange-600 text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition w-full">
+                 login
+                 </button>
+               </Link>
+              </div>
               {isHomePage ? (
+             
                 <Link href="/market_place">
                   <button className="bg-[#F79331] text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition w-full">
                     Go to marketplace

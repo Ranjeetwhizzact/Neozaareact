@@ -1,6 +1,8 @@
 
 @import 'remixicon/fonts/remixicon.css';
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
@@ -29,7 +31,7 @@ body {
 .mycardimg{
   background: url('/assests/card_background.png');
 }
-.swiper{overflow-x:hidden !important ; height: 500px;}
+.swiper{overflow-x:hidden !important ; }
 .myshortcard .swiper,
 #kitsider .swiper{height: 300px;}
 .swiper-wrapper{z-index: 999!important; margin-top: 82px;}

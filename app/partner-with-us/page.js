@@ -349,6 +349,7 @@ if (!formData.registered_business_name.trim()) {
   };
 
   const validateStep2 = () => {
+    const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
     const newErrors = {};
     const validateEmail = (email) => {
       const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
@@ -356,9 +357,19 @@ if (!formData.registered_business_name.trim()) {
       return domain && !personalDomains.includes(domain);
     };
 
-    if (!formData.name.trim()) newErrors.name = "Name required";
+    // if (!formData.name.trim()) newErrors.name = "Name required";
     if (!formData.mobile.trim()) newErrors.mobile = "Mobile required";
-    if (!formData.designation.trim()) newErrors.designation = "Designation required";
+    if (!formData.name.trim()) {
+  newErrors.name = " Name required";
+} else if (!onlyLettersAndSpaces.test(formData.name)) {
+  newErrors.name = "Name can only contain letters and spaces";
+}
+    if (!formData.designation.trim()) {
+  newErrors.designation = " Designation required";
+} else if (!onlyLettersAndSpaces.test(formData.designation)) {
+  newErrors.designation = "Designation can only contain letters and spaces";
+}
+    // if (!formData.designation.trim()) newErrors.designation = "Designation required";
     if (!formData.password.trim()) newErrors.password = 'Password required';
     else if (formData.password.length < 8) newErrors.password = 'Minimum 8 characters';
     if (!formData.email.trim()) newErrors.email = "Email required";
@@ -382,6 +393,36 @@ if (!formData.registered_business_name.trim()) {
 
   const validateStep4 = () => {
     const newErrors = {};
+const ALLOWED_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "image/svg+xml"
+];
+const ALLOWED_TYPESPDF = [
+  // Images
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/webp",
+  "image/svg+xml",
+
+  // PDF
+  "application/pdf"
+];
+const PDF = [
+  "application/pdf"
+];
+  if (!ALLOWED_TYPES.includes(formData.company_profile_upload)) {
+    newErrors.company_profile_upload = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
+  }
+  if (!ALLOWED_TYPESPDF.includes(formData.business_certification)) {
+    newErrors.business_certification = "Only PNG, JPG, JPEG, WEBP, PDF,or SVG are allowed";
+  }
+  if (!PDF.includes(formData.case_studies)) {
+    newErrors.case_studies = "Only PDF are allowed";
+  }
 
     // Ensure the fields are explicitly true
     if (formData.neozaar_tc !== true) {
@@ -601,7 +642,7 @@ if (!formData.registered_business_name.trim()) {
         <div className=' z-10 w-[260px] mx-5 h-[450px]'>
           <div className='div'>
             <ul >
-              <li className='flex gap-2  h-30'>
+              <li className='flex gap-2  h-32'>
                 <div className='p-0.5 bg-[#212121] block w-6 h-6 '>
 
                   <div className='border border-white   w-5 h-5 p-0.5 flex  items-center '>
@@ -618,10 +659,10 @@ if (!formData.registered_business_name.trim()) {
                 </div>
 
               </li>
-              <li className='flex gap-2  h-30'>
+              <li className='flex gap-2  h-32'>
                 <div className='relative flex flex-col items-center'>
-                  <div className='relative z-10 before:content-[""] before:absolute before:top-[-96px] before:left-1/2 before:-translate-x-1/2 before:h-[97px] before:w-px before:bg-white
-                     after:content-[""] after:absolute after:bottom-[-96px] after:left-1/2 after:-translate-x-1/2 after:h-[97px] after:w-px after:bg-white'>
+                  <div className='relative z-10 before:content-[""] before:absolute before:top-[-103px] before:left-1/2 before:-translate-x-1/2 before:h-[102px] before:w-px before:bg-white
+                     after:content-[""] after:absolute after:bottom-[-101px] after:left-1/2 after:-translate-x-1/2 after:h-[100px] after:w-px after:bg-white'>
 
                     <div className='p-0.5 bg-[#212121] block w-6 h-6'>
                       <div className='border border-white w-5 h-5 p-0.5 flex items-center justify-center'>
@@ -641,12 +682,12 @@ if (!formData.registered_business_name.trim()) {
                 </div>
 
               </li>
-              <li className='flex gap-2  h-30'>
+              <li className='flex gap-2  h-32'>
                 <div className='p-0.5 bg-[#212121] block w-6 h-6 '>
 
                   <div className='border border-white   w-5 h-5 p-0.5 flex  items-center '>
 
-                    <div className='relative w-4 h-4  bg-gray-400  after:content-[""] after:absolute after:bottom-[-100px] after:left-1/2 after:-translate-x-1/2 after:h-[97px] after:w-px after:bg-white'>
+                    <div className='relative w-4 h-4  bg-gray-400  after:content-[""] after:absolute after:bottom-[-107px] after:left-1/2 after:-translate-x-1/2 after:h-[100px] after:w-px after:bg-white'>
                       <Image fill src={step <= 3 ? '/assests/buildingactive.png' : '/assests/checkcomplete.png'} alt="building" />
                     </div>
                   </div>
@@ -658,7 +699,7 @@ if (!formData.registered_business_name.trim()) {
                 </div>
 
               </li>
-              <li className='flex gap-2  h-30'>
+              <li className='flex gap-2  h-32'>
                 <div className='p-0.5 bg-[#212121] block w-6 h-6 '>
 
                   <div className='border border-white   w-5 h-5 p-0.5 flex  items-center '>

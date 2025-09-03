@@ -177,7 +177,7 @@ export default function Home() {
 
             <div
               className="absolute text-white font-['CreatoDisplay-LightItalic',_sans-serif] italic font-light 
-                     text-lg sm:text-2xl md:text-4xl lg:text-[50px] leading-snug 
+                     text-lg sm:text-2xl md:text-4xl lg:text-[50px] md:leading-[50px] 
                      top-12 sm:top-[118px] left-4 sm:left-[104px] max-w-[90%] sm:max-w-none"
             >
               All-in-One <br />
@@ -291,7 +291,7 @@ export default function Home() {
 
         {categoriesSelect.length === 0 && search.length === 0 && <section id="industry_specific_bundle_section">
 
-          <div className="w-11/12 m-auto mt-18">
+          <div className="w-11/12 m-auto mt-20">
             <div className="max-w-[400px]">
 
               <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal relative flex items-center justify-start ">
@@ -632,7 +632,7 @@ export default function Home() {
         <section id="trending_bundle_section" className={`${search.length > 0 && categoriesSelect.length > 0 ? "my-30" : ""}`}>
           {
             categoriesSelect.length === 0 && search.length === 0 && <div className="w-11/12 m-auto mt-18">
-              <div className="max-w-[400px]">
+              <div className="max-w-[400px] mt-20">
 
                 <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal relative flex items-center justify-start ">
                   Popular & Trending Bundles
@@ -651,8 +651,8 @@ export default function Home() {
 
               <div key={index} onClick={() => router.push(`/bundle?productid=${product.id}`)}>
                
-                <div className="bg-zinc-50 border border-zinc-200  h-[400px] cursor-pointer w-[295px]">
-                  <div className="w-full h-[258px] relative">
+                <div className="bg-zinc-50 border border-zinc-200 m-auto h-[400px] cursor-pointer w-[295px]">
+                  <div className="w-full h-[258px] relative ">
                     <Image
                       fill
                       alt={product.title || 'Product Image'}
@@ -760,7 +760,7 @@ export default function Home() {
                 >
                   {cards.map((card, index) => (
                     <SwiperSlide key={index} className="">
-                      <div className="mycardimg text-black px-10 py-18 bg-cover bg-center rounded-2xl h-[261px] w-[320px] md:w-[540px] xl:w[549px] m-auto bg-[url('/assests/your-bg.jpg')]">
+                      <div className="mycardimg text-black px-10 py-16 bg-cover bg-center rounded-2xl h-[261px] w-[320px] md:w-[540px] xl:w[549px] m-auto bg-[url('/assests/your-bg.jpg')]">
                         <div className="flex">
                           <div className="mt-2">
                             <Image src="/assests/Vector.png" alt="icon" width={24} height={24} />
@@ -783,7 +783,7 @@ export default function Home() {
         }
 
         {
-          categoriesSelect.length === 0 && search.length === 0 && <section id="faq_section" className="px-4 sm:px-6 lg:px-20 my-30">
+          categoriesSelect.length === 0 && search.length === 0 && <section id="faq_section" className="px-4 sm:px-6 lg:px-20 my-28">
             <div className="flex flex-col items-center gap-4 text-center">
               <div className="text-gray-900 font-['CreatoDisplay-Medium',_sans-serif] text-2xl sm:text-3xl md:text-4xl font-medium leading-snug tracking-tight">
                 Frequently asked questions
