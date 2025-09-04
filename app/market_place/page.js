@@ -16,25 +16,42 @@ import PaginationForPages from "../layouts/PaginationForPages";
 
 const faqs = [
   {
-    question: "Is there a free trial available?",
-    answer: "Yes, we offer a 14-day free trial for all new users.",
+    question: " What is NeoZaar?",
+    answer: "NeoZaar is a cloud-aligned marketplace that helps businesses discover, evaluate, and deploy SaaS products, solution bundles, and managed services — all aligned to AWS MACC or Azure EDP credits.",
   },
   {
-    question: "What is your cancellation policy?",
-    answer: "You can cancel anytime from your account settings.",
+    question: "What are Solution Bundles?",
+    answer: "Bundles are curated packages that combine SaaS tools, cloud services, and certified deployment support — tailored for specific outcomes like security, cost optimization, or AI enablement.",
   },
   {
-    question: "Can other info be added to an invoice?",
-    answer: "Yes, you can add extra info during checkout.",
+    question: " Can I use my AWS MACC or Azure EDP credits on NeoZaar?",
+    answer: "Yes. Most bundles on NeoZaar are private offer–aligned, which means they can be applied toward your existing AWS MACC or Azure EDP enterprise commitments.",
   },
   {
-    question: "How does billing work?",
-    answer: "Billing occurs monthly on the date of your subscription.",
+    question: " How do I request a private offer or custom quote?",
+    answer: "Every bundle includes an option to Request a Custom Offer. You’ll be contacted by our team or partner to finalize the pricing and cloud alignment.",
   },
   {
-    question: "How do I change my account email?",
-    answer: "Go to profile settings and update your email.",
+    question: "Who delivers the services in the bundle?",
+    answer: "All services are fulfilled by certified solution partners — including managed service providers (MSPs), security experts, cloud consultants, or NeoZaar’s delivery team.",
   },
+  {
+    question: "How is billing handled?",
+    answer: "NeoZaar offers unified billing for software + services. You’ll receive one invoice, and we’ll handle all coordination behind the scenes.",
+  },
+  {
+    question: "Is there a free trial or POC option available?",
+    answer: "Some bundles include trial-ready versions or “Proof of Concept” (POC) options. Look for “Try & Deploy” tags on applicable bundles.",
+  },
+  {
+    question: " What if I need post-deployment support?",
+    answer: "We’ve got you covered. You can choose add-on managed services or opt for a fully managed bundle with 24x7 support.",
+  },
+  {
+    question: "How do I get started?",
+    answer: "Click “Explore Bundles” or “Request a Recommendation” — and we’ll guide you from selection to deployment.",
+  },
+
 ];
 
 export default function Home() {
@@ -180,10 +197,13 @@ export default function Home() {
                      text-lg sm:text-2xl md:text-4xl lg:text-[50px] md:leading-[50px] 
                      top-12 sm:top-[118px] left-4 sm:left-[104px] max-w-[90%] sm:max-w-none"
             >
-              All-in-One <br />
-              Cloud & Service Bundles to
+              Curated Cloud <br />
+              Bundles to Accelerate
               <br />
-              Accelerate Your Business.
+              Transformation & Maximize ROI
+
+
+             
             </div>
 
             <div
@@ -191,9 +211,7 @@ export default function Home() {
                      text-xs sm:text-sm md:text-base lg:text-[16px] mt-4 
                      top-[180px] sm:top-[309px] left-4 sm:left-[100px] w-[90%] sm:w-[440px]"
             >
-              Combine powerful cloud infrastructure from AWS, Azure, and Google
-              Cloud with expert services like DevOps, Development, and RevOps.
-              Your entire solution, in one package.
+             Combine trusted cloud infrastructure from AWS, Azure, and Google Cloud with ready-to-deploy solutions from global ISVs like Zscaler, Acronis, Databricks, and Rubrik — all in one seamless experience.
             </div>
           </div>
         </section>
@@ -295,11 +313,12 @@ export default function Home() {
             <div className="max-w-[400px]">
 
               <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal relative flex items-center justify-start ">
-                Industry-Specific Bundle Cards
+               Solve for compliance, scale, and digital transformation — tailored by industry.
+
               </div>
 
               <div className="text-neutral-500 text-left text-sm sm:text-base relative flex items-center justify-start ">
-                These cards target specific vertical markets, acknowledging that different industries have unique needs and compliance requirements.
+              These bundles address regulatory needs, vertical-specific architecture, and legacy modernization challenges.
               </div>
             </div>
           </div>
@@ -343,7 +362,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Manufacturing Modernization Kit
+                     Healthcare Data & Patient Management Kit
                     </div>
                   </div>
                 </div>
@@ -363,7 +382,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Financial Services Regulatory Compliance Bundle
+                      Smart Factory & Modernization Accelerator
                     </div>
                   </div>
                 </div>
@@ -384,7 +403,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Healthcare Data & Patient Management
+                     Regulatory Compliance & Audit Readiness Toolkit
                     </div>
                   </div>
                 </div>
@@ -404,7 +423,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Manufacturing Modernization Kit
+                     Hybrid Learning Stack 
                     </div>
                   </div>
                 </div>
@@ -423,30 +442,12 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Financial Services Regulatory Compliance Bundle
+                      Employee Lifecycle + Compliance Kit 
                     </div>
                   </div>
                 </div>
               </SwiperSlide>
-              <SwiperSlide>
-                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
-                  <div className="bg-zinc-100 flex aspect-square items-center justify-center w-[127px] h-[127px] relative">
-                    <Image
-                      src="/assests/kit_icon.png"
-                      alt="Kit Icon"
-                      width={35}
-                      height={35}
-                      className="relative  z-10"
-                    />
-                  </div>
-
-                  <div className=" flex items-center p-6">
-                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Healthcare Data & Patient Management
-                    </div>
-                  </div>
-                </div>
-              </SwiperSlide>
+       
 
 
             </Swiper>
@@ -459,11 +460,11 @@ export default function Home() {
             <div className="max-w-[400px]">
 
               <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal relative flex items-center justify-start ">
-                Goal-Oriented Bundle Cards
+              Goal-Oriented Bundles
               </div>
-
+              <p className="dark:text-black">Focused on outcomes — not industries.</p>
               <div className="text-neutral-500 text-left text-sm sm:text-base relative flex items-center justify-start ">
-                These cards address common business challenges or aspirations, regardless of the specific industry.
+               These bundles solve cross-industry challenges like cost optimization, AI enablement, security hardening, and faster go-to-market.
               </div>
             </div>
           </div>
@@ -639,7 +640,7 @@ export default function Home() {
                 </div>
 
                 <div className="text-neutral-500 text-left text-sm sm:text-base relative flex items-center justify-start ">
-                  Everything you need to launch your application on a scalable AWS foundation.
+               Ready-to-deploy stacks built with leading ISVs — fully private offer aligned to your AWS MACC or Azure EDP commitments.
                 </div>
               </div>
             </div>
@@ -693,13 +694,11 @@ export default function Home() {
             <div className="flex flex-col md:flex-row items-center justify-between px-6 md:px-12 lg:px-20 py-12 gap-3 rounded-2xl">
               <div className="text-center md:text-left max-w-xl">
                 <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
-                  {"Can't Find the Right Bundle?"}
+                  {" Not Sure Which Bundle Fits Your Need?"}
                 </h2>
                 <p className="text-sm md:text-base text-neutral-500 leading-relaxed">
-                  Let our AI build one for you. Describe your project goals,
-                  preferred cloud platform, and the services you need. Our
-                  assistant will analyze your request and propose a custom bundle
-                  tailored to your requirements.
+                 Tell us your goals — our team will recommend a private offer–aligned bundle built by trusted ISVs and expert partners.
+We’ll handle the mapping, bundling, and delivery. You just focus on outcomes.
                 </p>
               </div>
               <div className="">
@@ -740,8 +739,8 @@ export default function Home() {
                   </span>
                 </div>
                 <div className="text-black text-left font-text-lg-regular-font-family text-text-lg-regular-font-size font-text-lg-regular-font-weight relative self-stretch flex items-center justify-start">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit i
-                </div>
+                 
+From discovery to deployment, NeoZaar simplifies your cloud buying journey — with curated bundles and expert-led delivery.                </div>
               </div>
               <div className="col-span-12 lg:col-span-7 ps-3 myshortcard">
                 <Swiper
@@ -770,7 +769,7 @@ export default function Home() {
                           </h3>
                         </div>
                         <p className="line-clamp-4">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        Browse outcome-driven bundles across Security, AI, FinOps, and more — all private offer–aligned to your AWS MACC or Azure EDP.
                         </p>
                       </div>
                     </SwiperSlide>
@@ -784,13 +783,13 @@ export default function Home() {
 
         {
           categoriesSelect.length === 0 && search.length === 0 && <section id="faq_section" className="px-4 sm:px-6 lg:px-20 my-28">
-            <div className="flex flex-col items-center gap-4 text-center">
+            <div className="flex flex-col items-center gap-4 ">
               <div className="text-gray-900 font-['CreatoDisplay-Medium',_sans-serif] text-2xl sm:text-3xl md:text-4xl font-medium leading-snug tracking-tight">
                 Frequently asked questions
               </div>
 
               <div className="text-gray-500 font-text-xl-normal-font-family text-sm sm:text-base md:text-lg font-text-xl-normal-font-weight leading-relaxed max-w-xl">
-                Everything you need to know about the product and billing.
+                Not sure what fits best? Share your goals — our team and AI assistant will guide you to the ideal solution.
               </div>
 
               <div className="mt-8 w-full max-w-full sm:max-w-lg md:max-w-2xl">

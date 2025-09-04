@@ -1,11 +1,10 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const router = useRouter();
@@ -13,9 +12,14 @@ export default function Header() {
   const pathname = usePathname();
   const [isHomePage, setIsHomePage] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // 🔑 new state
   const dropdownRef = useRef(null);
 
-
+  // Check token from localStorage
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    setIsAuthenticated(!!token && token.trim() !== "");
+  }, []);
 
   useEffect(() => {
     setIsHomePage(pathname === '/');
@@ -34,33 +38,57 @@ export default function Header() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
+  // Cross-app logout listener
+  useEffect(() => {
+    const allowedOrigins = [
+      // "http://neozaar.skilladders.com",
+      "http://app.neozaar.skilladders.com",
+    ];
+
+    const messageHandler = (event) => {
+      if (!allowedOrigins.includes(event.origin)) return;
+
+      if (event.data?.type === "LOGOUT") {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        window.location.href = "/auth/login";
+      }
+    };
+
+    window.addEventListener("message", messageHandler);
+    return () => window.removeEventListener("message", messageHandler);
+  }, []);
 
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://20.83.163.38:5000/api/logout", {
+
+      await fetch("http://20.83.163.38:5000/api/logout", {
         method: "POST",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${token}`,
-        }
-      })
+        },
+      });
 
-      localStorage.clear("token")
-      toast.success("Logout Success")
-      router.push('/')
+      localStorage.removeItem("token");
+      setIsAuthenticated(false);
+
+      // broadcast logout
+      window.postMessage({ type: "LOGOUT" }, "*");
+
+      toast.success("Logout Success");
+      router.push("/auth/login");
 
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
-
+  };
 
   const NAV_LINKS = [
-    { href: '/cyber-protect-cloud', label: 'ISV CoSell360' },
-    { href: '/isv-registration', label: 'ISV Registration' },
-    { href: '/partner-with-us', label: 'Partner With Us' },
+    { href: '/isv-registration', label: 'ISV Registration' },
+    { href: '/partner-with-us', label: 'Partner With Us' },
     { href: '/faq', label: "FAQ's" },
     { href: '/contact-us', label: 'Contact' },
   ];
@@ -90,67 +118,68 @@ export default function Header() {
             ))}
           </nav>
         </div>
-        <div className="flex items-center ">
-          {pathname === "/" ? (
-            <div>
-              <Link href="/auth/login">
-                <button className="bg-orange-600 mx-2 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-zinc-700 transition">
-                  login
-                </button>
-              </Link>
-              <Link href="/market_place">
-                <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
-                  Go to marketplace
-                </button>
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="flex items-center gap-6 relative" ref={dropdownRef}>
-                <button className="bg-zinc-800 cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
-                  Book a Call
-                </button>
-                <div className="h-[40px] w-px bg-white/10" />
-                <button onClick={() => setDropdownOpen((prev) => !prev)}>
-                  <Image
-                    src="/image/Shape.png"
-                    alt="User"
-                    width={32}
-                    height={32}
-                    className="rounded-full cursor-pointer border border-gray-600"
-                  />
-                </button>
+        {isAuthenticated ? (
+  // 🔑 Show Profile + Logout
+  <div className="flex items-center gap-6 relative" ref={dropdownRef}>
+    <Link href="/market_place">
+      <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
+        Go to marketplace
+      </button>
+    </Link>
+    <div className="h-[40px] w-px bg-white/10" />
+    <button onClick={() => setDropdownOpen((prev) => !prev)}>
+      <Image
+        src="/image/Shape.png"
+        alt="User"
+        width={32}
+        height={32}
+        className="rounded-full cursor-pointer border border-gray-600"
+      />
+    </button>
 
-                {dropdownOpen && (
-                  <div className="absolute right-0 top-14 w-44 rounded-md bg-gray-800 shadow-lg z-50">
-                    <ul className="py-2 text-base text-white">
-                      <li>
-                        <Link
-                          href="/profile"
-                          className="block px-4 py-3 hover:bg-gray-700 transition"
-                          onClick={() => setDropdownOpen(false)}
-                        >
-                          Profile
-                        </Link>
-                      </li>
-                      <li>
-                        <button
-                          onClick={() => {
-                            setDropdownOpen(false);
-                            handleLogout();
-                          }}
-                          className="w-full text-left px-4 py-3 hover:bg-gray-700 transition"
-                        >
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+    {dropdownOpen && (
+      <div className="absolute right-0 top-14 w-44 rounded-md bg-gray-800 shadow-lg z-50">
+        <ul className="py-2 text-base text-white">
+          <li>
+            <Link
+              href="/profile"
+              className="block px-4 py-3 hover:bg-gray-700 transition"
+              onClick={() => setDropdownOpen(false)}
+            >
+              Profile
+            </Link>
+          </li>
+          <li>
+            <button
+              onClick={() => {
+                setDropdownOpen(false);
+                handleLogout();
+              }}
+              className="w-full text-left px-4 py-3 hover:bg-gray-700 transition"
+            >
+              Logout
+            </button>
+          </li>
+        </ul>
+      </div>
+    )}
+  </div>
+) : (
+  // 🔑 Show Login button
+  <div>
+    <Link href="/auth/login">
+      <button className="bg-orange-600 mx-2 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-zinc-700 transition">
+        Login
+      </button>
+    </Link>
+    <Link href="/market_place">
+      <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
+        Go to marketplace
+      </button>
+    </Link>
+  </div>
+)}
+
       </div>
       {/* LG Desktop */}
       <div className="hidden lg:flex xl:hidden items-center justify-between">

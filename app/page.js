@@ -50,7 +50,7 @@ export default function Page() {
             playsInline
             style={{ opacity: 0.7, pointerEvents: 'none' }}
           >
-            <source src="/video/bg_video.webm" type="video/webm" />
+            <source src="/assests/homepagevideo.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           <div className="text-white px-4 sm:px-6 lg:px-10 py-3 z-5 m-auto my-0 w-full h-full">
@@ -58,11 +58,13 @@ export default function Page() {
           </div>
           {/* Hero Content */}
           <div className="relative mx-auto md:my-35 lg:my-25 my-10 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
-            <h1 className="text-white font-light font-['CreatoDisplay',_sans-serif] text-3xl sm:text-5xl md:text-6xl mb-4 leading-snug">
-              Affordable Cloud Solutions & AI-Powered Guidance For Every Need
+            <h1 className="text-white font-light font-['CreatoDisplay',_sans-serif] text-3xl sm:text-4xl md:text-5xl mb-4 leading-snug">
+              Smarter Cloud Solutions. Curated Bundles. Aligned to Your Cloud Commitments.
             </h1>
-            <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif]">
-              Access cutting-edge cloud storage, bundles, and expert support from <br className="hidden sm:inline" />top ISV and service partners at unbeatable prices compared to AWS,<br className="hidden sm:inline" /> Azure, and GCP.
+            <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3">
+              {/* Discover enterprise-ready solutions across Security, AI, Modernization, and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis, Commvault, and Snowflake, and tailored for your AWS MACC or Azure EDP strategy. */}
+              Discover enterprise-ready solutions across Security, AI, Modernization, <br className="hidden sm:inline" />and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis,<br className="hidden sm:inline" /> Commvault, and Snowflake, and tailored for 
+              <br className="hidden sm:inline" />your AWS MACC or Azure EDP strategy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
               <button className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full">
@@ -100,11 +102,17 @@ export default function Page() {
             }}
           >
             {[
-              '/image/abbive.png',
-              '/image/Abbott.png',
-              '/image/ADP.png',
-              '/image/AMETEK.png',
-              '/image/Capital.png',
+              '/brand-log/Acronis-logo.svg.png',
+              '/brand-log/AWS.png',
+              '/brand-log/Check_Point.png',
+              '/brand-log/Google-cloud.png',
+              '/brand-log/ibm.png',
+              '/brand-log/Microsoft_Azure_Logo.svg.png',
+              '/brand-log/O365.png',
+              '/brand-log/Veeam_logo.png',
+              '/brand-log/wiz-logo-png_seeklogo-455765.png',
+              '/brand-log/brand-log/Zscaler_logo.png',
+             
             ].map((src, idx) => (
               <SwiperSlide key={idx} className="flex items-center justify-center">
                 <div className='flex items-center justify-center'>
@@ -124,30 +132,31 @@ export default function Page() {
 
         {/* Features Section */}
         <section className="w-full pt-6 pb-12 sm:py-16 px-2 sm:px-10 lg:px-25 flex flex-col items-center">
-          <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 mb-10 text-center leading-tight">
-            The Smart Alternative to <br /> the Hyperscalers
+          <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 mb-10 text-center  max-w-[600px] xl:leading-[60px]">
+            
+          The Marketplace Built Around   Your Cloud Goals.
           </h2>
           <div className="xl:h-[427px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1240px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0" >
             {[
               {
                 src: '/image/dollar.png',
                 title: 'Cost-Effective Solutions',
-                text: 'Save up to 80% compared to leading hyperscalers.',
+                text: 'Access budget-friendly cloud bundles aligned to your existing cloud credits',
               },
               {
                 src: '/image/cube.png',
                 title: 'Diverse Products & Bundles',
-                text: 'Choose from a wide range of cloud storage and ISV bundles.',
+                text: 'From backup to GenAI — find everything in one place.',
               },
               {
                 src: '/image/headset.png',
                 title: 'Expert Support',
-                text: 'Access integrated, knowledgeable support from ISV and cloud service providers.',
+                text: '3. Get deployment, migration, or support services from certified experts.',
               },
               {
                 src: '/image/arrow_star.png',
                 title: 'AI-Powered Recommendations',
-                text: 'Our AI will help you find the best products, bundles, & services.',
+                text: 'Our AI matches your business needs with cost-optimized, credit-aligned solutions.',
               },
             ].map((item, idx) => (
 
@@ -196,24 +205,39 @@ export default function Page() {
           </h2>
 
           {/* Laptop View */}
-          <div className="hidden lg:grid grid-cols-3 w-full h-[532px] border-image-horizontal">
+          <div className="hidden lg:grid grid-cols-3 w-full h-[650px] border-image-horizontal">
             {[
               {
                 img: "/image/find_exactly_1.png",
                 title: "Individual Products",
-                desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
+                desc: "Explore verified SaaS, cloud, AI, and security solutions. Our catalog features best-in-class tools from global Independent Software Vendors (ISVs).",
+                 point1:'Feature-wise comparison',
+                point2:'Transparent pricing',
+                point3:'Private offer support',
+                point4:'Integrated trial or demo flows',
                 btn: "Explore Products",
               },
+               
               {
                 img: "/image/find_exactly_1.png",
                 title: "Curated Bundles",
-                desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+                desc: "Accelerate your outcomes with solution-focused bundles. NeoZaar FastTrack FlexBundles combine top products, cloud infrastructure, and deployment support — aligned to your goals",
+                  point1:'Security, AI, Modernization, FinOps kits',
+                point2:'Pre-configured and deployable in days',
+                point3:'AWS/Azure credit-aligned (MACC/EDP support)',
+                point4:'Add-on services available from certified partners',
                 btn: "Discover Bundles",
+
               },
               {
                 img: "/image/find_exactly_2.png",
                 title: "Expert Services",
-                desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
+                desc: "Certified MSPs & cloud consultants at your fingertips.Whether you’re migrating, modernizing, or scaling, our service partners are here to deliver success — on time and on budget.",
+                 point1:'Cloud migration & DevOps',
+                point2:'Security implementation',
+                point3:'Managed services & compliance',
+                point4:'Optional white-label delivery',
+              
                 btn: "Find a Partner",
               },
             ].map((card, idx) => (
@@ -236,6 +260,22 @@ export default function Page() {
                 <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                   {card.desc}
                 </p>
+                 <ul className='ps-5 text-gray-200'>
+           <li className='list-disc'>
+            {card.point1}
+            </li>
+           <li className='list-disc'>
+            {card.point2}
+            </li>
+           <li className='list-disc'>
+            {card.point3}
+            </li>
+           <li className='list-disc'>
+            {card.point4}
+            </li>
+             
+              
+                      </ul>
                 <div className="mt-auto pl-2 w-full">
                   <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                     {card.btn}
@@ -252,18 +292,31 @@ export default function Page() {
                 img: "/image/find_exactly_1.png",
                 title: "Individual Products",
                 desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
+                        point1:'Feature-wise comparison',
+                point2:'Transparent pricing',
+                point3:'Private offer support',
+                point4:'Integrated trial or demo flows',
                 btn: "Explore Products",
               },
               {
                 img: "/image/find_exactly_1.png",
                 title: "Curated Bundles",
                 desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+                  point1:'Security, AI, Modernization, FinOps kits',
+                point2:'Pre-configured and deployable in days',
+                point3:'AWS/Azure credit-aligned (MACC/EDP support)',
+                point4:'Add-on services available from certified partners',
+                btn: "Discover Bundles",
                 btn: "Discover Bundles",
               },
               {
                 img: "/image/find_exactly_2.png",
                 title: "Expert Services",
                 desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
+                 point1:'Cloud migration & DevOps',
+                point2:'Security implementation',
+                point3:'Managed services & compliance',
+                point4:'Optional white-label delivery',
                 btn: "Find a Partner",
               },
             ].map((card, idx) => (
@@ -289,6 +342,22 @@ export default function Page() {
                   <p className=" text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                     {card.desc}
                   </p>
+                   <ul className='ps-4 text-gray-200'>
+                    <li className='list-disc'>
+                      {card.point1}
+                      </li>
+                    <li className='list-disc'>
+                      {card.point2}
+                      </li>
+                    <li className='list-disc'>
+                      {card.point3}
+                      </li>
+                    <li className='list-disc'>
+                      {card.point4}
+                      </li>
+             
+              
+                      </ul>
                   <div className="mt-auto pl-2 w-full">
                     <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                       {card.btn}
@@ -306,18 +375,32 @@ export default function Page() {
       img: "/image/find_exactly_1.png",
       title: "Individual Products",
       desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
+       point1:'Cloud migration & DevOps',
+                point2:'Security implementation',
+                point3:'Managed services & compliance',
+                point4:'Optional white-label delivery',
       btn: "Explore Products",
+
     },
     {
       img: "/image/find_exactly_1.png",
       title: "Curated Bundles",
       desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+        point1:'Security, AI, Modernization, FinOps kits',
+                point2:'Pre-configured and deployable in days',
+                point3:'AWS/Azure credit-aligned (MACC/EDP support)',
+                point4:'Add-on services available from certified partners',
+                btn: "Discover Bundles",
       btn: "Discover Bundles",
     },
     {
       img: "/image/find_exactly_2.png",
       title: "Expert Services",
       desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
+              point1:'Feature-wise comparison',
+                point2:'Transparent pricing',
+                point3:'Private offer support',
+                point4:'Integrated trial or demo flows',
       btn: "Find a Partner",
     },
   ].map((card, idx) => (
@@ -346,6 +429,22 @@ export default function Page() {
       <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
         {card.desc}
       </p>
+        <ul className='ps-4 text-gray-200'>
+           <li className='list-disc'>
+            {card.point1}
+            </li>
+           <li className='list-disc'>
+            {card.point2}
+            </li>
+           <li className='list-disc'>
+            {card.point3}
+            </li>
+           <li className='list-disc'>
+            {card.point4}
+            </li>
+             
+              
+                      </ul>
       <div className="mt-auto pl-2 w-full">
         <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
           {card.btn}
@@ -369,16 +468,17 @@ export default function Page() {
             <div className="bg-transparent text-white p-6 sm:p-8 pt-12 flex flex-col justify-betweens md:pt-16 max-w-full xl:w-135 border-image-horizontal">
               <h4 className="text-2xl font-normal mb-4 font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Discover & Connect</h4>
               <p className="text-[#71717A] mb-4 text-sm sm:text-base font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
-                Explore our marketplace of top-tier cloud software and expert services. We connect you directly with our vetted partners who will handle demos, billing, and support, giving you the best-in-class solution for every part of your stack.
+                Explore our marketplace of cloud-native products and expert services — all in one place.
+NeoZaar connects you with verified ISVs and solution partners who handle demos, onboarding, support, and everything in between.
               </p>
               <div className="flex flex-row gap-4 sm:gap-8 mb-8">
                 <div>
                   <h5 className="font-semibold mb-1 underline text-[16px] font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Products</h5>
-                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-4">Find the perfect storage, database, or security tool from leading ISVs.</p>
+                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-4">Explore SaaS, security, AI, DevOps, and data solutions from trusted global ISVs.</p>
                 </div>
                 <div>
                   <h5 className="font-semibold mb-1 underline text-[16px] font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Services</h5>
-                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-4">Engage expert partners for DevOps, migration, or custom development.</p>
+                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-4">Find the right partner for cloud migration, FinOps, compliance, or managed support.</p>
                 </div>
               </div>
               <button className="font-['Inter'] cursor-pointer self-start px-5 py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
@@ -388,16 +488,22 @@ export default function Page() {
             <div className="flex flex-col justify-between bg-transparent text-white p-6 sm:py-8 sm:pt-16 md:pl-20 max-w-full md:border-l border-gray-700 xl:w-125">
               <h4 className="text-2xl font-normal mb-4 font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Build & Manage</h4>
               <p className="text-[#71717A] mb-4 text-sm sm:text-base font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
-                For a seamless, end-to-end experience, choose our all-in-one bundles. Your expert team at [Your Company Name] will handle everything for you—from initial configuration and setup to final deployment and ongoing support.
+                Choose NeoZaar’s pre-packaged bundles for a fully managed experience — from day one to day 100 and beyond.
               </p>
-              <div className="flex flex-row gap-4 sm:gap-8 mb-8">
+            <ul className='text-[#71717A] ps-4'>
+              {/* <li className='list-decimal'>One Point of Contact
+</li>
+              <li className='list-decimal'> Unified Billing & Support
+Simplify procurement with one contract, one invoice, one support channel.</li> */}
+            </ul>
+              <div className="flex flex-row gap-4 sm:gap-8 mt-5 mb-8">
                 <div>
                   <h5 className="font-semibold mb-1 text-[14px] sm:text-[16px] underline font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">One Point of Contact</h5>
-                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-3">Your dedicated project lead.</p>
+                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-3">A dedicated NeoZaar project lead for end-to-end coordination.</p>
                 </div>
                 <div>
                   <h5 className="font-semibold mb-1 text-[16px] underline font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Unified Billing & Support</h5>
-                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-3">We handle all the complexity for you.</p>
+                  <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-3">Simplify procurement with one contract, one invoice, one support channel.</p>
                 </div>
               </div>
               <button className="px-5 font-['Inter'] cursor-pointer py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto self-start">
@@ -529,27 +635,31 @@ export default function Page() {
         {/* Key Offerings Section */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 my-16 max-w-[1240px] mx-auto">
           <div className="bg-black rounded-lg p-4">
-            <h3 className="text-base font-['Inter'] text-white mb-2 line-clamp-2">Expert Curation, Not Endless Choice</h3>
+            <h3 className="text-base font-['Inter'] text-white mb-2 line-clamp-2"> Curated, Not Crowded</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-              In an era of overwhelming options, we curate each cloud service and partner to ensure high quality, reliability, and relevance—so you get fewer choices and better outcomes.
+             We prioritize clarity over choice overload.
+            Each product, bundle, and partner is handpicked for quality, reliability, and business impact — so you can focus on outcomes, not options.
             </p>
           </div>
           <div className="bg-black rounded-lg p-4">
-            <h3 className="text-base font-['Inter'] mb-2 line-clamp-2 text-white">Your In-House Cloud Concierge</h3>
+            <h3 className="text-base font-['Inter'] mb-2 line-clamp-2 text-white">Your Cloud Concierge</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-              Think of us as your internal cloud team—white-glove support for onboarding, optimization, vendor coordination, and strategy—from planning to execution.
+              Think of NeoZaar as your extended cloud team.
+              We help orchestrate onboarding, optimization, partner coordination, and strategy — from plan to deployment.
             </p>
           </div>
           <div className="bg-black rounded-lg p-4">
-            <h3 className="text-base font-['Inter'] mb-2 line-clamp-5 text-white">Unbiased, Flexible Solutions</h3>
+            <h3 className="text-base font-['Inter'] mb-2 line-clamp-5 text-white">Vendor-Neutral by Design</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-              Avoid vendor lock-in. Whether you choose a partner solution or managed bundle, our goal is to build the best stack for your needs—not ours.
+            No lock-in. No bias.
+            Whether you select a standalone ISV, a bundled offer, or a managed solution — we recommend what fits your stack, not ours.
             </p>
           </div>
           <div className="bg-black rounded-lg p-4">
-            <h3 className="text-base font-['Inter'] mb-2 line-clamp-2 text-white">Simplified Discovery</h3>
+            <h3 className="text-base font-['Inter'] mb-2 line-clamp-2 text-white">One-Stop Discovery</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-              Stop jumping between dozens of vendor sites. We bring vetted providers and products together in one easy-to-navigate marketplace.
+             No more jumping across tabs or vendor sites.
+              NeoZaar brings verified SaaS products, services, and bundles together in a single, user-friendly marketplace experience.
             </p>
           </div>
         </section>
@@ -557,7 +667,8 @@ export default function Page() {
         {/* Testimonials Section */}
         <section className="mb-16 max-w-[1240px] mx-auto  bg-black text-white">
           <h2 className="text-4xl sm:text-5xl text-center font-['CreatoDisplay-Light',_sans-serif] text-[25px] md:text-[40px] lg:text-[40px] mb-10">
-            What Our Customers and <br /> Partners are Saying
+         
+            Designed Around <br /> What Customers Actually Need
           </h2>
           <div className='relative h-[1400px] md:h-[850px] shadow-2xl overflow-hidden'>
             <div className="space-y-10   bg-black h-[360vh] md:h-[150vh] lg:h-[130vh] overflow-hidden">
@@ -570,20 +681,36 @@ export default function Page() {
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                        We were facing a massive, complex migration from our on-premise servers to a multi-cloud environment. The quotes from the big providers were astronomical, and their solutions felt one-size-fits-all. Through the Neozaar marketplace, we discovered a specialized cloud migration partner with deep expertise in our industry. Not only did they de-risk the entire process, but their guidance also helped us architect a more resilient and cost-effective infrastructure. Neozaar didn&apos;t just give us a list; they gave us confidence by connecting us with a truly vetted expert.
+                      Buyers want an easier way to select, compare, and procure software that actually solves their business problems — without wasting time on sales calls or deciphering hyperscaler portals.
                       </p>
+                      <p className='font-medium'>NeoZaar Delivers:</p>
+                      <ul className='ps-4 text-gray-200'>
+                        <li className='list-disc'>
+                          Curated discovery instead of marketplace chaos
+                        </li>
+                        <li className='list-disc'>
+                          Fast-track to bundled, proven solutions
+                        </li>
+                        <li className='list-disc'>
+                          Fast-track to bundled, proven solutions
+                        </li>
+                        <li className='list-disc'>
+                         Built-in support for cloud credits (AWS MACC / Azure EDP)
+                        </li>
+                      </ul>
+
                       <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                          {/* <div className="w-12 h-12 relative rounded-full overflow-hidden">
                             <Image src="/image/sarah.png" alt="Sarah Jenkins" fill className="object-cover" />
-                          </div>
+                          </div> */}
                           <div>
-                            <p className="text-sm font-semibold text-white">Sarah Jenkins</p>
-                            <p className="text-xs text-orange-400">IT Director, FinCorp Solutions</p>
+                            {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
+                            <p className="text-lg text-orange-400">Why Buyers Choose NeoZaar?</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/icon.png" alt="icon" fill className="object-contain" />
+                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -591,22 +718,38 @@ export default function Page() {
                   {/* Card 4 */}
                   <div className="bg-gradient-to-b from-[#1a1a1a] to-black border border-gray-800 rounded-2xl shadow-lg overflow-hidden p-6 relative min-h-[300px]">
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
-                    <div className="relative z-10 flex flex-col h-full">
+                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                        Our cloud storage costs were spiraling out of control. We needed an S3-compatible object storage solution that was cheaper but just as reliable. The Neozaar marketplace allowed us to easily compare several vetted providers side-by-side. We found a fantastic ISV partner offering enterprise-grade storage at a fraction of the cost.
+                     Most buyers don’t want to build their stack from scratch — they want ready-made solutions that solve real business problems with minimal integration effort.
                       </p>
+                      <p className='font-medium'>NeoZaar Delivers:</p>
+                      <ul className='ps-4 text-gray-200'>
+                        <li className='list-disc'>
+                         Pre-configured FastTrack FlexBundles for common use cases
+                        </li>
+                        <li className='list-disc'>
+                         Bundles aligned to industry challenges (Security, FinOps, AI)
+                        </li>
+                        <li className='list-disc'>
+                         Integrated deployment and support
+                        </li>
+                        <li className='list-disc'>
+                        Immediate value with credit-aligned pricing
+                        </li>
+                      </ul>
+
                       <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                            <Image src="/image/sarah.png" alt="Elena Rodriguez" fill className="object-cover" />
-                          </div>
+                          {/* <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                            <Image src="/image/sarah.png" alt="Sarah Jenkins" fill className="object-cover" />
+                          </div> */}
                           <div>
-                            <p className="text-sm font-semibold text-white">Elena Rodriguez</p>
-                            <p className="text-xs text-orange-400">CTO, MediaStream Co</p>
+                            {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
+                            <p className="text-lg text-orange-400"> Featured Solution Bundles</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/icon.png" alt="icon" fill className="object-contain" />
+                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -619,20 +762,36 @@ export default function Page() {
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-100% rounded-2xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                        We are a fast-growing SaaS company, and our primary focus has to be on shipping new features for our customers. We simply don&apos;t have the bandwidth to become infrastructure experts. We chose a managed application hosting bundle from Neozaar, and it&apos;s been the best strategic decision we&apos;ve made.<br />They provide 24/7 monitoring, handle all the patching and scaling, and work as a true extension of our team. Our uptime is fantastic, and my engineers are happier because they&apos;re building our product, not fighting fires.<br />
+                    Buyers want proof that the platform and products are credible — especially in compliance-sensitive or cloud-integrated environments.
                       </p>
+                      <p className='font-medium'>NeoZaar Delivers:</p>
+                      <ul className='ps-4 text-gray-200'>
+                        <li className='list-disc'>
+                       Globally recognized ISV listings (Zscaler, Commvault, Snowflake, etc.)
+                        </li>
+                        <li className='list-disc'>
+                       Marketplace partner alignment (AWS CPPO, Azure MCPP)
+                        </li>
+                        <li className='list-disc'>
+                       DPDP, GDPR, and SOC2-compliant offerings
+                        </li>
+                        <li className='list-disc'>
+                       Transparent display of trust scores, certifications, and partner tiers
+                        </li>
+                      </ul>
+
                       <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                            <Image src="/image/Tom.png" alt="Tom Ramirez" fill className="object-cover" />
-                          </div>
+                          {/* <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                            <Image src="/image/sarah.png" alt="Sarah Jenkins" fill className="object-cover" />
+                          </div> */}
                           <div>
-                            <p className="text-sm font-semibold text-white">Tom Ramirez</p>
-                            <p className="text-xs text-orange-400">Head of Operations, Global Logistics Inc</p>
+                            {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
+                            <p className="text-lg text-orange-400"> Partner Trust Logos & Ecosystem Badging</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/icon.png" alt="icon" fill className="object-contain" />
+                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -640,22 +799,39 @@ export default function Page() {
                   {/* Card 5 */}
                   <div className="bg-gradient-to-b from-[#1a1a1a] to-black border border-gray-800 rounded-2xl shadow-lg overflow-hidden p-6 relative">
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
-                    <div className="relative z-10 flex flex-col h-full">
+                   <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                        My biggest headache was vendor management. We had separate bills for compute, our CDN, our database, and our support contract. It was a logistical nightmare. The managed bundle allowed us to consolidate everything. The Neozaar team took our requirements and built a custom stack for us, managed entirely under one roof. Our total cost of ownership went down, our performance went up, and I got back hours of my week that I used to spend juggling vendors and invoices.
+                    Buyers want deployment support — but don’t want to Google and vet 5 different MSPs.
                       </p>
+                      <p className='font-medium'>NeoZaar Delivers:</p>
+                      <ul className='ps-4 text-gray-200'>
+                        <li className='list-disc'>
+                        Certified expert services alongside every product
+                        </li>
+                        <li className='list-disc'>
+                         Service partner matchmaking engine
+                        </li>
+                        <li className='list-disc'>
+                        Option for fully managed delivery (white-labeled or direct)
+                        </li>
+                        <li className='list-disc'>
+                       One point of contact via NeoZaar
+
+                        </li>
+                      </ul>
+
                       <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                            <Image src="/image/sarah.png" alt="Anonymous" fill className="object-cover" />
-                          </div>
+                          {/* <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                            <Image src="/image/sarah.png" alt="Sarah Jenkins" fill className="object-cover" />
+                          </div> */}
                           <div>
-                            <p className="text-sm font-semibold text-white">Anonymous</p>
-                            <p className="text-xs text-orange-400">HealthSync</p>
+                            {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
+                            <p className="text-lg text-orange-400">NeoZaar Concierge Promise</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/icon.png" alt="icon" fill className="object-contain" />
+                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -666,22 +842,38 @@ export default function Page() {
                   {/* Card 3 */}
                   <div className="bg-gradient-to-b from-[#1a1a1a] to-black border border-gray-800 rounded-2xl shadow-lg overflow-hidden p-6 relative">
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
-                    <div className="relative z-10 flex flex-col h-full">
+                   <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                        As a DevOps lead, I&apos;m always looking for best-in-class tools to improve our CI/CD pipeline. I was tired of endless free trials and sales calls for tools that didn&apos;t fit. I found a powerful, niche logging and monitoring solution on the marketplace that I&apos;d never heard of before.
+                    Buyers want to see impact, not just features. They care about outcomes, cost savings, and time-to-value — even if they’re early in the buying cycle.
                       </p>
+                      <p className='font-medium'>NeoZaar Delivers:</p>
+                      <ul className='ps-4 text-gray-200'>
+                        <li className='list-disc'>
+                       30–50% savings vs standalone procurement or hyperscaler rates
+                        </li>
+                        <li className='list-disc'>
+                       Deployments in under 10 days for most bundles
+                        </li>
+                        <li className='list-disc'>
+                        100+ curated ISV offerings, all transactable
+                        </li>
+                        <li className='list-disc'>
+                       70% of users use Nova to get a recommendation before buying
+                        </li>
+                      </ul>
+
                       <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                            <Image src="/image/marcus.png" alt="Marcus Thorne" fill className="object-cover" />
-                          </div>
+                          {/* <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                            <Image src="/image/sarah.png" alt="Sarah Jenkins" fill className="object-cover" />
+                          </div> */}
                           <div>
-                            <p className="text-sm font-semibold text-white">Marcus Thorne</p>
-                            <p className="text-xs text-orange-400">Lead DevOps Engineer, Innovatech</p>
+                            {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
+                            <p className="text-lg text-orange-400">  Results-Oriented Metrics</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/icon.png" alt="icon" fill className="object-contain" />
+                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -691,20 +883,36 @@ export default function Page() {
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                        Our development team is fantastic at building our application, but we don&apos;t have a dedicated security expert. For our latest feature, we needed to ensure we were following all the best practices for data encryption and network security. We used the marketplace to find a security consulting service. Within two days, we were on a call with a world-class security architect who performed a full audit and provided a clear, actionable report. It was the fastest way to access top-tier talent for a critical, short-term project.
+                    New platforms without testimonials still need to build buyer trust through positioning and messaging — without faking quotes.
                       </p>
+                      <p className='font-medium'>NeoZaar Delivers:</p>
+                      <ul className='ps-4 text-gray-200'>
+                        <li className='list-disc'>
+                        “Why Buyers Choose NeoZaar” section to highlight benefits
+                        </li>
+                        <li className='list-disc'>
+                        Bundle highlights and real-world use cases instead of quotes
+                        </li>
+                        <li className='list-disc'>
+                       Display of global ISV partners and compliance badges
+                        </li>
+                        <li className='list-disc'>
+                       Results-driven messaging supported by Nova insights and delivery 
+                        </li>
+                      </ul>
+
                       <div className="flex items-center justify-between pt-4 border-t border-gray-700 mt-auto">
                         <div className="flex items-center gap-3">
-                          <div className="w-12 h-12 relative rounded-full overflow-hidden">
-                            <Image src="/image/sarah.png" alt="user" fill className="object-cover" />
-                          </div>
+                          {/* <div className="w-12 h-12 relative rounded-full overflow-hidden">
+                            <Image src="/image/sarah.png" alt="Sarah Jenkins" fill className="object-cover" />
+                          </div> */}
                           <div>
-                            <p className="text-sm font-semibold text-white">Ben Carter</p>
-                            <p className="text-xs text-orange-400">VP of Engineering, HealthSync</p>
+                            {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
+                            <p className="text-lg text-orange-400"> Section Title Alternatives (Strategic Messaging)</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/icon.png" alt="icon" fill className="object-contain" />
+                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -739,10 +947,13 @@ export default function Page() {
           />
           <div className="relative mx-auto w-full max-w-2xl text-center">
             <h1 className="text-3xl sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-[#F79331] via-[#39C6FF] to-white font-['CreatoDisplay-Light',_sans-serif] text-[20px] font-300 mb-4">
-              Ready to Find Your Perfect <br /> Cloud Solution?
+              Start Your Smart Cloud<br />  Journey with NeoZaar
+             
             </h1>
             <p className="text-gray-200 text-sm sm:text-base mb-4">
-              Whether you&apos;re looking for a single product or a fully managed stack,<br className="hidden sm:inline" /> your journey starts here.
+              Whether you’re buying a SaaS tool or launching a bundled solution, 
+
+            <br className="hidden sm:inline" /> we’re built to guide you every step of the way.
             </p>
             <Link href={"/"} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
               <span className="mr-2">Let’s Get Started</span>

@@ -19,10 +19,8 @@ export default function Footer() {
         <div className="md:col-span-4 space-y-4">
           <div className="space-y-4">
             <p className="text-sm leading-relaxed mt-4">
-              NeoZaar is a go-to-market accelerator and marketplace enablement
-              platform for SaaS and cloud-native solutions. We help ISVs scale
-              across hyperscalers through streamlined marketplace onboarding,
-              bundled deployments, and AI-powered buyer engagement.
+             NeoZaar is a GTM accelerator and AI-powered marketplace for SaaS and cloud-native solutions.
+We help ISVs scale through streamlined onboarding, bundled deployment offers, and credit-aligned sales via AWS, Azure, and NeoZaar’s own platform.
             </p>
 
             <div className="flex flex-wrap gap-[10px] pt-28 pb-8 text-sm items-center">
@@ -82,9 +80,8 @@ export default function Footer() {
             </button>
           </form>
           <p className="mt-6 text-sm text-white-400 leading-relaxed">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-            enim ad minim veniam.
+            Stay Ahead with Cloud GTM Insights
+Subscribe to updates on SaaS trends, hyperscaler programs, and exclusive NeoZaar deals.
           </p>
         </div>
       </div>

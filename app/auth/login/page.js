@@ -139,16 +139,17 @@ export default function Page() {
           </div>
         </div>
 
-        <div className="w-full h-[400px] md:h-auto">
+        <div className="w-full h-[400px] md:h-auto hidden md:block">
           <div className="h-full w-full bg-cover bg-center relative bg-[url('/assests/loginbg.png')]">
             <div className="flex items-center justify-center h-full px-6 py-10 md:py-0">
               <p className="text-white font-light text-[26px] md:text-[35px] leading-snug text-center md:text-left font-['CreatoDisplay-Light',_sans-serif] max-w-[90%] md:max-w-[366px]">
-                Access your<br />
-                personalized <br />
-                cloud solutions<br />
-                and manage<br />
-                your bundled<br />
+                Sign in to unlock<br />
+               curated cloud solutions, <br />
+               ask for private offers,<br />
+                and manage every step<br />
+               from selection to deployment<br />
                 services.
+                    
               </p>
             </div>
           </div>

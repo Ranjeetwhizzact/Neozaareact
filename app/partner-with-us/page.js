@@ -96,7 +96,6 @@ export default function RegistrationForm() {
   ]);
 
   const [otherEntity, setOtherEntity] = useState("");
-
   // -------------------
 
   const [headquaterCountry, setHeadquaterCountry] = useState([
@@ -112,8 +111,6 @@ export default function RegistrationForm() {
 
 
   // =========================
-
-
 
 
   const handleChange = (e) => {
@@ -292,23 +289,11 @@ if (!formData.company_name.trim()) {
 
 
 if (!formData.registered_business_name.trim()) {
-  newErrors.registered_business_name = "Registration name required";
-} else if (!onlyLettersAndSpaces.test(formData.registered_business_name)) {
-  newErrors.registered_business_name = "Registration name can only contain letters and spaces";
-}
+  newErrors.registered_business_name = "Group / Holding Company name required";
+} 
     if (!formData.company_registration_number.trim()) {
   newErrors.company_registration_number = "Registration number required";
-} else if (
-  formData.country_type === "IN" &&
-  !/^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(formData.company_registration_number)
-) {
-  newErrors.company_registration_number = "Invalid Indian CIN format";
-} else if (
-  formData.country_type === "UAE" &&
-  !/^\d{4,15}$/.test(formData.company_registration_number)
-) {
-  newErrors.company_registration_number = "Invalid UAE CRN format";
-}
+} 
 
    
     if (!formData.website_url.trim()) newErrors.website_url = "Website required";
@@ -317,18 +302,8 @@ if (!formData.registered_business_name.trim()) {
     // else if (!linkedinRegex.test(formData.linkedin_url)) newErrors.linkedin_url = "Invalid LinkedIn URL";
     if (!formData.tax_id.trim()) {
     newErrors.tax_id = "Tax ID required";
-  } else {
-    if (formData.tax_type === "gst") {
-      const gstRegex = /^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/;
-      if (!gstRegex.test(formData.tax_id)) {
-        newErrors.tax_id = "Invalid GST number format";
-      }
-    } else if (formData.tax_type === "vat") {
-      const vatRegex = /^[A-Z0-9]{8,15}$/;
-      if (!vatRegex.test(formData.tax_id)) {
-        newErrors.tax_id = "Invalid VAT number format";
-      }
-    }
+  
+    
   }
 
     if (!formData.headquater_country.trim()) newErrors.headquater_country = "Country required";
@@ -414,15 +389,15 @@ const ALLOWED_TYPESPDF = [
 const PDF = [
   "application/pdf"
 ];
-  if (!ALLOWED_TYPES.includes(formData.company_profile_upload)) {
-    newErrors.company_profile_upload = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
-  }
-  if (!ALLOWED_TYPESPDF.includes(formData.business_certification)) {
-    newErrors.business_certification = "Only PNG, JPG, JPEG, WEBP, PDF,or SVG are allowed";
-  }
-  if (!PDF.includes(formData.case_studies)) {
-    newErrors.case_studies = "Only PDF are allowed";
-  }
+  // if (!ALLOWED_TYPES.includes(formData.company_profile_upload)) {
+  //   newErrors.company_profile_upload = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
+  // }
+  // if (!ALLOWED_TYPESPDF.includes(formData.business_certification)) {
+  //   newErrors.business_certification = "Only PNG, JPG, JPEG, WEBP, PDF,or SVG are allowed";
+  // }
+  // if (!PDF.includes(formData.case_studies)) {
+  //   newErrors.case_studies = "Only PDF are allowed";
+  // }
 
     // Ensure the fields are explicitly true
     if (formData.neozaar_tc !== true) {
@@ -560,7 +535,7 @@ const PDF = [
 
   const renderUploadSection = (label, sectionKey) => (
     <div className="col-span-2 mb-4">
-      <label className="text-sm font-medium font-sans">{label}</label>
+      <label className="text-sm font-medium font-sans dark:text-black">{label}</label>
       <label
         htmlFor={sectionKey}
         className="cursor-pointer text-sm font-medium font-sans text-zinc-400 border py-2 px-3 w-full text-center border-dashed flex justify-center mt-1"
@@ -655,7 +630,8 @@ const PDF = [
                 <div className=' '>
 
                   <h1 className='text-white text-sm w-56'>Company & Brand Information</h1>
-                  < p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  < p className='text-gray-500 text-[10px] w-56'>Share the key point of contact for your organization — we’ll use this for partner coordination, lead routing, and co-marketing outreach.
+</p>
                 </div>
 
               </li>
@@ -678,7 +654,7 @@ const PDF = [
                 <div className=' '>
 
                   <h1 className='text-white text-sm w-56'>Primary Contact</h1>
-                  < p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  < p className='text-gray-500 text-[10px] w-56'>Share the key point of contact for your organization — we’ll use this for partner coordination, lead routing, and co-marketing outreach.</p>
                 </div>
 
               </li>
@@ -695,7 +671,7 @@ const PDF = [
                 <div className=' '>
 
                   <h1 className='text-white text-sm w-56'>Solution & Expertise Details </h1>
-                  < p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  < p className='text-gray-500 text-[10px] w-56'>Tell us about the services you offer — from migration and FinOps to security and custom development. We’ll use this to match you with relevant ISVs, bundles, and customers.</p>
                 </div>
 
               </li>
@@ -712,7 +688,7 @@ const PDF = [
                 <div className=' '>
 
                   <h1 className='text-white text-sm w-56'>Marketplace & Collaterals </h1>
-                  < p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  < p className='text-gray-500 text-[10px] w-56'>Upload brochures, service catalogs, or packaged offerings you want listed on NeoZaar. This helps us prepare your Marketplace-ready profile and co-sell bundles.</p>
                 </div>
 
               </li>
@@ -729,72 +705,64 @@ const PDF = [
       </div>
       <div className='h-[100vh] w-full overflow-y-scroll'>
         <div className='w-10/12 md:w-8/12 mx-auto py-10'>
-          <h1 className='text-4xl font-medium'>Solution Partner Registration</h1>
-          <p className='text-xs text-zinc-500 mt-2'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+          <h1 className='text-4xl font-medium dark:text-black'>Solution Partner Registration</h1>
+          <p className='text-xs text-zinc-500 mt-2 dark:text-black'>Join our ecosystem of certified experts and delivery partners.</p>
           <form onSubmit={handleSubmit} className='my-7 space-y-4 grid grid-cols-2 gap-2 md:gap-3'>
             {step === 1 && (
               <>
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Company Name</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Company Name</label>
                   <input
                     type='text'
                     name="company_name"
                     value={formData.company_name}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
-                  {errors.company_name && <p className="text-red-500 text-xs mt-1">{errors.company_name}</p>}
+                  {errors.company_name && <p className="text-red-500 text-xs dark:text-black mt-1">{errors.company_name}</p>}
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Brand name</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Brand name</label>
                   <input
                     type='text'
                     name="brand_name"
                     value={formData.brand_name}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.brand_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.brand_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.brand_name && <p className="text-red-500 text-xs mt-1">{errors.brand_name}</p>}
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Registered business name</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Group / Holding Company (or same as company name)</label>
                   <input
                     type='text'
                     name="registered_business_name"
                     value={formData.registered_business_name}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.registered_business_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.registered_business_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.registered_business_name && <p className="text-red-500 text-xs mt-1">{errors.registered_business_name}</p>}
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Company registration number</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Company registration number</label>
                   <div className='flex'>
-                   <select
-                      name="country_type"
-                      value={formData.country_type}
-                      onChange={handleChange}
-                      className={`border text-sm outline-0 ${errors.country_type ? 'border-red-200 bg-red-100' : 'border-zinc-200 bg-zinc-100'} py-2.5 px-2 w-20`}>
-
-                      <option value="IN" className='text-xs'>IN</option>
-                      <option value="UAE" className='text-xs'>UAE</option>
-                    </select>
+        
                   <input
                     type='text'
                     name="company_registration_number"
                     value={formData.company_registration_number}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                 </div>
                   {errors.company_registration_number && <p className="text-red-500 text-xs mt-1">{errors.company_registration_number}</p>}
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Legal entity type</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Legal entity type</label>
 
 
                   <select
@@ -802,7 +770,7 @@ const PDF = [
                     name="Legal_entity_type"
                     value={formData.Legal_entity_type}
                     onChange={handleChange}
-                    className="outline-0 w-full py-2 px-3 border border-zinc-200 bg-zinc-100"
+                    className="outline-0 w-full py-2 px-3 border dark:text-black border-zinc-200 bg-zinc-100"
                   >
                     <option value="" disabled>
                       Select an option
@@ -826,7 +794,7 @@ const PDF = [
                       <button
                         type="button"
                         onClick={handleSubmitOther}
-                        className="bg-gray-950 text-white p-1 rounded cursor-pointer px-3"
+                        className="bg-gray-950 text-white p-1 dark:text-black rounded cursor-pointer px-3"
                       >
                         Add
                       </button>
@@ -837,44 +805,35 @@ const PDF = [
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Tax id</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Tax id</label>
                   <div className='flex'>
-                    <select
-                      id="tax_type"
-                      name="tax_type"
-                      value={formData.tax_type}
-                      onChange={handleChange}
-                      className={`border text-sm outline-0 ${errors.tax_id ? 'border-red-200 bg-red-100' : 'border-zinc-200 bg-zinc-100'} py-2.5 px-2 w-20`}>
-
-                      <option value="gst" className='text-xs'>GST</option>
-                      <option value="vat" className='text-xs'>VAT</option>
-                    </select>
+               
                     <input
                       type='text'
                       name="tax_id"
                       value={formData.tax_id}
                       onChange={handleChange}
-                      className={`outline-0 w-full py-2 px-3 border ${errors.tax_id ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                      className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.tax_id ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
                   </div>
                   {errors.tax_id && <p className="text-red-500 text-xs mt-1">{errors.tax_id}</p>}
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Headquarter country</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Headquarter country</label>
                   <select
                     id="headquater_country"
                     name="headquater_country"
                     value={formData.headquater_country}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.headquater_country ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  border ${errors.headquater_country ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
                   >
-                    <option value="" disabled>
+                    <option value="" disabled className='dark:text-black'>
                       Select an option
                     </option>
                     {
                       headquaterCountry.map((item, i) => (
-                        <option key={i} value={item.value}>{item.name}</option>
+                        <option key={i} value={item.value} className='dark:text-black'>{item.name}</option>
                       ))
                     }
                   </select>
@@ -886,12 +845,12 @@ const PDF = [
                         value={headquaterCountryData}
                         onChange={(e) => setheadquaterCountryData(e.target.value)}
                         placeholder="add legal entity type"
-                        className="bg-zinc-100 outline-1 p-1"
+                        className="bg-zinc-100 dark:text-black outline-1 p-1"
                       />
                       <button
                         type="button"
                         onClick={handleSubmitOtherHC}
-                        className="bg-gray-950 text-white p-1 rounded cursor-pointer px-3"
+                        className="bg-gray-950 text-white p-1 rounded cursor-pointer px-3 dark:text-black"
                       >
                         Add
                       </button>
@@ -905,32 +864,32 @@ const PDF = [
                 </div>
 
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Website url</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Website url</label>
                   <input
                     type='text'
                     name="website_url"
                     value={formData.website_url}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.website_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 border ${errors.website_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
                   />
-                  {errors.website_url && <p className="text-red-500 text-xs mt-1">{errors.website_url}</p>}
+                  {errors.website_url && <p className="text-red-500  text-xs mt-1">{errors.website_url}</p>}
                 </div>
 
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Linkedin url</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Linkedin url</label>
                   <input
                     type='text'
                     name="linkedin_url"
                     value={formData.linkedin_url}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.linkedin_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 border ${errors.linkedin_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
                   />
-                  {errors.linkedin_url && <p className="text-red-500 text-xs mt-1">{errors.linkedin_url}</p>}
+                  {errors.linkedin_url && <p className="text-red-500 dark:text-black text-xs mt-1">{errors.linkedin_url}</p>}
                 </div>
 
                 {/* Brand Logo */}
                 <div className="col-span-2">
-                  <label htmlFor="brandlogo" className="text-sm font-medium font-sans">
+                  <label htmlFor="brandlogo" className="text-sm font-medium dark:text-black font-sans">
                     Upload Brand Logo
                   </label>
                   <label
@@ -940,7 +899,7 @@ const PDF = [
                       : 'border-zinc-200 bg-zinc-100 text-zinc-400'
                       } py-2 px-3 w-full text-center border-dashed flex justify-center`}
                   >
-                    <div className="flex items-center">
+                    <div className="flex dark:text-black items-center">
                       <Image
                         src="/assests/upload.png"
                         alt="upload"
@@ -979,52 +938,52 @@ const PDF = [
             {step === 2 && (
               <>
                 <div className="col-span-2">
-                  <label className="text-sm font-medium font-sans">Personal Full Name</label>
+                  <label className="text-sm font-medium font-sans dark:text-black">Full Name</label>
                   <input
                     type="text"
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.name ? 'border-red-200 bg-red-500/10' : "border-zinc-200 bg-zinc-100"}`}
+                    className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.name ? 'border-red-200 bg-red-500/10' : "border-zinc-200 bg-zinc-100"}`}
                   />
                   {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                 </div>
 
                 <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm font-medium font-sans">Designation</label>
+                  <label className="text-sm font-medium dark:text-black font-sans">Designation</label>
                   <input
                     type="text"
                     name="designation"
                     value={formData.designation}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.designation ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.designation ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.designation && <p className="text-red-500 text-xs mt-1">{errors.designation}</p>}
                 </div>
 
                 <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm font-medium font-sans">Email</label>
+                  <label className="text-sm font-medium font-sans dark:text-black">Email</label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'
+                    className={`outline-0 w-full py-2 px-3 border ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'
                       }`}
                   />
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm font-medium font-sans">Phone number</label>
+                  <label className="text-sm font-medium font-sans dark:text-black">Phone number</label>
                   <PhoneInput
                     country={'in'}
                     value={formData.mobile}
                     onChange={handlePhoneChange}
-                    inputClass={`!w-full !px-14 !py-3 !text-sm !rounded-none !outline-none ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'
+                    inputClass={`!w-full !px-14 !py-3 !text-sm !rounded-none !outline-none ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100 !dark:text-black'
                       }`}
                     containerClass="!w-full"
-                    buttonClass={`px-10 ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'
+                    buttonClass={`px-10 ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100 !dark:text-black'
                       }`}
                     inputProps={{
                       name: 'mobile',
@@ -1035,18 +994,18 @@ const PDF = [
                 </div>
 
                 <div className="col-span-2 relative">
-                  <label className="text-sm font-medium font-sans">Password</label>
+                  <label className="text-sm font-medium font-sans dark:text-black">Password</label>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} pr-10`}
+                    className={`outline-0 w-full py-2 px-3 border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'} pr-10`}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-9 text-zinc-500 hover:text-zinc-700"
+                    className="absolute right-3 top-9 text-zinc-500 hover:text-zinc-700 dark:text-black"
                     tabIndex={-1}
                   >
                     {showPassword ? <i className="ri-eye-line"></i> : <i className="ri-eye-close-line"></i>}
@@ -1058,7 +1017,7 @@ const PDF = [
             {step === 3 && (
               <>
                 <div className='col-span-2'>
-                  <label className="text-sm block font-semibold font-sans mb-1">Primary cloud alignment</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Primary cloud alignment</label>
                   <div className="flex gap-3 flex-wrap">
                     {['AWS', 'Azure', 'GCP', 'Multi-Cloud'].map(cloud => (
                       <div key={cloud}>
@@ -1073,7 +1032,7 @@ const PDF = [
                         />
                         <label
                           htmlFor={cloud.toLowerCase()}
-                          className='h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white'
+                          className='h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white dark:text-black'
                         >
                           {cloud}
                         </label>
@@ -1084,14 +1043,14 @@ const PDF = [
                 </div>
 
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Solution partner type</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Solution partner type</label>
                   <div className='px-1 bg-zinc-100 border border-zinc-200'>
                     <select
                       id="solution_partner_type"
                       name="solution_partner_type"
                       value={formData.solution_partner_type}
                       onChange={handleChange}
-                      className='bg-zinc-100 outline-0 py-2.5 px-3 w-full'
+                      className='bg-zinc-100 dark:text-black outline-0 py-2.5 px-3 w-full'
                     >
                       <option value=""></option>
                       <option value="technology">Technology Partner</option>
@@ -1103,9 +1062,9 @@ const PDF = [
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm font-semibold font-sans mb-1">Core service offer</label>
-                  <div className="flex flex-col gap-4">
-                    <div className="flex gap-3 flex-wrap">
+                  <label className="text-sm font-semibold font-sans mb-1 dark:text-black">Core service offer</label>
+                  <div className="flex flex-col gap-4 dark:text-black">
+                    <div className="flex gap-3 flex-wrap dark:text-black">
                       {platforms.map((platform) => (
                         <div key={platform.id}>
                           <input
@@ -1119,7 +1078,7 @@ const PDF = [
                           />
                           <label
                             htmlFor={platform.id}
-                            className="px-4 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl peer-checked:bg-black peer-checked:text-white"
+                            className="px-4 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl peer-checked:bg-black peer-checked:text-white dark:text-black"
                           >
                             {platform.label}
                           </label>
@@ -1129,7 +1088,7 @@ const PDF = [
                         <button
                           type="button"
                           onClick={() => setShowPlatformInput(true)}
-                          className="w-8 h-8 rounded-3xl bg-zinc-300 text-lg flex justify-center items-center"
+                          className="w-8 h-8 rounded-3xl bg-zinc-300 text-lg flex justify-center items-center dark:text-black"
                         >
                           +
                         </button>
@@ -1137,13 +1096,13 @@ const PDF = [
                     </div>
 
                     {showPlatformInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl dark:text-black">
                         <input
                           type="text"
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
                           placeholder="Enter cloud name"
-                          className="px-3 py-1 outline-0 rounded-lg text-sm"
+                          className="px-3 py-1 outline-0 rounded-lg text-sm dark:text-black"
                         />
                         <button
                           type="button"
@@ -1151,18 +1110,18 @@ const PDF = [
                             setShowPlatformInput(false);
                             setNewPlatform('');
                           }}
-                          className="text-zinc-400 hover:text-zinc-500"
+                          className="text-zinc-400 dark:text-black hover:text-zinc-500"
                           title="Cancel"
                         >
-                          <i className="ri-close-fill"></i>
+                          <i className="ri-close-fill text-red-600 dark:text-red-600"></i>
                         </button>
                         <button
                           type="button"
                           onClick={handleAddPlatform}
-                          className="text-zinc-400 hover:text-zinc-500"
+                          className="text-zinc-400 dark:text-black hover:text-zinc-500"
                           title="Add"
                         >
-                          <i className="ri-check-fill"></i>
+                          <i className="ri-check-fill text-green-500 dark:text-green-500"></i>
                         </button>
                       </div>
                     )}
@@ -1171,7 +1130,7 @@ const PDF = [
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm block font-semibold font-sans mb-1">Vertical Expertise</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Vertical Expertise</label>
                   <div className="flex flex-col gap-4">
                     <div className="flex gap-3 flex-wrap">
                       {marketplace.map((item) => (
@@ -1187,7 +1146,7 @@ const PDF = [
                           />
                           <label
                             htmlFor={item.id}
-                            className="h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white"
+                            className="h-8 border border-zinc-200 bg-zinc-100 dark:text-black text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white"
                           >
                             {item.label}
                           </label>
@@ -1197,7 +1156,7 @@ const PDF = [
                         <button
                           type="button"
                           onClick={() => setShowMarketplaceInput(true)}
-                          className="w-8 h-8 rounded-3xl bg-zinc-300 text-lg flex justify-center items-center"
+                          className="w-8 h-8 rounded-3xl bg-zinc-300 dark:text-black text-lg flex justify-center items-center"
                         >
                           +
                         </button>
@@ -1211,7 +1170,7 @@ const PDF = [
                           value={newMarketplace}
                           onChange={(e) => setNewMarketplace(e.target.value)}
                           placeholder="Enter marketplace name"
-                          className="px-3 py-1 outline-0 rounded-lg text-sm"
+                          className="px-3 py-1 dark:text-black  outline-0 rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -1222,7 +1181,7 @@ const PDF = [
                           className="text-zinc-400 hover:text-zinc-500"
                           title="Cancel"
                         >
-                          <i className="ri-close-fill"></i>
+                          <i className="ri-close-fill text-red-600 dark:text-red-600"></i>
                         </button>
                         <button
                           type="button"
@@ -1230,7 +1189,7 @@ const PDF = [
                           className="text-zinc-400 hover:text-zinc-500"
                           title="Add"
                         >
-                          <i className="ri-check-fill"></i>
+                          <i className="ri-check-fill text-green-500 dark:text-green-500"></i>
                         </button>
                       </div>
                     )}
@@ -1239,7 +1198,7 @@ const PDF = [
                 </div>
 
                 <div className='col-span-2'>
-                  <label className="text-sm block font-semibold font-sans mb-1">Partner Program Membership</label>
+                  <label className="text-sm block dark:text-black font-semibold font-sans mb-1">Partner Program Membership</label>
                   <div className="flex gap-3 flex-wrap">
                     {['aws', 'azure', 'gcp', 'multicloud'].map((item) => (
                       <div key={item}>
@@ -1254,7 +1213,7 @@ const PDF = [
                         />
                         <label
                           htmlFor={`Partner${item}`}
-                          className="h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white"
+                          className="h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white dark:text-black"
                         >
                           {item.replace(/-/g, ' ')}
                         </label>
@@ -1264,7 +1223,7 @@ const PDF = [
                 </div>
 
                 <div className='col-span-2'>
-                  <label className="text-sm block font-semibold font-sans mb-1">Preferred Engagement Mode</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Preferred Engagement Mode</label>
                   <div className="flex gap-3 flex-wrap">
                     {[
                       { id: 'sppo', label: 'Solution Partner Private Offers (SPPO)' },
@@ -1285,7 +1244,7 @@ const PDF = [
                         />
                         <label
                           htmlFor={item.id}
-                          className="h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white"
+                          className="h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-4 peer-checked:bg-black peer-checked:text-white dark:text-black"
                         >
                           {item.label}
                         </label>
@@ -1294,7 +1253,7 @@ const PDF = [
                   </div>
                 </div>
                 <div className='col-span-2'>
-                  <label htmlFor="competencies_certificate" className="text-sm block font-semibold font-sans mb-1">
+                  <label htmlFor="competencies_certificate" className="text-sm block dark:text-black font-semibold font-sans mb-1">
                     Competencies & Certifications
                   </label>
                   <textarea
@@ -1303,7 +1262,7 @@ const PDF = [
                     value={formData.competencies_certificate}
                     onChange={handleChange}
                     rows="5"
-                    className='w-full bg-zinc-100 border border-zinc-200 rounded-md p-2 text-sm'
+                    className='w-full bg-zinc-100 border dark:text-black border-zinc-200 rounded-md p-2 text-sm'
                   ></textarea>
                 </div>
 
@@ -1329,14 +1288,14 @@ const PDF = [
                         name="neozaar_tc"
                         checked={formData.neozaar_tc}
                         onChange={handleChange}
-                        className='peer/terms hidden'
+                        className='peer/terms hidden '
                       />
-                      <label htmlFor='treamscondition' className='block bg-zinc-100 w-5 h-5 border border-zinc-200 peer-checked/terms:hidden'></label>
+                      <label htmlFor='treamscondition' className='block bg-zinc-100 w-5 h-5 border border-zinc-200 peer-checked/terms:hidden dark:text-black'></label>
                       <label htmlFor='treamscondition' className='hidden justify-center items-center bg-black w-5 h-5 border border-black peer-checked/terms:flex'>
-                        <i className="ri-check-line text-white"></i>
+                        <i className="ri-check-line text-white "></i>
                       </label>
                     </div>
-                    <label htmlFor='treamscondition' className='text-sm'>
+                    <label htmlFor='treamscondition' className='text-sm dark:text-black'>
                       I agree to the <a href="#" className='font-semibold underline'>Terms & Conditions</a> and consent to the collection and use of my data as outlined in the <a href="#" className='font-semibold underline'>Privacy Policy</a>.
                     </label>
                   </div>
@@ -1359,12 +1318,12 @@ const PDF = [
                         <i className="ri-check-line text-white"></i>
                       </label>
                     </div>
-                    <label htmlFor='agree' className='text-sm'>
+                    <label htmlFor='agree' className='text-sm dark:text-black'>
                       I have read and agree to the Privacy Policy and consent to the use of my data for the following purposes.
                     </label>
                   </div>
 
-                  <ul className='ms-10 mt-2 text-sm font-sans text-zinc-500 list-disc'>
+                  <ul className='ms-10 mt-2 text-sm font-sans text-zinc-500 list-disc dark:text-black'>
                     <li>To provide me with the requested service.</li>
                     <li>To send me product updates and marketing communications.</li>
                     <li>To improve my user experience on this website.</li>

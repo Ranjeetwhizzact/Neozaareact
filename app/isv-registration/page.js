@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -11,8 +10,8 @@ import toast, { Toaster } from 'react-hot-toast';
 export default function Page() {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
   const router = useRouter();
-
 
   const [legalEntityTypes, setlegalEntityTypes] = useState([
     { value: "Private Limited", name: "Private Limited" },
@@ -20,8 +19,8 @@ export default function Page() {
     { value: "Sole Proprietorship", name: "Sole Proprietorship" },
     { value: "Partnership", name: "Partnership" },
     { value: "Other", name: "Other" },
-  ])
-  const [legalEntityTypesData, setlegalEntityTypesData] = useState(null)
+  ]);
+  const [legalEntityTypesData, setlegalEntityTypesData] = useState(null);
 
   const [headquaterCountry, setHeadquaterCountry] = useState([
     { value: "India", name: "India" },
@@ -30,10 +29,8 @@ export default function Page() {
     { value: "Germany", name: "Germany" },
     { value: "France", name: "France" },
     { value: "Other", name: "Other" },
-  ])
-
-
-  const [headquaterCountryData, setheadquaterCountryData] = useState(null)
+  ]);
+  const [headquaterCountryData, setheadquaterCountryData] = useState(null);
 
   // Form state
   const role_id = 2;
@@ -60,8 +57,8 @@ export default function Page() {
   const [existing_marketplace_listing, setExistingMarket] = useState([]);
   const [cloud_partnership, setCloudPartnership] = useState([]);
   const [preferred_engagement, setPreferred] = useState('');
-  const [neozaar_tc, setNeozaartc] = useState();
-  const [data_privacy, setDataPrivacy] = useState();
+  const [neozaar_tc, setNeozaartc] = useState(false);
+  const [data_privacy, setDataPrivacy] = useState(false);
   const [businessCert, setBusinessCert] = useState(null);
   const [businessCertName, setBusinessCertName] = useState('');
 
@@ -81,19 +78,255 @@ export default function Page() {
   const [showMarketplaceInput, setShowMarketplaceInput] = useState(false);
   const [newMarketplace, setNewMarketplace] = useState('');
 
+  // Handle field blur events
+  const handleBlur = (fieldName) => {
+    setTouched({ ...touched, [fieldName]: true });
+    
+    // Validate the specific field immediately when it loses focus
+    if (step === 1) {
+      validateFieldStep1(fieldName);
+    } else if (step === 2) {
+      validateFieldStep2(fieldName);
+    } else if (step === 3) {
+      validateFieldStep3(fieldName);
+    }
+  };
+
+  // Individual field validation for Step 1
+  const validateFieldStep1 = (fieldName) => {
+    const newErrors = { ...errors };
+    const websiteRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/;
+    const MAX_FILE_SIZE = 1 * 1024 * 1024;
+    const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+    const nameRegex = /^[A-Za-z\s]+$/;
+
+    switch (fieldName) {
+      case 'company_name':
+        if (!company_name.trim()) {
+          newErrors.company_name = "Please provide your company name.";
+        } else if (!nameRegex.test(company_name)) {
+          newErrors.company_name = "Company name should only contain letters and spaces.";
+        } else {
+          delete newErrors.company_name;
+        }
+        break;
+      
+      case 'registered_business_name':
+        if (!registered_business_name.trim()) {
+          newErrors.registered_business_name = "Please provide your company registration name.";
+        } else if (!nameRegex.test(registered_business_name)) {
+          newErrors.registered_business_name = "Registration name should only contain letters and spaces.";
+        } else {
+          delete newErrors.registered_business_name;
+        }
+        break;
+      
+      case 'company_registration_number':
+        if (!company_registration_number.trim()) {
+          newErrors.company_registration_number = "Please provide your company registration number.";
+        } else if (country_type === "IN" && !/^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(company_registration_number)) {
+          newErrors.company_registration_number = "Please provide a valid company registration number.";
+        } else if (country_type === "UAE" && !/^\d{2}-\d{7}$/.test(company_registration_number)) {
+          newErrors.company_registration_number = "Please provide a valid company registration number.";
+        } else {
+          delete newErrors.company_registration_number;
+        }
+        break;
+      
+      case 'brand_name':
+        if (!brand_name.trim()) {
+          newErrors.brand_name = "Please provide the brand name.";
+        } else if (!nameRegex.test(brand_name)) {
+          newErrors.brand_name = "Brand name should only contain letters and spaces.";
+        } else {
+          delete newErrors.brand_name;
+        }
+        break;
+      
+      case 'website_url':
+        if (!website_url.trim()) {
+          newErrors.website_url = "Please provide your website link.";
+        } else if (!websiteRegex.test(website_url)) {
+          newErrors.website_url = "Enter a valid website URL.";
+        } else {
+          delete newErrors.website_url;
+        }
+        break;
+      
+      case 'tax_id':
+        if (!tax_id.trim()) {
+          newErrors.tax_id = "Please provide your Tax ID.";
+        } 
+        break;
+      
+      case 'headquater_country':
+        if (!headquater_country.trim()) {
+          newErrors.headquater_country = "Please provide the headquarters country.";
+        } else {
+          delete newErrors.headquater_country;
+        }
+        break;
+      
+      case 'Legal_entity_type':
+        if (!Legal_entity_type) {
+          newErrors.Legal_entity_type = "Please select your legal entity type.";
+        } else {
+          delete newErrors.Legal_entity_type;
+        }
+        break;
+      
+      case 'brand_logo':
+        if (!brand_logo) {
+          newErrors.brand_logo = "Please upload your brand logo.";
+        } else {
+          if (!ALLOWED_TYPES.includes(brand_logo.type)) {
+            newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
+          } else if (brand_logo.size > MAX_FILE_SIZE) {
+            newErrors.brand_logo = "File size must not exceed 1 MB.";
+          } else {
+            delete newErrors.brand_logo;
+          }
+        }
+        break;
+      
+      default:
+        break;
+    }
+    
+    setErrors(newErrors);
+  };
+
+  // Individual field validation for Step 2
+  const validateFieldStep2 = (fieldName) => {
+    const newErrors = { ...errors };
+    const nameRegex = /^[A-Za-z\s]+$/;
+    const validateEmail = (email) => {
+      if (!website_url) return false;
+      const parts = website_url.split('www.');
+      const companyDomain = parts.length > 1 ? parts[1] : website_url.replace(/https?:\/\//, '').replace('www.', '');
+      const domain = email.split('@')[1]?.toLowerCase();
+      return companyDomain === domain;
+    };
+
+    switch (fieldName) {
+      case 'name':
+        if (!name.trim()) {
+          newErrors.name = "Please provide the Personal Name";
+        } else if (!nameRegex.test(name)) {
+          newErrors.name = "Personal name should only contain letters and spaces.";
+        } else {
+          delete newErrors.name;
+        }
+        break;
+      
+      case 'designation':
+        if (!designation.trim()) {
+          newErrors.designation = " Please provide the Designation";
+        } else if (!nameRegex.test(designation)) {
+          newErrors.designation = "Designation should only contain letters and spaces.";
+        } else {
+          delete newErrors.designation;
+        }
+        break;
+      
+      case 'mobile':
+        if (!mobile.trim()) {
+          newErrors.mobile = "Please Provide Mobile Number";
+        } else {
+          delete newErrors.mobile;
+        }
+        break;
+      
+      case 'password':
+        if (!password.trim()) {
+          newErrors.password = 'Password is required.';
+        } else if (password.length < 8) {
+          newErrors.password = 'Password must be at least 8 characters.';
+        } else {
+          delete newErrors.password;
+        }
+        break;
+      
+      case 'email':
+        if (!email.trim()) {
+          newErrors.email = "Please Provide Email Address";
+        } else if (!validateEmail(email)) {
+          newErrors.email = "Please provide an official (non-personal) email address";
+        } else {
+          delete newErrors.email;
+        }
+        break;
+      
+      default:
+        break;
+    }
+    
+    setErrors(newErrors);
+  };
+
+  // Individual field validation for Step 3
+  const validateFieldStep3 = (fieldName) => {
+    const newErrors = { ...errors };
+    
+    switch (fieldName) {
+      case 'neozaar_tc':
+        if (!Boolean(neozaar_tc)) {
+          newErrors.neozaar_tc = "Please agree to the Terms & Conditions";
+        } else {
+          delete newErrors.neozaar_tc;
+        }
+        break;
+      
+      case 'data_privacy':
+        if (!Boolean(data_privacy)) {
+          newErrors.data_privacy = "Please agree to the Privacy Policy";
+        } else {
+          delete newErrors.data_privacy;
+        }
+        break;
+      
+      default:
+        break;
+    }
+    
+    setErrors(newErrors);
+  };
+
   // Form navigation
   const handleNext = async () => {
+    // Mark all fields as touched when trying to proceed to next step
+    const allFieldsTouched = {};
+    
     if (step === 1) {
+      // Add all step 1 fields to touched
+      const step1Fields = [
+        'company_name', 'registered_business_name', 'company_registration_number', 
+        'brand_name', 'website_url', 'tax_id', 'headquater_country', 'Legal_entity_type', 'brand_logo'
+      ];
+      step1Fields.forEach(field => {
+        allFieldsTouched[field] = true;
+      });
+      
+      setTouched({ ...touched, ...allFieldsTouched });
+      
       if (validateStep1()) {
         setStep(2);
       } else {
-        toast.error("Please fill all required ");
+        toast.error("Please fill all required fields correctly");
       }
     } else if (step === 2) {
+      // Add all step 2 fields to touched
+      const step2Fields = ['name', 'designation', 'mobile', 'password', 'email'];
+      step2Fields.forEach(field => {
+        allFieldsTouched[field] = true;
+      });
+      
+      setTouched({ ...touched, ...allFieldsTouched });
+      
       if (validateStep2()) {
         setStep(3);
       } else {
-        toast.error("Please fill all required ");
+        toast.error("Please fill all required fields correctly");
       }
     }
   };
@@ -108,12 +341,32 @@ export default function Page() {
     if (file) {
       setBrandLogo(file);
       setBrandLogoName(file.name);
+      
+      // Validate the file
+      const MAX_FILE_SIZE = 1 * 1024 * 1024;
+      const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+      const newErrors = { ...errors };
+      
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
+      } else if (file.size > MAX_FILE_SIZE) {
+        newErrors.brand_logo = "File size must not exceed 1 MB.";
+      } else {
+        delete newErrors.brand_logo;
+      }
+      
+      setErrors(newErrors);
     }
   };
 
   const removeBrandLogo = () => {
     setBrandLogo(null);
     setBrandLogoName('');
+    
+    // Clear the error
+    const newErrors = { ...errors };
+    delete newErrors.brand_logo;
+    setErrors(newErrors);
   };
 
   const handleBusinessCertChange = (e) => {
@@ -168,58 +421,54 @@ export default function Page() {
   const validateStep1 = () => {
     const newErrors = {};
     const websiteRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/;
-    const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/;
     const MAX_FILE_SIZE = 1 * 1024 * 1024; 
-const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
-const nameRegex = /^[A-Za-z\s]+$/;
+    const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+    const nameRegex = /^[A-Za-z\s]+$/;
 
- if (!company_name.trim()) {
-  newErrors.company_name = "Please provide your company name.";
-} else if (!nameRegex.test(company_name)) {
-  newErrors.company_name = "Company name should only contain letters and spaces.";
-}
-
-if (!registered_business_name.trim()) {
-  newErrors.registered_business_name = "Please provide your company registration name.";
-} else if (!nameRegex.test(registered_business_name)) {
-  newErrors.registered_business_name = "Registration name should only contain letters and spaces.";
-}
-    
-    if (!company_registration_number.trim()) newErrors.company_registration_number = "Please provide your company registration number.";
-    else if (country_type === "IN" && !/^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(company_registration_number)) {
-      newErrors.company_registration_number = "Please provide a valid company registration number.";
-    } else if (country_type === "UAE" && !/^\d{2}-\d{7}$/.test(company_registration_number)) {
-      newErrors.company_registration_number = "Please provide a valid company registration number.";
+    if (!company_name.trim()) {
+      newErrors.company_name = "Please provide your company name.";
+    } else if (!nameRegex.test(company_name)) {
+      newErrors.company_name = "Company name should only contain letters and spaces.";
     }
-  if (!brand_name.trim()) {
-  newErrors.brand_name = "Please provide the brand name.";
-} else if (!nameRegex.test(brand_name)) {
-  newErrors.brand_name = "Brand name should only contain letters and spaces.";
-}
+
+    if (!registered_business_name.trim()) {
+      newErrors.registered_business_name = "Please provide your company registration name.";
+    } else if (!nameRegex.test(registered_business_name)) {
+      newErrors.registered_business_name = "Registration name should only contain letters and spaces.";
+    }
+        
+    if (!company_registration_number.trim()) newErrors.company_registration_number = "Please provide your company registration number.";
+    
+    
+    if (!brand_name.trim()) {
+      newErrors.brand_name = "Please provide the brand name.";
+    } else if (!nameRegex.test(brand_name)) {
+      newErrors.brand_name = "Brand name should only contain letters and spaces.";
+    }
+    
     if (!website_url.trim()) newErrors.website_url = "Please provide your website link.";
     else if (!websiteRegex.test(website_url)) newErrors.website_url = "Enter a valid website URL.";
-    // if (!linkedin_url.trim()) newErrors.linkedin_url = "Please provide your LinkedIn URL.";
-    // else if (!linkedinRegex.test(linkedin_url)) newErrors.linkedin_url = "Enter a valid LinkedIn profile or company URL.";
+    
     if (!tax_id.trim()) newErrors.tax_id = "Please provide your Tax ID.";
-    else if (tax_type === "gst" && !/^\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}Z[A-Z\d]{1}$/.test(tax_id)) {
-      newErrors.tax_id = "Please provide a valid GST number.";
-    } else if (tax_type === "vat" && !/^[A-Z0-9]{8,15}$/.test(tax_id)) {
-      newErrors.tax_id = "Please provide a valid VAT ID.";
-    }
+   
+    
     if (!headquater_country.trim()) newErrors.headquater_country = "Please provide the headquarters country.";
-if (!brand_logo) {
-  newErrors.brand_logo = "Please upload your brand logo.";
-} else {
+    
+    if (!brand_logo) {
+      newErrors.brand_logo = "Please upload your brand logo.";
+    } else {
+      if (!ALLOWED_TYPES.includes(brand_logo.type)) {
+        newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
+      }
 
-  if (!ALLOWED_TYPES.includes(brand_logo.type)) {
-    newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
-  }
-
-  if (brand_logo.size > MAX_FILE_SIZE) {
-    newErrors.brand_logo = "File size must not exceed 1 MB.";
-  }
-}
-    if (!Legal_entity_type) {newErrors.Legal_entity_type = "Please select your legal entity type.";}
+      if (brand_logo.size > MAX_FILE_SIZE) {
+        newErrors.brand_logo = "File size must not exceed 1 MB.";
+      }
+    }
+    
+    if (!Legal_entity_type) {
+      newErrors.Legal_entity_type = "Please select your legal entity type.";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -228,27 +477,29 @@ if (!brand_logo) {
   const validateStep2 = () => {
     const nameRegex = /^[A-Za-z\s]+$/;
     const newErrors = {};
-    const validateEmail = (email) => {
-      const companyDomin = website_url.split('www.')[1];
+   const validateEmail = (email) => {
+      const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
       const domain = email.split('@')[1]?.toLowerCase();
-      return companyDomin === domain
+      return domain && !personalDomains.includes(domain);
     };
 
-if (!name.trim()) {
-  newErrors.name = "Please provide the Personal Name";
-} else if (!nameRegex.test(name)) {
-  newErrors.name = "Personal name should only contain letters and spaces.";
-}
-if (!designation.trim()) {
-  newErrors.designation = " Please provide the Designation";
-} else if (!nameRegex.test(designation)) {
-  newErrors.designation = "Designation should only contain letters and spaces.";
-}
-    // if (!name.trim()) newErrors.name = "Please Provide Your Name";
+    if (!name.trim()) {
+      newErrors.name = "Please provide the Personal Name";
+    } else if (!nameRegex.test(name)) {
+      newErrors.name = "Personal name should only contain letters and spaces.";
+    }
+    
+    if (!designation.trim()) {
+      newErrors.designation = " Please provide the Designation";
+    } else if (!nameRegex.test(designation)) {
+      newErrors.designation = "Designation should only contain letters and spaces.";
+    }
+    
     if (!mobile.trim()) newErrors.mobile = "Please Provide Mobile Number";
-    // if (!designation.trim()) newErrors.designation = "Please Provide Your Designation";
+    
     if (!password.trim()) newErrors.password = 'Password is required.';
     else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters.';
+    
     if (!email.trim()) newErrors.email = "Please Provide Email Address";
     else if (!validateEmail(email)) newErrors.email = "Please provide an official (non-personal) email address";
 
@@ -265,10 +516,16 @@ if (!designation.trim()) {
     return Object.keys(newErrors).length === 0;
   };
 
-
   const handleSubmit = async (e) => {
-
     e.preventDefault();
+    
+    // Mark all step 3 fields as touched
+    const allFieldsTouched = {
+      neozaar_tc: true,
+      data_privacy: true
+    };
+    setTouched({ ...touched, ...allFieldsTouched });
+    
     if (validateStep3()) {
       toast.loading('Submitting form...');
 
@@ -317,60 +574,47 @@ if (!designation.trim()) {
         toast.error('Something went wrong. Please try again.');
       }
     } else {
-      console.log("else part work")
+      toast.error("Please agree to the Terms & Conditions and Privacy Policy");
     }
   };
 
-
-
-
-  // =======================
-
   function legalEntityInput(e) {
-    e.preventDefault()
+    e.preventDefault();
     const data = {
       name: e.target.value,
       value: e.target.value
-    }
+    };
 
-    setlegalEntityTypesData(data)
-
+    setlegalEntityTypesData(data);
   }
 
   function handleSubmitOther() {
-
     if (legalEntityTypesData != null) {
-      // legalEntityTypes.push(legalEntityTypesData)
-      setlegalEntityTypes([legalEntityTypesData, ...headquaterCountry])
+      setlegalEntityTypes([legalEntityTypesData, ...legalEntityTypes]);
       if (Legal_entity_type === "Other") {
-        setLegalEntityType(legalEntityTypesData)
+        setLegalEntityType(legalEntityTypesData.value);
       }
     }
-
   }
 
   function headquaterCountryInput(e) {
-    e.preventDefault()
+    e.preventDefault();
     const data = {
       name: e.target.value,
       value: e.target.value
-    }
+    };
 
-    setheadquaterCountryData(data)
+    setheadquaterCountryData(data);
   }
 
   function handleSubmitOtherHC() {
     if (headquaterCountryData != null) {
-      // legalEntityTypes.push(legalEntityTypesData)
-      setHeadquaterCountry([headquaterCountryData, ...legalEntityTypes])
+      setHeadquaterCountry([headquaterCountryData, ...headquaterCountry]);
       if (headquater_country === "Other") {
-        setHeadQuater(headquaterCountryData)
+        setHeadQuater(headquaterCountryData.value);
       }
     }
   }
-
-
-
   return (
     <div className='max-w-[1920px] m-auto flex'>
       <div className='h-[100vh] w-[295px] bg-[#212121] hidden lg:flex items-center justify-between'>
@@ -387,7 +631,7 @@ if (!designation.trim()) {
                 </div>
                 <div className=''>
                   <h1 className='text-white text-sm w-56'>Company & Brand Information</h1>
-                  <p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  <p className='text-gray-500 text-[10px] w-56'>Tell us who you are and how you’d like your brand to be represented on NeoZaar. This helps us feature your offerings with accurate branding and compliance.</p>
                 </div>
               </li>
               <li className='flex gap-2 h-32'>
@@ -405,7 +649,7 @@ if (!designation.trim()) {
                 </div>
                 <div className=''>
                   <h1 className='text-white text-sm w-56'>Primary Contact</h1>
-                  <p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  <p className='text-gray-500 text-[10px] w-56'>Enter the details of your go-to representative. This person will receive all listing updates, deal alerts, and onboarding communications from our team.</p>
                 </div>
               </li>
               <li className='flex gap-2 h-32'>
@@ -418,7 +662,7 @@ if (!designation.trim()) {
                 </div>
                 <div className=''>
                   <h1 className='text-white text-sm w-56'>Partner & Engage</h1>
-                  <p className='text-gray-500 text-[10px] w-56'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+                  <p className='text-gray-500 text-[10px] w-56'>Let us know how you plan to engage — list your products, offer bundles, or provide services. We’ll use this info to recommend the best GTM opportunities and bundle placements for your brand.</p>
                 </div>
               </li>
             </ul>
@@ -432,71 +676,63 @@ if (!designation.trim()) {
       </div>
       <div className='h-[100vh] w-full overflow-y-scroll'>
         <div className='w-10/12 md:w-8/12 mx-auto py-10'>
-          <h1 className='text-4xl font-medium'>ISV Registration</h1>
-          <p className='text-xs text-zinc-500 mt-2'>Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.</p>
+          <h1 className='text-4xl font-medium dark:text-black'>ISV Registration</h1>
+          <p className='text-xs text-zinc-500 mt-2'>List your SaaS, launch private offers, and unlock cloud-aligned growth and CoSell Opportunities.</p>
           <form onSubmit={handleSubmit} className='my-7 space-y-4 grid grid-cols-2 gap-2 md:gap-3'>
             {step === 1 && (
               <>
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Company Name</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Company Name</label>
                   <input
                     type='text'
                     value={company_name}
                     onChange={(e) => setCompanyName(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.company_name && (<p className="text-red-500 text-sm mt-1">{errors.company_name}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Brand name</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Brand name</label>
                   <input
                     type='text'
                     value={brand_name}
                     onChange={(e) => setBrandtName(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.brand_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.brand_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.brand_name && (<p className="text-red-500 text-sm mt-1">{errors.brand_name}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Registered business name</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Group / Holding Company (same as company name)</label>
                   <input
                     type='text'
                     value={registered_business_name}
                     onChange={(e) => setCompanyregisterName(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.registered_business_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.registered_business_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.registered_business_name && (<p className="text-red-500 text-sm mt-1">{errors.registered_business_name}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Company registration number</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Register Company number</label>
                   <div className='flex'>
-                    <select
-                      name="country_type"
-                      value={country_type}
-                      onChange={(e) => setCountryType(e.target.value)}
-                      className={`border text-sm outline-0 ${errors.country_type ? 'border-red-200 bg-red-100' : 'border-zinc-200 bg-zinc-100'} py-2.5 px-2 w-20`}>
-
-                      <option value="IN" className='text-xs'>IN</option>
-                      <option value="UAE" className='text-xs'>UAE</option>
-                    </select>
+           
 
                   <input
                     type='text'
                     value={company_registration_number}
                     onChange={(e) => setCompanyNumber(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   </div>
                   {errors.company_registration_number && (<p className="text-red-500 text-sm mt-1">{errors.company_registration_number}</p>)}
                 </div>
                 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Legal Entity Type</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type</label>
 
                   <select
                     value={Legal_entity_type}
                     onChange={(e) => setLegalEntityType(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.Legal_entity_type ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.Legal_entity_type ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   >
                     <option value="" disabled>Select an option</option>
                     {
@@ -517,35 +753,30 @@ if (!designation.trim()) {
                   {errors.Legal_entity_type && (<p className="text-red-500 text-sm mt-1">{errors.Legal_entity_type}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Tax id</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Tax id</label>
                   <div className='flex'>
-                    <select id="entityType" name="tax_type"
-                      onChange={(e) => setTaxType(e.target.value)}
-                      className={`border text-sm outline-0 ${errors.tax_id ? 'border-red-200 bg-red-100' : 'border-zinc-200 bg-zinc-100'} py-2.5 px-2 w-20`}>
-                      <option value="gst" className='text-xs'>GST</option>
-                      <option value="vat" className='text-xs'>VAT</option>
-                    </select>
+                   
                     <input
                       type='text'
                       value={tax_id}
                       onChange={(e) => setTaxId(e.target.value)}
-                      className={`w-full py-2 px-3 border ${errors.tax_id ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} outline-0`}
+                      className={`w-full py-2 px-3  dark:text-black border ${errors.tax_id ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} outline-0`}
                     />
                   </div>
                   {errors.tax_id && (<p className="text-red-500 text-sm mt-1">{errors.tax_id}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Headquarter country</label>
+                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter country</label>
                   <select
                     id="entityType"
                     value={headquater_country}
                     onChange={(e) => setHeadQuater(e.target.value)}
-                    className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} py-2.5 px-3 w-full`}
+                    className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} dark:text-black py-2.5 px-3 w-full`}
                   >
-                    <option value="" disabled>Select an option</option>
+                    <option value="" disabled className='dark:text-black'>Select an option</option>
                     {
                       headquaterCountry.map((item, i) => (
-                        <option key={i} value={item.value}>{item.name}</option>
+                        <option key={i} value={item.value} className='dark:text-black'>{item.name}</option>
                       ))
                     }
                   </select>
@@ -560,34 +791,34 @@ if (!designation.trim()) {
                   {errors.headquater_country && (<p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>)}
                 </div>
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Website url</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Website url</label>
                   <input
                     type='text'
                     placeholder=''
                     value={website_url}
                     onChange={(e) => setCompanyWebsite(e.target.value)}
-                    className={`w-full py-2 px-3 outline-0 border ${errors.website_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`w-full py-2 px-3 outline-0 border dark:text-black ${errors.website_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.website_url && (<p className="text-red-500 text-sm mt-1">{errors.website_url}</p>)}
                 </div>
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans'>Linkedin url</label>
+                  <label className='text-sm  font-medium dark:text-black font-sans'>Linkedin url</label>
                   <input
                     type='text'
                     placeholder=''
                     value={linkedin_url}
                     onChange={(e) => setLinkedin(e.target.value)}
-                    className={`w-full py-2 px-3 outline-0 border ${errors.linkedin_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`w-full py-2 px-3 outline-0 dark:text-black border ${errors.linkedin_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.linkedin_url && (<p className="text-red-500 text-sm mt-1">{errors.linkedin_url}</p>)}
                 </div>
                 <div className="col-span-2">
-                  <label htmlFor="brand_logo" className="text-sm font-medium font-sans">
+                  <label htmlFor="brand_logo" className="text-sm dark:text-black font-medium font-sans">
                     Upload Brand Logo
                   </label>
                   <label
                     htmlFor="brand_logo"
-                    className={`cursor-pointer text-sm font-medium font-sans border ${errors.brand_logo
+                    className={`cursor-pointer text-sm dark:text-black font-medium font-sans border ${errors.brand_logo
                       ? 'border-red-300 bg-red-500/10 text-red-400'
                       : 'border-zinc-200 bg-zinc-100 text-zinc-400'
                       } py-2 px-3 w-full text-center border-dashed flex justify-center`}
@@ -625,33 +856,33 @@ if (!designation.trim()) {
             {step === 2 && (
               <>
                 <div className="col-span-2">
-                  <label className="text-sm font-medium font-sans">Personal Full Name</label>
+                  <label className="text-sm dark:text-black font-medium font-sans"> Full Name</label>
                   <input
                     type="text"
                     placeholder=""
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.name ? 'border-red-200 bg-red-500/10' : "border-zinc-200 bg-zinc-100"}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.name ? 'border-red-200 bg-red-500/10' : "border-zinc-200 bg-zinc-100"}`}
                   />
                   {errors.name && (<p className="text-red-500 text-sm mt-1">{errors.name}</p>)}
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm font-medium font-sans">Designation</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Designation</label>
                   <input
                     type="text"
                     value={designation}
                     onChange={(e) => setDesignation(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.designation ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.designation ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.designation && (<p className="text-red-500 text-sm mt-1">{errors.designation}</p>)}
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm font-medium font-sans">Email</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Email</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'
+                    className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'
                       }`}
                     required
                   />
@@ -660,7 +891,7 @@ if (!designation.trim()) {
                   )}
                 </div>
                 <div className="col-span-2">
-                  <label className="text-sm font-medium font-sans">Phone number</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Phone number</label>
                   <PhoneInput
                     country={'in'}
                     value={mobile}
@@ -678,13 +909,13 @@ if (!designation.trim()) {
                   {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
                 </div>
                 <div className="col-span-2 relative">
-                  <label className="text-sm font-medium font-sans">Password</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Password</label>
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     placeholder=""
                     onChange={(e) => setPassword(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} pr-10`}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} pr-10`}
                   />
                   <button
                     type="button"
@@ -704,7 +935,7 @@ if (!designation.trim()) {
               <>
                 {/* ☁️ Cloud Partnerships */}
                 <div className="col-span-2">
-                  <label className="text-sm font-semibold font-sans mb-1">Cloud Partnerships</label>
+                  <label className="text-sm font-semibold dark:text-black font-sans mb-1">Cloud Partnerships</label>
                   <div className="flex flex-col gap-4">
                     <div className="flex gap-3 flex-wrap">
                       {platforms.map((platform) => (
@@ -718,7 +949,7 @@ if (!designation.trim()) {
                           />
                           <label
                             htmlFor={platform.id + "cloud"}
-                            className="w-20 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 peer-checked:bg-black peer-checked:text-white"
+                            className="w-20 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 dark:text-black peer-checked:bg-black peer-checked:text-white"
                           >
                             {platform.label}
                           </label>
@@ -728,7 +959,7 @@ if (!designation.trim()) {
                         <button
                           type="button"
                           onClick={() => setShowPlatformInput(true)}
-                          className="w-8 h-8 rounded-3xl bg-zinc-300 text-lg flex justify-center items-center"
+                          className="w-8 h-8 rounded-3xl bg-zinc-300 dark:text-black text-lg flex justify-center items-center"
                         >
                           +
                         </button>
@@ -741,7 +972,7 @@ if (!designation.trim()) {
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
                           placeholder="Enter cloud name"
-                          className="px-3 py-1 outline-0 rounded-lg text-sm"
+                          className="px-3 py-1 outline-0 dark:text-black rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -752,7 +983,7 @@ if (!designation.trim()) {
                           className="text-zinc-400 hover:text-zinc-500"
                           title="Cancel"
                         >
-                          <i className="ri-close-fill"></i>
+                          <i className="ri-close-fill text-red-600 dark:text-red-600"></i>
                         </button>
                         <button
                           type="button"
@@ -760,7 +991,7 @@ if (!designation.trim()) {
                           className="text-zinc-400 hover:text-zinc-500"
                           title="Add"
                         >
-                          <i className="ri-check-fill"></i>
+                          <i className="ri-check-fill text-green-500 dark:text-green-500"></i>
                         </button>
                       </div>
                     )}
@@ -769,7 +1000,7 @@ if (!designation.trim()) {
 
                 {/* 🛒 Marketplace */}
                 <div className="col-span-2">
-                  <label className="text-sm block font-semibold font-sans mb-1">Existing marketplace listing</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Existing marketplace listing</label>
                   <div className="flex flex-col gap-4">
                     <div className="flex gap-3 flex-wrap">
                       {marketplace.map((item) => (
@@ -783,7 +1014,7 @@ if (!designation.trim()) {
                           />
                           <label
                             htmlFor={item.id}
-                            className="w-20 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 peer-checked:bg-black peer-checked:text-white"
+                            className="w-20 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 peer-checked:bg-black peer-checked:text-white dark:text-black"
                           >
                             {item.label}
                           </label>
@@ -793,7 +1024,7 @@ if (!designation.trim()) {
                         <button
                           type="button"
                           onClick={() => setShowMarketplaceInput(true)}
-                          className="w-8 h-8 rounded-3xl bg-zinc-300 text-lg flex justify-center items-center"
+                          className="w-8 h-8 rounded-3xl bg-zinc-300 text-lg flex justify-center items-center dark:text-black"
                         >
                           +
                         </button>
@@ -817,7 +1048,7 @@ if (!designation.trim()) {
                           className="text-zinc-400 hover:text-zinc-500"
                           title="Cancel"
                         >
-                          <i className="ri-close-fill"></i>
+                          <i className="ri-close-fill text-red-600 dark:text-red-600"></i>
                         </button>
                         <button
                           type="button"
@@ -825,7 +1056,7 @@ if (!designation.trim()) {
                           className="text-zinc-400 hover:text-zinc-500"
                           title="Add"
                         >
-                          <i className="ri-check-fill"></i>
+                          <i className="ri-check-fill text-green-500 dark:text-green-500"></i>
                         </button>
                       </div>
                     )}
@@ -833,7 +1064,7 @@ if (!designation.trim()) {
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm block font-semibold font-sans mb-1">Competencies & certifications</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Competencies & certifications</label>
                   <textarea
                     rows="5"
                     value={competencies_certifications}
@@ -842,13 +1073,13 @@ if (!designation.trim()) {
                   ></textarea>
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans'>Preferred engagement</label>
+                  <label className='text-sm dark:text-black font-medium font-sans  '>Preferred engagement</label>
                   <div className='bg-zinc-100 px-1 border border-zinc-200'>
                     <select
                       id="entityType"
                       value={preferred_engagement}
                       onChange={(e) => setPreferred(e.target.value)}
-                      className='bg-zinc-100 outline-0 py-2.5 px-3 w-full'
+                      className='bg-zinc-100 outline-0 py-2.5 px-3 w-full dark:text-black'
                     >
                       <option value=""></option>
                       <option value="Direct">Direct</option>
@@ -858,12 +1089,12 @@ if (!designation.trim()) {
                   </div>
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <label htmlFor="businesscert" className="text-sm font-medium font-sans">
+                  <label htmlFor="businesscert" className="text-sm dark:text-black font-medium font-sans">
                     Business Certification
                   </label>
                   <label
                     htmlFor="businesscert"
-                    className="cursor-pointer text-sm font-medium font-sans text-zinc-400 border py-2.5 px-3 w-full text-center border-dashed flex justify-center"
+                    className="cursor-pointer text-sm dark:text-black font-medium font-sans text-zinc-400 border py-2.5 px-3 w-full text-center border-dashed flex justify-center"
                   >
                     <div className="flex items-center">
                       <Image
@@ -914,7 +1145,7 @@ if (!designation.trim()) {
                       <label
                         htmlFor='treamscondition' className='hidden justify-center items-center bg-black w-5 h-5 border border-black  peer-checked/terms:flex'><i className="ri-check-line text-white"></i></label>
                     </div>
-                    <label htmlFor='treamscondition' className='text-sm'>I agree to the <a href="" className='font-semibold underline'>Terms & Conditions</a>  and consent to the collection and use of my data as outlined in the <a href="" className='font-semibold underline'>Privacy Policy</a> . </label>
+                    <label htmlFor='treamscondition' className='text-sm dark:text-black '>I agree to the <a href="" className='font-semibold underline'>Terms & Conditions</a>  and consent to the collection and use of my data as outlined in the <a href="" className='font-semibold underline'>Privacy Policy</a> . </label>
                   </div>
                   {errors.neozaar_tc && <p className="text-red-500 text-sm mt-1">{errors.neozaar_tc}</p>}
                 </div>
@@ -925,7 +1156,7 @@ if (!designation.trim()) {
                       <label htmlFor='agree' className={`block  bg-zinc-100  ${errors.data_privacy ? 'border-red-200' : 'border-zinc-200'} w-5 h-5 border  peer-checked/agree:hidden`}></label>
                       <label htmlFor='agree' className='hidden justify-center items-center bg-black w-5 h-5 border border-black  peer-checked/agree:flex'><i className="ri-check-line text-white"></i></label>
                     </div>
-                    <label htmlFor='agree' className='text-sm'>I have read and agree to the Privacy Policy and consent to the use of my data for the following purposes . </label>
+                    <label htmlFor='agree' className='text-sm dark:text-black'>I have read and agree to the Privacy Policy and consent to the use of my data for the following purposes . </label>
                   </div>
                   <ul className=' ms-10 mt-2 text-sm font-sans text-zinc-500 list-disc'>
                     <li>To provide me with the requested service.</li>
