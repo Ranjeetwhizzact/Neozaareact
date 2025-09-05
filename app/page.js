@@ -139,22 +139,22 @@ export default function Page() {
           <div className="xl:h-[427px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1240px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0" >
             {[
               {
-                src: '/image/dollar.png',
+                src: '/brand-log/cost_effective.png',
                 title: 'Cost-Effective Solutions',
                 text: 'Access budget-friendly cloud bundles aligned to your existing cloud credits',
               },
               {
-                src: '/image/cube.png',
+                src: '/brand-log/Diverse.png',
                 title: 'Diverse Products & Bundles',
                 text: 'From backup to GenAI — find everything in one place.',
               },
               {
-                src: '/image/headset.png',
+                src: '/brand-log/profileicon.png',
                 title: 'Expert Support',
                 text: '3. Get deployment, migration, or support services from certified experts.',
               },
               {
-                src: '/image/arrow_star.png',
+                src: '/brand-log/ai.png',
                 title: 'AI-Powered Recommendations',
                 text: 'Our AI matches your business needs with cost-optimized, credit-aligned solutions.',
               },
@@ -208,7 +208,7 @@ export default function Page() {
           <div className="hidden lg:grid grid-cols-3 w-full h-[650px] border-image-horizontal">
             {[
               {
-                img: "/image/find_exactly_1.png",
+                img: "/brand-log/individual_products.jpg",
                 title: "Individual Products",
                 desc: "Explore verified SaaS, cloud, AI, and security solutions. Our catalog features best-in-class tools from global Independent Software Vendors (ISVs).",
                  point1:'Feature-wise comparison',
@@ -219,7 +219,7 @@ export default function Page() {
               },
                
               {
-                img: "/image/find_exactly_1.png",
+                img: "/brand-log/curated_bundles.jpg",
                 title: "Curated Bundles",
                 desc: "Accelerate your outcomes with solution-focused bundles. NeoZaar FastTrack FlexBundles combine top products, cloud infrastructure, and deployment support — aligned to your goals",
                   point1:'Security, AI, Modernization, FinOps kits',
@@ -230,7 +230,7 @@ export default function Page() {
 
               },
               {
-                img: "/image/find_exactly_2.png",
+                img: "/brand-log/expert_services.jpg",
                 title: "Expert Services",
                 desc: "Certified MSPs & cloud consultants at your fingertips.Whether you’re migrating, modernizing, or scaling, our service partners are here to deliver success — on time and on budget.",
                  point1:'Cloud migration & DevOps',
@@ -251,7 +251,7 @@ export default function Page() {
                   alt={card.title}
                   width={320}
                   height={160}
-                  className="mb-4 w-full rounded-[20px] "
+                  className="mb-4 w-full rounded-[20px] opacity-50"
                   style={{ height: "232px", objectFit: "cover" }}
                 />
                 <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
@@ -289,7 +289,7 @@ export default function Page() {
           <div className="hidden md:grid lg:hidden grid-cols-2 w-full border-image-horizontal">
             {[
               {
-                img: "/image/find_exactly_1.png",
+                img: "/brand-log/individual_products.jpg",
                 title: "Individual Products",
                 desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
                         point1:'Feature-wise comparison',
@@ -299,7 +299,7 @@ export default function Page() {
                 btn: "Explore Products",
               },
               {
-                img: "/image/find_exactly_1.png",
+                img: "/brand-log/curated_bundles.jpg",
                 title: "Curated Bundles",
                 desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
                   point1:'Security, AI, Modernization, FinOps kits',
@@ -310,7 +310,7 @@ export default function Page() {
                 btn: "Discover Bundles",
               },
               {
-                img: "/image/find_exactly_2.png",
+                img: "/brand-log/expert_services.jpg",
                 title: "Expert Services",
                 desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
                  point1:'Cloud migration & DevOps',
@@ -372,7 +372,7 @@ export default function Page() {
         <div className="grid md:hidden grid-cols-1 w-full border-image-horizontal">
   {[
     {
-      img: "/image/find_exactly_1.png",
+      img: "/brand-log/individual_products.jpg",
       title: "Individual Products",
       desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
        point1:'Cloud migration & DevOps',
@@ -383,7 +383,7 @@ export default function Page() {
 
     },
     {
-      img: "/image/find_exactly_1.png",
+      img: "/brand-log/curated_bundles.jpg",
       title: "Curated Bundles",
       desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
         point1:'Security, AI, Modernization, FinOps kits',
@@ -394,7 +394,7 @@ export default function Page() {
       btn: "Discover Bundles",
     },
     {
-      img: "/image/find_exactly_2.png",
+      img: "/brand-log/expert_services.jpg",
       title: "Expert Services",
       desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
               point1:'Feature-wise comparison',
