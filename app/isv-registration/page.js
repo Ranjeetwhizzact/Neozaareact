@@ -1,17 +1,19 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { Fascinate } from 'next/font/google';
 
 export default function Page() {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const router = useRouter();
+  const [loading, setloading] = useState(false)
 
   const [legalEntityTypes, setlegalEntityTypes] = useState([
     { value: "Private Limited", name: "Private Limited" },
@@ -24,6 +26,7 @@ export default function Page() {
 
   const [headquaterCountry, setHeadquaterCountry] = useState([
     { value: "India", name: "India" },
+    { value: "UAE", name: "UAE" },
     { value: "United States", name: "United States" },
     { value: "United Kingdom", name: "United Kingdom" },
     { value: "Germany", name: "Germany" },
@@ -78,256 +81,258 @@ export default function Page() {
   const [showMarketplaceInput, setShowMarketplaceInput] = useState(false);
   const [newMarketplace, setNewMarketplace] = useState('');
 
+  // Validation rules
+  const validationRules = {
+    company_name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Company name should only contain letters and spaces."
+    },
+    designation: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "designation name should only contain letters and spaces."
+    },
+    registered_business_name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Registration name should only contain letters and spaces."
+    },
+    company_registration_number: {
+      required: true,
+      validate: (value) => {
+
+        return true; // For other countries, just require it to be filled
+      },
+      message: "Please provide a valid company registration number."
+    },
+    brand_name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Brand name should only contain letters and spaces."
+    },
+    website_url: {
+      required: true,
+      pattern: /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+      message: "Enter a valid website URL."
+    },
+    linkedin_url: {
+      required: false,
+      // pattern: /^(https?:\/\/)?(www\.)?(linkedin\.)?(com\/)[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+      pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9\_\-\.]+\/?$/,
+      message: "Enter a valid website URL."
+    },
+    tax_id: {
+      required: true,
+      required: true,
+      validate: (value) => {
+
+        return true; // For other countries, just require it to be filled
+      },
+      message: "Please provide your Tax ID."
+    },
+    headquater_country: {
+      required: true,
+      message: "Please provide the headquarters country."
+    },
+    Legal_entity_type: {
+      required: true,
+      message: "Please select your legal entity type."
+    },
+    brand_logo: {
+      required: true,
+      validate: (file) => {
+        if (!file) return false;
+        const MAX_FILE_SIZE = 1 * 1024 * 1024;
+        const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+        return ALLOWED_TYPES.includes(file.type) && file.size <= MAX_FILE_SIZE;
+      },
+      message: "Please upload a valid brand logo (PNG, JPG, JPEG, WEBP, SVG, max 1MB)."
+    },
+    name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Personal name should only contain letters and spaces."
+    },
+    designation: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Designation should only contain letters and spaces."
+    },
+    mobile: {
+      required: true,
+      message: "Please provide a mobile number."
+    },
+    password: {
+      required: true,
+      minLength: 8,
+      message: "Password must be at least 8 characters."
+    },
+    email: {
+      required: true,
+      validate: (value) => {
+        if (!website_url) return false;
+        const parts = website_url.split('www.');
+        const companyDomain = parts.length > 1 ? parts[1] : website_url.replace(/https?:\/\//, '').replace('www.', '');
+        const domain = value.split('@')[1]?.toLowerCase();
+        return companyDomain === domain;
+      },
+      message: "Please provide an official (non-personal) email address matching your company domain."
+    },
+    neozaar_tc: {
+      required: true,
+      message: "Please agree to the Terms & Conditions"
+    },
+    data_privacy: {
+      required: true,
+      message: "Please agree to the Privacy Policy"
+    }
+  };
+
+  // Validate a single field
+  const validateField = (name, value) => {
+    const rule = validationRules[name];
+    if (!rule) return true; // No validation rule for this field
+
+    if (rule.required && (!value || (typeof value === 'string' && !value.trim()))) {
+      return `Please provide ${name.replace(/_/g, ' ')}.`;
+    }
+
+    if (rule.pattern && !rule.pattern.test(value)) {
+      return rule.message;
+    }
+
+    if (rule.minLength && value.length < rule.minLength) {
+      return rule.message;
+    }
+
+    if (rule.validate && !rule.validate(value)) {
+      return rule.message;
+    }
+
+    return null; // No error
+  };
+
+  // Handle field changes with validation
+  const handleFieldChange = (fieldName, value) => {
+    // Update the field value
+    switch (fieldName) {
+      case 'company_name': setCompanyName(value); break;
+      case 'registered_business_name': setCompanyregisterName(value); break;
+      case 'company_registration_number': setCompanyNumber(value); break;
+      case 'brand_name': setBrandtName(value); break;
+      case 'website_url': setCompanyWebsite(value); break;
+      case 'linkedin_url': setLinkedin(value); break;
+      case 'tax_id': setTaxId(value); break;
+      case 'headquater_country': setHeadQuater(value); break;
+      case 'Legal_entity_type': setLegalEntityType(value); break;
+      case 'name': setName(value); break;
+      case 'designation': setDesignation(value); break;
+      case 'mobile': setMobile(value); break;
+      case 'password': setPassword(value); break;
+      case 'email': setEmail(value); break;
+      case 'neozaar_tc': setNeozaartc(value); break;
+      case 'data_privacy': setDataPrivacy(value); break;
+      default: break;
+    }
+
+    // Validate the field if it's been touched
+    if (touched[fieldName]) {
+      const error = validateField(fieldName, value);
+      setErrors(prev => ({ ...prev, [fieldName]: error }));
+    }
+  };
+
   // Handle field blur events
   const handleBlur = (fieldName) => {
     setTouched({ ...touched, [fieldName]: true });
-    
-    // Validate the specific field immediately when it loses focus
-    if (step === 1) {
-      validateFieldStep1(fieldName);
-    } else if (step === 2) {
-      validateFieldStep2(fieldName);
-    } else if (step === 3) {
-      validateFieldStep3(fieldName);
-    }
-  };
 
-  // Individual field validation for Step 1
-  const validateFieldStep1 = (fieldName) => {
-    const newErrors = { ...errors };
-    const websiteRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/;
-    const MAX_FILE_SIZE = 1 * 1024 * 1024;
-    const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
-    const nameRegex = /^[A-Za-z\s]+$/;
-
+    // Validate the field
+    let value;
     switch (fieldName) {
-      case 'company_name':
-        if (!company_name.trim()) {
-          newErrors.company_name = "Please provide your company name.";
-        } else if (!nameRegex.test(company_name)) {
-          newErrors.company_name = "Company name should only contain letters and spaces.";
-        } else {
-          delete newErrors.company_name;
-        }
-        break;
-      
-      case 'registered_business_name':
-        if (!registered_business_name.trim()) {
-          newErrors.registered_business_name = "Please provide your company registration name.";
-        } else if (!nameRegex.test(registered_business_name)) {
-          newErrors.registered_business_name = "Registration name should only contain letters and spaces.";
-        } else {
-          delete newErrors.registered_business_name;
-        }
-        break;
-      
-      case 'company_registration_number':
-        if (!company_registration_number.trim()) {
-          newErrors.company_registration_number = "Please provide your company registration number.";
-        } else if (country_type === "IN" && !/^[LU]\d{5}[A-Z]{2}\d{4}[A-Z]{3}\d{6}$/.test(company_registration_number)) {
-          newErrors.company_registration_number = "Please provide a valid company registration number.";
-        } else if (country_type === "UAE" && !/^\d{2}-\d{7}$/.test(company_registration_number)) {
-          newErrors.company_registration_number = "Please provide a valid company registration number.";
-        } else {
-          delete newErrors.company_registration_number;
-        }
-        break;
-      
-      case 'brand_name':
-        if (!brand_name.trim()) {
-          newErrors.brand_name = "Please provide the brand name.";
-        } else if (!nameRegex.test(brand_name)) {
-          newErrors.brand_name = "Brand name should only contain letters and spaces.";
-        } else {
-          delete newErrors.brand_name;
-        }
-        break;
-      
-      case 'website_url':
-        if (!website_url.trim()) {
-          newErrors.website_url = "Please provide your website link.";
-        } else if (!websiteRegex.test(website_url)) {
-          newErrors.website_url = "Enter a valid website URL.";
-        } else {
-          delete newErrors.website_url;
-        }
-        break;
-      
-      case 'tax_id':
-        if (!tax_id.trim()) {
-          newErrors.tax_id = "Please provide your Tax ID.";
-        } 
-        break;
-      
-      case 'headquater_country':
-        if (!headquater_country.trim()) {
-          newErrors.headquater_country = "Please provide the headquarters country.";
-        } else {
-          delete newErrors.headquater_country;
-        }
-        break;
-      
-      case 'Legal_entity_type':
-        if (!Legal_entity_type) {
-          newErrors.Legal_entity_type = "Please select your legal entity type.";
-        } else {
-          delete newErrors.Legal_entity_type;
-        }
-        break;
-      
-      case 'brand_logo':
-        if (!brand_logo) {
-          newErrors.brand_logo = "Please upload your brand logo.";
-        } else {
-          if (!ALLOWED_TYPES.includes(brand_logo.type)) {
-            newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
-          } else if (brand_logo.size > MAX_FILE_SIZE) {
-            newErrors.brand_logo = "File size must not exceed 1 MB.";
-          } else {
-            delete newErrors.brand_logo;
-          }
-        }
-        break;
-      
-      default:
-        break;
+      case 'company_name': value = company_name; break;
+      case 'registered_business_name': value = registered_business_name; break;
+      case 'company_registration_number': value = company_registration_number; break;
+      case 'brand_name': value = brand_name; break;
+      case 'website_url': value = website_url; break;
+      case 'linkedin_url': value = linkedin_url; break;
+      case 'tax_id': value = tax_id; break;
+      case 'headquater_country': value = headquater_country; break;
+      case 'Legal_entity_type': value = Legal_entity_type; break;
+      case 'name': value = name; break;
+      case 'designation': value = designation; break;
+      case 'mobile': value = mobile; break;
+      case 'password': value = password; break;
+      case 'email': value = email; break;
+      case 'neozaar_tc': value = neozaar_tc; break;
+      case 'data_privacy': value = data_privacy; break;
+      case 'brand_logo': value = brand_logo; break;
+      default: value = null;
     }
-    
-    setErrors(newErrors);
+
+    const error = validateField(fieldName, value);
+    setErrors(prev => ({ ...prev, [fieldName]: error }));
   };
 
-  // Individual field validation for Step 2
-  const validateFieldStep2 = (fieldName) => {
-    const newErrors = { ...errors };
-    const nameRegex = /^[A-Za-z\s]+$/;
-    const validateEmail = (email) => {
-      if (!website_url) return false;
-      const parts = website_url.split('www.');
-      const companyDomain = parts.length > 1 ? parts[1] : website_url.replace(/https?:\/\//, '').replace('www.', '');
-      const domain = email.split('@')[1]?.toLowerCase();
-      return companyDomain === domain;
+  // Validate all fields in current step
+  const validateStep = (stepNumber) => {
+    const stepFields = {
+      1: ['company_name', 'registered_business_name', 'company_registration_number',
+        'brand_name', 'website_url', 'tax_id', 'headquater_country',
+        'Legal_entity_type', 'brand_logo'],
+      2: ['name', 'designation', 'mobile', 'password', 'email'],
+      3: ['neozaar_tc', 'data_privacy']
     };
 
-    switch (fieldName) {
-      case 'name':
-        if (!name.trim()) {
-          newErrors.name = "Please provide the Personal Name";
-        } else if (!nameRegex.test(name)) {
-          newErrors.name = "Personal name should only contain letters and spaces.";
-        } else {
-          delete newErrors.name;
-        }
-        break;
-      
-      case 'designation':
-        if (!designation.trim()) {
-          newErrors.designation = " Please provide the Designation";
-        } else if (!nameRegex.test(designation)) {
-          newErrors.designation = "Designation should only contain letters and spaces.";
-        } else {
-          delete newErrors.designation;
-        }
-        break;
-      
-      case 'mobile':
-        if (!mobile.trim()) {
-          newErrors.mobile = "Please Provide Mobile Number";
-        } else {
-          delete newErrors.mobile;
-        }
-        break;
-      
-      case 'password':
-        if (!password.trim()) {
-          newErrors.password = 'Password is required.';
-        } else if (password.length < 8) {
-          newErrors.password = 'Password must be at least 8 characters.';
-        } else {
-          delete newErrors.password;
-        }
-        break;
-      
-      case 'email':
-        if (!email.trim()) {
-          newErrors.email = "Please Provide Email Address";
-        } else if (!validateEmail(email)) {
-          newErrors.email = "Please provide an official (non-personal) email address";
-        } else {
-          delete newErrors.email;
-        }
-        break;
-      
-      default:
-        break;
-    }
-    
-    setErrors(newErrors);
-  };
+    const fieldsToValidate = stepFields[stepNumber];
+    const newErrors = {};
+    let isValid = true;
 
-  // Individual field validation for Step 3
-  const validateFieldStep3 = (fieldName) => {
-    const newErrors = { ...errors };
-    
-    switch (fieldName) {
-      case 'neozaar_tc':
-        if (!Boolean(neozaar_tc)) {
-          newErrors.neozaar_tc = "Please agree to the Terms & Conditions";
-        } else {
-          delete newErrors.neozaar_tc;
-        }
-        break;
-      
-      case 'data_privacy':
-        if (!Boolean(data_privacy)) {
-          newErrors.data_privacy = "Please agree to the Privacy Policy";
-        } else {
-          delete newErrors.data_privacy;
-        }
-        break;
-      
-      default:
-        break;
-    }
-    
-    setErrors(newErrors);
+    // Mark all fields as touched
+    const newTouched = { ...touched };
+    fieldsToValidate.forEach(field => {
+      newTouched[field] = true;
+
+      let value;
+      switch (field) {
+        case 'company_name': value = company_name; break;
+        case 'registered_business_name': value = registered_business_name; break;
+        case 'company_registration_number': value = company_registration_number; break;
+        case 'brand_name': value = brand_name; break;
+        case 'website_url': value = website_url; break;
+        case 'tax_id': value = tax_id; break;
+        case 'headquater_country': value = headquater_country; break;
+        case 'Legal_entity_type': value = Legal_entity_type; break;
+        case 'name': value = name; break;
+        case 'designation': value = designation; break;
+        case 'mobile': value = mobile; break;
+        case 'password': value = password; break;
+        case 'email': value = email; break;
+        case 'neozaar_tc': value = neozaar_tc; break;
+        case 'data_privacy': value = data_privacy; break;
+        case 'brand_logo': value = brand_logo; break;
+        default: value = null;
+      }
+
+      const error = validateField(field, value);
+      if (error) {
+        newErrors[field] = error;
+        isValid = false;
+      }
+    });
+
+    setTouched(newTouched);
+    setErrors({ ...errors, ...newErrors });
+
+    return isValid;
   };
 
   // Form navigation
   const handleNext = async () => {
-    // Mark all fields as touched when trying to proceed to next step
-    const allFieldsTouched = {};
-    
-    if (step === 1) {
-      // Add all step 1 fields to touched
-      const step1Fields = [
-        'company_name', 'registered_business_name', 'company_registration_number', 
-        'brand_name', 'website_url', 'tax_id', 'headquater_country', 'Legal_entity_type', 'brand_logo'
-      ];
-      step1Fields.forEach(field => {
-        allFieldsTouched[field] = true;
-      });
-      
-      setTouched({ ...touched, ...allFieldsTouched });
-      
-      if (validateStep1()) {
-        setStep(2);
-      } else {
-        toast.error("Please fill all required fields correctly");
-      }
-    } else if (step === 2) {
-      // Add all step 2 fields to touched
-      const step2Fields = ['name', 'designation', 'mobile', 'password', 'email'];
-      step2Fields.forEach(field => {
-        allFieldsTouched[field] = true;
-      });
-      
-      setTouched({ ...touched, ...allFieldsTouched });
-      
-      if (validateStep2()) {
-        setStep(3);
-      } else {
-        toast.error("Please fill all required fields correctly");
-      }
+    if (validateStep(step)) {
+      setStep(step + 1);
+    } else {
+      toast.error("Please fill all required fields correctly");
     }
   };
 
@@ -341,32 +346,19 @@ export default function Page() {
     if (file) {
       setBrandLogo(file);
       setBrandLogoName(file.name);
-      
+
       // Validate the file
-      const MAX_FILE_SIZE = 1 * 1024 * 1024;
-      const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
-      const newErrors = { ...errors };
-      
-      if (!ALLOWED_TYPES.includes(file.type)) {
-        newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
-      } else if (file.size > MAX_FILE_SIZE) {
-        newErrors.brand_logo = "File size must not exceed 1 MB.";
-      } else {
-        delete newErrors.brand_logo;
-      }
-      
-      setErrors(newErrors);
+      const error = validateField('brand_logo', file);
+      setErrors(prev => ({ ...prev, brand_logo: error }));
     }
   };
 
   const removeBrandLogo = () => {
     setBrandLogo(null);
     setBrandLogoName('');
-    
+
     // Clear the error
-    const newErrors = { ...errors };
-    delete newErrors.brand_logo;
-    setErrors(newErrors);
+    setErrors(prev => ({ ...prev, brand_logo: null }));
   };
 
   const handleBusinessCertChange = (e) => {
@@ -417,118 +409,12 @@ export default function Page() {
     }
   };
 
-  // Validation functions
-  const validateStep1 = () => {
-    const newErrors = {};
-    const websiteRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/;
-    const MAX_FILE_SIZE = 1 * 1024 * 1024; 
-    const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
-    const nameRegex = /^[A-Za-z\s]+$/;
-
-    if (!company_name.trim()) {
-      newErrors.company_name = "Please provide your company name.";
-    } else if (!nameRegex.test(company_name)) {
-      newErrors.company_name = "Company name should only contain letters and spaces.";
-    }
-
-    if (!registered_business_name.trim()) {
-      newErrors.registered_business_name = "Please provide your company registration name.";
-    } else if (!nameRegex.test(registered_business_name)) {
-      newErrors.registered_business_name = "Registration name should only contain letters and spaces.";
-    }
-        
-    if (!company_registration_number.trim()) newErrors.company_registration_number = "Please provide your company registration number.";
-    
-    
-    if (!brand_name.trim()) {
-      newErrors.brand_name = "Please provide the brand name.";
-    } else if (!nameRegex.test(brand_name)) {
-      newErrors.brand_name = "Brand name should only contain letters and spaces.";
-    }
-    
-    if (!website_url.trim()) newErrors.website_url = "Please provide your website link.";
-    else if (!websiteRegex.test(website_url)) newErrors.website_url = "Enter a valid website URL.";
-    
-    if (!tax_id.trim()) newErrors.tax_id = "Please provide your Tax ID.";
-   
-    
-    if (!headquater_country.trim()) newErrors.headquater_country = "Please provide the headquarters country.";
-    
-    if (!brand_logo) {
-      newErrors.brand_logo = "Please upload your brand logo.";
-    } else {
-      if (!ALLOWED_TYPES.includes(brand_logo.type)) {
-        newErrors.brand_logo = "Only png, jpg, jpeg, webp, or svg files are allowed.";
-      }
-
-      if (brand_logo.size > MAX_FILE_SIZE) {
-        newErrors.brand_logo = "File size must not exceed 1 MB.";
-      }
-    }
-    
-    if (!Legal_entity_type) {
-      newErrors.Legal_entity_type = "Please select your legal entity type.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateStep2 = () => {
-    const nameRegex = /^[A-Za-z\s]+$/;
-    const newErrors = {};
-   const validateEmail = (email) => {
-      const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'icloud.com'];
-      const domain = email.split('@')[1]?.toLowerCase();
-      return domain && !personalDomains.includes(domain);
-    };
-
-    if (!name.trim()) {
-      newErrors.name = "Please provide the Personal Name";
-    } else if (!nameRegex.test(name)) {
-      newErrors.name = "Personal name should only contain letters and spaces.";
-    }
-    
-    if (!designation.trim()) {
-      newErrors.designation = " Please provide the Designation";
-    } else if (!nameRegex.test(designation)) {
-      newErrors.designation = "Designation should only contain letters and spaces.";
-    }
-    
-    if (!mobile.trim()) newErrors.mobile = "Please Provide Mobile Number";
-    
-    if (!password.trim()) newErrors.password = 'Password is required.';
-    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters.';
-    
-    if (!email.trim()) newErrors.email = "Please Provide Email Address";
-    else if (!validateEmail(email)) newErrors.email = "Please provide an official (non-personal) email address";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const validateStep3 = () => {
-    const newErrors = {};
-    if (!Boolean(neozaar_tc)) newErrors.neozaar_tc = "Please agree to the Terms & Conditions";
-    if (!Boolean(data_privacy)) newErrors.data_privacy = "Please agree to the Privacy Policy";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Mark all step 3 fields as touched
-    const allFieldsTouched = {
-      neozaar_tc: true,
-      data_privacy: true
-    };
-    setTouched({ ...touched, ...allFieldsTouched });
-    
-    if (validateStep3()) {
-      toast.loading('Submitting form...');
 
+    if (validateStep(3)) {
+      const toastId = toast.loading('Submitting form...');
+      setloading(true)
       const formData = new FormData();
       formData.append('name', name);
       formData.append('email', email);
@@ -564,13 +450,17 @@ export default function Page() {
         const data = await res.json();
 
         if (res.ok) {
+          toast.dismiss(toastId)
           toast.success('Registration successful!');
+
           router.push('/auth/login');
         } else {
+          setloading(false)
           toast.error(data.message || 'Registration failed. Please try again.');
         }
       } catch (error) {
         console.error('Error:', error);
+        setloading(false)
         toast.error('Something went wrong. Please try again.');
       }
     } else {
@@ -686,7 +576,9 @@ export default function Page() {
                   <input
                     type='text'
                     value={company_name}
-                    onChange={(e) => setCompanyName(e.target.value)}
+
+                    onChange={(e) => handleFieldChange('company_name', e.target.value)}
+                    onBlur={() => handleBlur('company_name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.company_name && (<p className="text-red-500 text-sm mt-1">{errors.company_name}</p>)}
@@ -696,7 +588,8 @@ export default function Page() {
                   <input
                     type='text'
                     value={brand_name}
-                    onChange={(e) => setBrandtName(e.target.value)}
+                    onChange={(e) => handleFieldChange('brand_name', e.target.value)}
+                    onBlur={() => handleBlur('brand_name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.brand_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.brand_name && (<p className="text-red-500 text-sm mt-1">{errors.brand_name}</p>)}
@@ -706,7 +599,8 @@ export default function Page() {
                   <input
                     type='text'
                     value={registered_business_name}
-                    onChange={(e) => setCompanyregisterName(e.target.value)}
+                    onChange={(e) => handleFieldChange('registered_business_name', e.target.value)}
+                    onBlur={() => handleBlur('registered_business_name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.registered_business_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.registered_business_name && (<p className="text-red-500 text-sm mt-1">{errors.registered_business_name}</p>)}
@@ -714,24 +608,27 @@ export default function Page() {
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Register Company number</label>
                   <div className='flex'>
-           
 
-                  <input
-                    type='text'
-                    value={company_registration_number}
-                    onChange={(e) => setCompanyNumber(e.target.value)}
-                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
-                  />
+
+                    <input
+                      type='text'
+                      value={company_registration_number}
+
+                      onChange={(e) => handleFieldChange('company_registration_number', e.target.value)}
+                      onBlur={() => handleBlur('company_registration_number')}
+                      className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    />
                   </div>
                   {errors.company_registration_number && (<p className="text-red-500 text-sm mt-1">{errors.company_registration_number}</p>)}
                 </div>
-                
+
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type</label>
 
                   <select
                     value={Legal_entity_type}
-                    onChange={(e) => setLegalEntityType(e.target.value)}
+                    onChange={(e) => handleFieldChange('Legal_entity_type', e.target.value)}
+                    onBlur={() => handleBlur('Legal_entity_type')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.Legal_entity_type ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   >
                     <option value="" disabled>Select an option</option>
@@ -744,7 +641,7 @@ export default function Page() {
 
                   {
                     Legal_entity_type === "Other" && <div className="m-2 flex gap-2 ">
-                      <input type="text" name="" onChange={legalEntityInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1' />
+                      <input type="text" name="" onChange={legalEntityInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1  dark:text-black' />
                       <button onClick={handleSubmitOther} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
                     </div>
                   }
@@ -755,11 +652,13 @@ export default function Page() {
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Tax id</label>
                   <div className='flex'>
-                   
+
                     <input
                       type='text'
                       value={tax_id}
-                      onChange={(e) => setTaxId(e.target.value)}
+
+                      onChange={(e) => handleFieldChange('tax_id', e.target.value)}
+                      onBlur={() => handleBlur('tax_id')}
                       className={`w-full py-2 px-3  dark:text-black border ${errors.tax_id ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} outline-0`}
                     />
                   </div>
@@ -770,7 +669,8 @@ export default function Page() {
                   <select
                     id="entityType"
                     value={headquater_country}
-                    onChange={(e) => setHeadQuater(e.target.value)}
+                    onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
+                    onBlur={() => handleBlur('headquater_country')}
                     className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} dark:text-black py-2.5 px-3 w-full`}
                   >
                     <option value="" disabled className='dark:text-black'>Select an option</option>
@@ -783,7 +683,7 @@ export default function Page() {
 
                   {
                     headquater_country === "Other" && <div className="m-2 flex gap-2 ">
-                      <input type="text" name="" onChange={headquaterCountryInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1' />
+                      <input type="text" name="" onChange={headquaterCountryInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1 dark:text-black' />
                       <button onClick={handleSubmitOtherHC} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
                     </div>
                   }
@@ -796,7 +696,8 @@ export default function Page() {
                     type='text'
                     placeholder=''
                     value={website_url}
-                    onChange={(e) => setCompanyWebsite(e.target.value)}
+                    onChange={(e) => handleFieldChange('website_url', e.target.value)}
+                    onBlur={() => handleBlur('website_url')}
                     className={`w-full py-2 px-3 outline-0 border dark:text-black ${errors.website_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.website_url && (<p className="text-red-500 text-sm mt-1">{errors.website_url}</p>)}
@@ -807,7 +708,9 @@ export default function Page() {
                     type='text'
                     placeholder=''
                     value={linkedin_url}
-                    onChange={(e) => setLinkedin(e.target.value)}
+                    onChange={(e) => handleFieldChange('linkedin_url', e.target.value)}
+                    onBlur={() => handleBlur('linkedin_url')}
+                    // onChange={(e) => setLinkedin(e.target.value)}
                     className={`w-full py-2 px-3 outline-0 dark:text-black border ${errors.linkedin_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.linkedin_url && (<p className="text-red-500 text-sm mt-1">{errors.linkedin_url}</p>)}
@@ -861,7 +764,8 @@ export default function Page() {
                     type="text"
                     placeholder=""
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => handleFieldChange('name', e.target.value)}
+                    onBlur={() => handleBlur('name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.name ? 'border-red-200 bg-red-500/10' : "border-zinc-200 bg-zinc-100"}`}
                   />
                   {errors.name && (<p className="text-red-500 text-sm mt-1">{errors.name}</p>)}
@@ -871,7 +775,8 @@ export default function Page() {
                   <input
                     type="text"
                     value={designation}
-                    onChange={(e) => setDesignation(e.target.value)}
+                    onChange={(e) => handleFieldChange('designation', e.target.value)}
+                    onBlur={() => handleBlur('designation')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.designation ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.designation && (<p className="text-red-500 text-sm mt-1">{errors.designation}</p>)}
@@ -881,7 +786,8 @@ export default function Page() {
                   <input
                     type="email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => handleFieldChange('email', e.target.value)}
+                    onBlur={() => handleBlur('email')}
                     className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'
                       }`}
                     required
@@ -895,7 +801,8 @@ export default function Page() {
                   <PhoneInput
                     country={'in'}
                     value={mobile}
-                    onChange={setMobile}
+                    onChange={(value) => handleFieldChange('mobile', value)}
+                    onBlur={() => handleBlur('mobile')}
                     inputClass={`!w-full !px-14 !py-3 !text-sm !rounded-none !outline-none ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'
                       }`}
                     containerClass="!w-full"
@@ -914,7 +821,9 @@ export default function Page() {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     placeholder=""
-                    onChange={(e) => setPassword(e.target.value)}
+
+                    onChange={(e) => handleFieldChange('password', e.target.value)}
+                    onBlur={() => handleBlur('password')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} pr-10`}
                   />
                   <button
@@ -966,13 +875,13 @@ export default function Page() {
                       )}
                     </div>
                     {showPlatformInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[270px] rounded-xl">
                         <input
                           type="text"
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
                           placeholder="Enter cloud name"
-                          className="px-3 py-1 outline-0 dark:text-black rounded-lg text-sm"
+                          className="px-3 py-1 outline-0 m-1 dark:text-black rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -1031,13 +940,13 @@ export default function Page() {
                       )}
                     </div>
                     {showMarketplaceInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[270px] rounded-xl">
                         <input
                           type="text"
                           value={newMarketplace}
                           onChange={(e) => setNewMarketplace(e.target.value)}
                           placeholder="Enter marketplace name"
-                          className="px-3 py-1 outline-0 rounded-lg text-sm"
+                          className="px-3 py-1 m-1 text-black outline-0 rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -1069,7 +978,7 @@ export default function Page() {
                     rows="5"
                     value={competencies_certifications}
                     onChange={(e) => setBusinessDescription(e.target.value)}
-                    className='w-full bg-zinc-100 border border-zinc-200'
+                    className='w-full bg-zinc-100 border  p-4 dark:text-black border-zinc-200'
                   ></textarea>
                 </div>
                 <div className='col-span-2 md:col-span-1'>
@@ -1183,17 +1092,35 @@ export default function Page() {
               )}
 
 
+
+
+
+
+
               <button
-                type={step === 3 ? "submit" : "button"}
-                onClick={step === 3 ? undefined : handleNext}
-                className="w-32 h-10 bg-gradient-to-r cursor-pointer from-[#f79331] via-[#e25c08] to-[#e25c08] font-sans font-semibold text-md rounded-3xl text-white"
+                type={"button"}
+                onClick={step === 3 ? handleSubmit : handleNext}
+                disabled={loading} 
+                className={`w-32 h-10 font-sans font-semibold text-md rounded-3xl text-white
+                    ${loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-[#f79331] via-[#e25c08] to-[#e25c08] cursor-pointer"
+                  }`}
               >
-                {step === 3 ? "Submit" : (
+                {loading ? (
+                  <>
+                    <span className="spinner"></span> Submitting...
+                  </>
+                ) : step === 3 ? (
+                  "Submit"
+                ) : (
                   <>
                     Next&nbsp;&nbsp;<i className="ri-arrow-right-line"></i>
                   </>
                 )}
               </button>
+
+
 
             </div>
           </form>

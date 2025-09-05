@@ -100,6 +100,7 @@ export default function RegistrationForm() {
 
   const [headquaterCountry, setHeadquaterCountry] = useState([
     { value: "India", name: "India" },
+    { value: "UAE", name: "UAE" },
     { value: "United States", name: "United States" },
     { value: "United Kingdom", name: "United Kingdom" },
     { value: "Germany", name: "Germany" },
@@ -113,8 +114,116 @@ export default function RegistrationForm() {
   // =========================
 
 
+  const validationRules = {
+    company_name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Company name should only contain letters and spaces."
+    },
+    designation: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "designation name should only contain letters and spaces."
+    },
+    registered_business_name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: " Group / Holding Company should only contain letters and spaces."
+    },
+    name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Name can only contain letters and spaces",
+    },
+    email: {
+      required: true,
+      // At least 2 letters in domain extension (e.g., .com, .in, .org, .co.uk also works)
+      pattern: /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/,
+      message: "Enter a valid email",
+      custom: (value) => {
+        if (!formData.website_url) {
+          return "Please enter website URL first";
+        }
+
+        // Extract company domain from website_url
+        let companyDomain = formData.website_url
+          .replace(/(^\w+:|^)\/\//, "") // remove http/https
+          .replace(/^www\./, "")        // remove www.
+          .split("/")[0]
+          .toLowerCase();
+
+        const domain = value.split("@")[1]?.toLowerCase();
+        const personalDomains = [
+          "gmail.com", "yahoo.com", "hotmail.com",
+          "outlook.com", "icloud.com"
+        ];
+
+        // Personal emails not allowed
+        if (personalDomains.includes(domain)) {
+          return "Please use your company email (not personal)";
+        }
+
+        // Must match company domain (support subdomains)
+        if (domain !== companyDomain && !domain.endsWith("." + companyDomain)) {
+          return `Please use your company email (must match ${companyDomain})`;
+        }
+
+        return true; //  valid
+      },
+    },
+
+    password: {
+      required: true,
+      minLength: 8,
+      message: "Password must be at least 8 characters",
+    },
+    brand_name: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "Brand name can only contain letters and spaces",
+    },
+    website_url: {
+      required: true,
+      pattern: /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+      message: "Invalid website URL",
+    },
+    linkedin_url: {
+      required: false,
+      // pattern: /^(https?:\/\/)?(www\.)?(linkedin\.)?(com\/)[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+      pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9\_\-\.]+\/?$/,
+      message: "Enter a valid website URL."
+    },
+  };
+
+
+
+  const validateField = (name, value) => {
+    const rule = validationRules[name];
+    if (!rule) return "";
+
+    if (rule.required && !value.trim()) {
+      return `${name.replace("_", " ")} is required`;
+    }
+    if (rule.pattern && !rule.pattern.test(value)) {
+      return rule.message;
+    }
+    if (rule.minLength && value.length < rule.minLength) {
+      return rule.message;
+    }
+    if (rule.custom) {
+      const result = rule.custom(value);
+      if (result !== true) return result; // returns error string
+    }
+
+    return "";
+  };
+
+
+
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
+
+    let fieldValue = value;
 
     if (type === "checkbox") {
       if (
@@ -126,23 +235,26 @@ export default function RegistrationForm() {
           "primary_cloud_alignment",
         ].includes(name)
       ) {
-        setFormData((prev) => ({
-          ...prev,
-          [name]: checked
-            ? [...prev[name], value]
-            : prev[name].filter((item) => item !== value),
-        }));
+        fieldValue = checked
+          ? [...(formData[name] || []), value]
+          : formData[name].filter((item) => item !== value);
       } else {
-        setFormData((prev) => ({ ...prev, [name]: checked }));
+        fieldValue = checked;
       }
     } else if (type === "file") {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files.length > 1 ? [...files] : files[0],
-      }));
-    } else {
-      setFormData((prev) => ({ ...prev, [name]: value }));
+      fieldValue = files.length > 1 ? [...files] : files[0];
     }
+
+
+    setFormData((prev) => ({ ...prev, [name]: fieldValue }));
+
+
+    // const errorMsg = validateField(name, fieldValue);
+    // setErrors((prev) => ({ ...prev, [name]: errorMsg }));
+
+    const errorMsg = validateField(name, fieldValue);
+    setErrors((prev) => ({ ...prev, [name]: errorMsg }));
+
   };
 
 
@@ -249,11 +361,6 @@ export default function RegistrationForm() {
     } else if (step === 3 && validateStep3()) {
       setStep(4);
     }
-    // else if (step === 4) {
-    //   if (validateStep4()) {
-    //     await handleSubmit({ preventDefault: () => { } });
-    //   }
-    // }
   };
 
   const handleBack = () => {
@@ -265,58 +372,59 @@ export default function RegistrationForm() {
     const websiteRegex = /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/;
     const linkedinRegex = /^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[a-zA-Z0-9_-]+\/?$/;
     const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
-const ALLOWED_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-  "image/webp",
-  "image/svg+xml"
-];
+    const ALLOWED_TYPES = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+      "image/svg+xml"
+    ];
 
-const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
-   if (!formData.brand_name.trim()) {
-  newErrors.brand_name = "Brand name required";
-} else if (!onlyLettersAndSpaces.test(formData.brand_name)) {
-  newErrors.brand_name = "Brand name can only contain letters and spaces";
-}
+    const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
 
-// ✅ Company name validation
-if (!formData.company_name.trim()) {
-  newErrors.company_name = "Company name required";
-} else if (!onlyLettersAndSpaces.test(formData.company_name)) {
-  newErrors.company_name = "Company name can only contain letters and spaces";
-}
+    if (!formData.brand_name.trim()) {
+      newErrors.brand_name = "Brand name required";
+    } else if (!onlyLettersAndSpaces.test(formData.brand_name)) {
+      newErrors.brand_name = "Brand name can only contain letters and spaces";
+    }
+
+    // ✅ Company name validation
+    if (!formData.company_name.trim()) {
+      newErrors.company_name = "Company name required";
+    } else if (!onlyLettersAndSpaces.test(formData.company_name)) {
+      newErrors.company_name = "Company name can only contain letters and spaces";
+    }
 
 
-if (!formData.registered_business_name.trim()) {
-  newErrors.registered_business_name = "Group / Holding Company name required";
-} 
+    if (!formData.registered_business_name.trim()) {
+      newErrors.registered_business_name = "Group / Holding Company name required";
+    }
     if (!formData.company_registration_number.trim()) {
-  newErrors.company_registration_number = "Registration number required";
-} 
+      newErrors.company_registration_number = "Registration number required";
+    }
 
-   
+
     if (!formData.website_url.trim()) newErrors.website_url = "Website required";
     else if (!websiteRegex.test(formData.website_url)) newErrors.website_url = "Invalid website URL";
     // if (!formData.linkedin_url.trim()) newErrors.linkedin_url = "LinkedIn URL required";
     // else if (!linkedinRegex.test(formData.linkedin_url)) newErrors.linkedin_url = "Invalid LinkedIn URL";
     if (!formData.tax_id.trim()) {
-    newErrors.tax_id = "Tax ID required";
-  
-    
-  }
+      newErrors.tax_id = "Tax ID required";
+
+
+    }
 
     if (!formData.headquater_country.trim()) newErrors.headquater_country = "Country required";
-   if (!formData.brand_logo) {
-  newErrors.brand_logo = "Brand logo required";
-} else {
-  if (!ALLOWED_TYPES.includes(formData.brand_logo.type)) {
-    newErrors.brand_logo = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
-  }
-  if (formData.brand_logo.size > MAX_FILE_SIZE) {
-    newErrors.brand_logo = "File size must not exceed 1 MB";
-  }
-}
+    if (!formData.brand_logo) {
+      newErrors.brand_logo = "Brand logo required";
+    } else {
+      if (!ALLOWED_TYPES.includes(formData.brand_logo.type)) {
+        newErrors.brand_logo = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
+      }
+      if (formData.brand_logo.size > MAX_FILE_SIZE) {
+        newErrors.brand_logo = "File size must not exceed 1 MB";
+      }
+    }
     if (!formData.Legal_entity_type.trim()) newErrors.Legal_entity_type = "Legal entity required";
 
     setErrors(newErrors);
@@ -335,15 +443,15 @@ if (!formData.registered_business_name.trim()) {
     // if (!formData.name.trim()) newErrors.name = "Name required";
     if (!formData.mobile.trim()) newErrors.mobile = "Mobile required";
     if (!formData.name.trim()) {
-  newErrors.name = " Name required";
-} else if (!onlyLettersAndSpaces.test(formData.name)) {
-  newErrors.name = "Name can only contain letters and spaces";
-}
+      newErrors.name = " Name required";
+    } else if (!onlyLettersAndSpaces.test(formData.name)) {
+      newErrors.name = "Name can only contain letters and spaces";
+    }
     if (!formData.designation.trim()) {
-  newErrors.designation = " Designation required";
-} else if (!onlyLettersAndSpaces.test(formData.designation)) {
-  newErrors.designation = "Designation can only contain letters and spaces";
-}
+      newErrors.designation = " Designation required";
+    } else if (!onlyLettersAndSpaces.test(formData.designation)) {
+      newErrors.designation = "Designation can only contain letters and spaces";
+    }
     // if (!formData.designation.trim()) newErrors.designation = "Designation required";
     if (!formData.password.trim()) newErrors.password = 'Password required';
     else if (formData.password.length < 8) newErrors.password = 'Minimum 8 characters';
@@ -368,36 +476,36 @@ if (!formData.registered_business_name.trim()) {
 
   const validateStep4 = () => {
     const newErrors = {};
-const ALLOWED_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-  "image/webp",
-  "image/svg+xml"
-];
-const ALLOWED_TYPESPDF = [
-  // Images
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-  "image/webp",
-  "image/svg+xml",
+    const ALLOWED_TYPES = [
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+      "image/svg+xml"
+    ];
+    const ALLOWED_TYPESPDF = [
+      // Images
+      "image/png",
+      "image/jpeg",
+      "image/jpg",
+      "image/webp",
+      "image/svg+xml",
 
-  // PDF
-  "application/pdf"
-];
-const PDF = [
-  "application/pdf"
-];
-  // if (!ALLOWED_TYPES.includes(formData.company_profile_upload)) {
-  //   newErrors.company_profile_upload = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
-  // }
-  // if (!ALLOWED_TYPESPDF.includes(formData.business_certification)) {
-  //   newErrors.business_certification = "Only PNG, JPG, JPEG, WEBP, PDF,or SVG are allowed";
-  // }
-  // if (!PDF.includes(formData.case_studies)) {
-  //   newErrors.case_studies = "Only PDF are allowed";
-  // }
+      // PDF
+      "application/pdf"
+    ];
+    const PDF = [
+      "application/pdf"
+    ];
+    // if (!ALLOWED_TYPES.includes(formData.company_profile_upload)) {
+    //   newErrors.company_profile_upload = "Only PNG, JPG, JPEG, WEBP, or SVG are allowed";
+    // }
+    // if (!ALLOWED_TYPESPDF.includes(formData.business_certification)) {
+    //   newErrors.business_certification = "Only PNG, JPG, JPEG, WEBP, PDF,or SVG are allowed";
+    // }
+    // if (!PDF.includes(formData.case_studies)) {
+    //   newErrors.case_studies = "Only PDF are allowed";
+    // }
 
     // Ensure the fields are explicitly true
     if (formData.neozaar_tc !== true) {
@@ -422,11 +530,11 @@ const PDF = [
   const handleSubmit = async (e) => {
 
     e.preventDefault()
-    setLoading(false)
+
 
     if (validateStep4()) {
-      // setLoading(true)
       const toastId = toast.loading('Submitting form...');
+      setLoading(true)
 
       try {
         const formDataToSend = new FormData();
@@ -501,11 +609,13 @@ const PDF = [
         router.push('/auth/login');
 
       } catch (error) {
+        setLoading(false)
         console.error('Submission error:', error);
         toast.error(error.message || 'An unexpected error occurred', { id: toastId });
       }
       // console.log("it's work validate 4")
     } else {
+      setLoading(false)
       console.log("else call")
     }
 
@@ -532,6 +642,16 @@ const PDF = [
       setShowMarketplaceInput(false);
     }
   };
+
+
+
+
+
+
+
+
+
+
 
   const renderUploadSection = (label, sectionKey) => (
     <div className="col-span-2 mb-4">
@@ -608,8 +728,6 @@ const PDF = [
     }
   };
 
-  // console.log(formData.Legal_entity_type + formData.headquater_country)
-
 
   return (
     <div className='max-w-[1920px] m-auto flex'>
@@ -631,7 +749,7 @@ const PDF = [
 
                   <h1 className='text-white text-sm w-56'>Company & Brand Information</h1>
                   < p className='text-gray-500 text-[10px] w-56'>Share the key point of contact for your organization — we’ll use this for partner coordination, lead routing, and co-marketing outreach.
-</p>
+                  </p>
                 </div>
 
               </li>
@@ -719,7 +837,7 @@ const PDF = [
                     onChange={handleChange}
                     className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
-                  {errors.company_name && <p className="text-red-500 text-xs dark:text-black mt-1">{errors.company_name}</p>}
+                  {errors.company_name && <p className="text-red-500 text-xs mt-1">{errors.company_name}</p>}
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
@@ -749,15 +867,15 @@ const PDF = [
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm font-medium dark:text-black font-sans'>Company registration number</label>
                   <div className='flex'>
-        
-                  <input
-                    type='text'
-                    name="company_registration_number"
-                    value={formData.company_registration_number}
-                    onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
-                  />
-                </div>
+
+                    <input
+                      type='text'
+                      name="company_registration_number"
+                      value={formData.company_registration_number}
+                      onChange={handleChange}
+                      className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    />
+                  </div>
                   {errors.company_registration_number && <p className="text-red-500 text-xs mt-1">{errors.company_registration_number}</p>}
                 </div>
 
@@ -789,12 +907,12 @@ const PDF = [
                         value={otherEntity}
                         onChange={(e) => setOtherEntity(e.target.value)}
                         placeholder="add legal entity type"
-                        className="bg-zinc-100 outline-1 p-1"
+                        className="bg-zinc-100 outline-1 p-1 dark:text-black"
                       />
                       <button
                         type="button"
                         onClick={handleSubmitOther}
-                        className="bg-gray-950 text-white p-1 dark:text-black rounded cursor-pointer px-3"
+                        className="bg-gray-950 text-white p-1 dark:text-white rounded cursor-pointer px-3"
                       >
                         Add
                       </button>
@@ -807,7 +925,7 @@ const PDF = [
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm font-medium dark:text-black font-sans'>Tax id</label>
                   <div className='flex'>
-               
+
                     <input
                       type='text'
                       name="tax_id"
@@ -850,7 +968,7 @@ const PDF = [
                       <button
                         type="button"
                         onClick={handleSubmitOtherHC}
-                        className="bg-gray-950 text-white p-1 rounded cursor-pointer px-3 dark:text-black"
+                        className="bg-gray-950 text-white p-1 rounded cursor-pointer px-3 dark:text-white"
                       >
                         Add
                       </button>
@@ -870,7 +988,7 @@ const PDF = [
                     name="website_url"
                     value={formData.website_url}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.website_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
+                    className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.website_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
                   />
                   {errors.website_url && <p className="text-red-500  text-xs mt-1">{errors.website_url}</p>}
                 </div>
@@ -882,9 +1000,9 @@ const PDF = [
                     name="linkedin_url"
                     value={formData.linkedin_url}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.linkedin_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
+                    className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.linkedin_url ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'}`}
                   />
-                  {errors.linkedin_url && <p className="text-red-500 dark:text-black text-xs mt-1">{errors.linkedin_url}</p>}
+                  {errors.linkedin_url && <p className="text-red-500 text-xs mt-1">{errors.linkedin_url}</p>}
                 </div>
 
                 {/* Brand Logo */}
@@ -968,7 +1086,7 @@ const PDF = [
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className={`outline-0 w-full py-2 px-3 border ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'
+                    className={`outline-0 w-full py-2 px-3 dark:text-black border ${errors.email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100 dark:text-black'
                       }`}
                   />
                   {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -1096,13 +1214,13 @@ const PDF = [
                     </div>
 
                     {showPlatformInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl dark:text-black">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200  w-[270px] rounded-xl dark:text-black">
                         <input
                           type="text"
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
                           placeholder="Enter cloud name"
-                          className="px-3 py-1 outline-0 rounded-lg text-sm dark:text-black"
+                          className="px-3 py-1 m-1 outline-0 rounded-lg text-sm dark:text-black"
                         />
                         <button
                           type="button"
@@ -1164,13 +1282,13 @@ const PDF = [
                     </div>
 
                     {showMarketplaceInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[270px] rounded-xl">
                         <input
                           type="text"
                           value={newMarketplace}
                           onChange={(e) => setNewMarketplace(e.target.value)}
                           placeholder="Enter marketplace name"
-                          className="px-3 py-1 dark:text-black  outline-0 rounded-lg text-sm"
+                          className="px-3 py-1 dark:text-black  m-1 outline-0 rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -1347,18 +1465,31 @@ const PDF = [
                 </button>
               )}
 
+
               <button
-                type={step === 4 ? "submit" : "button"}
+                type={"button"}
+                onClick={step === 4 ? handleSubmit : handleNext}
                 disabled={loading}
-                onClick={step === 4 ? undefined : handleNext}
-                className="w-32 h-10 bg-gradient-to-r from-[#f79331] via-[#e25c08] to-[#e25c08] font-sans font-semibold text-md rounded-3xl text-white"
+                className={`w-32 h-10 font-sans font-semibold text-md rounded-3xl text-white
+                    ${loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-[#f79331] via-[#e25c08] to-[#e25c08] cursor-pointer"
+                  }`}
               >
-                {step === 4 ? "Submit" : (
+                {loading ? (
+                  <>
+                    <span className="spinner"></span> Submitting...
+                  </>
+                ) : step === 4 ? (
+                  "Submit"
+                ) : (
                   <>
                     Next&nbsp;&nbsp;<i className="ri-arrow-right-line"></i>
                   </>
                 )}
               </button>
+
+
 
 
             </div>
