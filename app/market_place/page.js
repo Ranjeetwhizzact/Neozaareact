@@ -357,7 +357,7 @@ export default function Home() {
 
                   <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
                     <Image
-                      src="/assests/kit_icon.png"
+                      src="/assests/HealthcareDataPatientManagementKit.webp"
                       alt="Kit Icon"
                       width={35}
                       height={35}
@@ -377,7 +377,7 @@ export default function Home() {
 
                   <div className="bg-zinc-100 flex items-center justify-center aspect-square w-[127px] h-[127px] relative">
                     <Image
-                      src="/assests/kit_icon.png"
+                      src="/assests/SmartFactoryModernizationAccelerator.webp"
                       alt="Kit Icon"
                       width={35}
                       height={35}
@@ -397,7 +397,7 @@ export default function Home() {
 
                   <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
                     <Image
-                      src="/assests/kit_icon.png"
+                      src="/assests/RegulatoryComplianceAuditReadinessToolkit.webp"
                       alt="Kit Icon"
                       width={35}
                       height={35}
@@ -418,7 +418,7 @@ export default function Home() {
                 <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
                   <div className="bg-zinc-100 flex  items-center justify-center aspect-square w-[127px] h-[127px] relative">
                     <Image
-                      src="/assests/kit_icon.png"
+                      src="/assests/hybridlearning.webp"
                       alt="Kit Icon"
                       width={35}
                       height={35}
@@ -437,7 +437,7 @@ export default function Home() {
                 <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
                   <div className="bg-zinc-100 flex items-center  aspect-square justify-center w-[127px] h-[127px] relative">
                     <Image
-                      src="/assests/kit_icon.png"
+                      src="/assests/EmployeeLifecycleComplianceKitVisitorCheck.inZohoPeoplePOSHcompliance.webp"
                       alt="Kit Icon"
                       width={35}
                       height={35}
