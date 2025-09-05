@@ -102,14 +102,21 @@ export default function Home() {
     checkAuth();
   }, []);
 
-  async function fetchMarketplace(page = 1, categori = '') {
+  async function fetchMarketplace(page = 1, categori) {
     const token = localStorage.getItem('token');
     if (!token) return;
 
     try {
 
-      // const query = search ? `marketplace/products?search=${encodeURIComponent(search)}&category=${categoriesSelect}&page=${page}&limit=${paginations.limit}` : '';
-      const query = search ? `?search=${encodeURIComponent(search)}&category=${categori}&page=${page}&limit=${paginations.limit}` : '';
+      let query = `?page=${page}&limit=${paginations.limit}`;
+
+      if (search) {
+        query += `&search=${encodeURIComponent(search)}`;
+      }
+
+      if (categori) {
+        query += `&category=${encodeURIComponent(categori)}`;
+      }
 
       const res = await fetch(`http://20.83.163.38:5000/api/catalog/marketplace/products${query}`, {
         headers: {
@@ -118,7 +125,6 @@ export default function Home() {
       });
 
       const data = await res.json();
-      // console.log(data)
 
       if (res.ok) {
         setMarketplace(data.data);
@@ -176,8 +182,6 @@ export default function Home() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
-
-  // console.log(marketplace)
   return (
     <>
       <Header></Header>
@@ -203,7 +207,7 @@ export default function Home() {
               Transformation & Maximize ROI
 
 
-             
+
             </div>
 
             <div
@@ -211,7 +215,7 @@ export default function Home() {
                      text-xs sm:text-sm md:text-base lg:text-[16px] mt-4 
                      top-[180px] sm:top-[309px] left-4 sm:left-[100px] w-[90%] sm:w-[440px]"
             >
-             Combine trusted cloud infrastructure from AWS, Azure, and Google Cloud with ready-to-deploy solutions from global ISVs like Zscaler, Acronis, Databricks, and Rubrik — all in one seamless experience.
+              Combine trusted cloud infrastructure from AWS, Azure, and Google Cloud with ready-to-deploy solutions from global ISVs like Zscaler, Acronis, Databricks, and Rubrik — all in one seamless experience.
             </div>
           </div>
         </section>
@@ -290,9 +294,10 @@ export default function Home() {
                         key={cat.id}
                         className="px-4 py-2 hover:bg-zinc-100 cursor-pointer text-sm"
                         onClick={(e) => {
+                          const selected = e.target.innerText
                           setMenu(false)
-                          fetchMarketplace(paginations.page, e.target.innerText)
-                          setCategoriesSelect(e.target.innerText)
+                          setCategoriesSelect(selected)
+                          fetchMarketplace(paginations.page, selected)
                         }}
                       >
                         {cat.name}
@@ -313,12 +318,12 @@ export default function Home() {
             <div className="max-w-[400px]">
 
               <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal relative flex items-center justify-start ">
-               Solve for compliance, scale, and digital transformation — tailored by industry.
+                Solve for compliance, scale, and digital transformation — tailored by industry.
 
               </div>
 
               <div className="text-neutral-500 text-left text-sm sm:text-base relative flex items-center justify-start ">
-              These bundles address regulatory needs, vertical-specific architecture, and legacy modernization challenges.
+                These bundles address regulatory needs, vertical-specific architecture, and legacy modernization challenges.
               </div>
             </div>
           </div>
@@ -362,7 +367,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                     Healthcare Data & Patient Management Kit
+                      Healthcare Data & Patient Management Kit
                     </div>
                   </div>
                 </div>
@@ -403,7 +408,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                     Regulatory Compliance & Audit Readiness Toolkit
+                      Regulatory Compliance & Audit Readiness Toolkit
                     </div>
                   </div>
                 </div>
@@ -423,7 +428,7 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                     Hybrid Learning Stack 
+                      Hybrid Learning Stack
                     </div>
                   </div>
                 </div>
@@ -442,12 +447,12 @@ export default function Home() {
 
                   <div className=" flex items-center p-6">
                     <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Employee Lifecycle + Compliance Kit 
+                      Employee Lifecycle + Compliance Kit
                     </div>
                   </div>
                 </div>
               </SwiperSlide>
-       
+
 
 
             </Swiper>
@@ -460,11 +465,11 @@ export default function Home() {
             <div className="max-w-[400px]">
 
               <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal relative flex items-center justify-start ">
-              Goal-Oriented Bundles
+                Goal-Oriented Bundles
               </div>
               <p className="dark:text-black">Focused on outcomes — not industries.</p>
               <div className="text-neutral-500 text-left text-sm sm:text-base relative flex items-center justify-start ">
-               These bundles solve cross-industry challenges like cost optimization, AI enablement, security hardening, and faster go-to-market.
+                These bundles solve cross-industry challenges like cost optimization, AI enablement, security hardening, and faster go-to-market.
               </div>
             </div>
           </div>
@@ -640,7 +645,7 @@ export default function Home() {
                 </div>
 
                 <div className="text-neutral-500 text-left text-sm sm:text-base relative flex items-center justify-start ">
-               Ready-to-deploy stacks built with leading ISVs — fully private offer aligned to your AWS MACC or Azure EDP commitments.
+                  Ready-to-deploy stacks built with leading ISVs — fully private offer aligned to your AWS MACC or Azure EDP commitments.
                 </div>
               </div>
             </div>
@@ -651,7 +656,7 @@ export default function Home() {
 
 
               <div key={index} onClick={() => router.push(`/bundle?productid=${product.id}`)}>
-               
+
                 <div className="bg-zinc-50 border border-zinc-200 m-auto h-[400px] cursor-pointer w-[295px]">
                   <div className="w-full h-[250px] relative ">
                     <Image
@@ -697,8 +702,8 @@ export default function Home() {
                   {" Not Sure Which Bundle Fits Your Need?"}
                 </h2>
                 <p className="text-sm md:text-base text-neutral-500 leading-relaxed">
-                 Tell us your goals — our team will recommend a private offer–aligned bundle built by trusted ISVs and expert partners.
-We’ll handle the mapping, bundling, and delivery. You just focus on outcomes.
+                  Tell us your goals — our team will recommend a private offer–aligned bundle built by trusted ISVs and expert partners.
+                  We’ll handle the mapping, bundling, and delivery. You just focus on outcomes.
                 </p>
               </div>
               <div className="">
@@ -739,8 +744,8 @@ We’ll handle the mapping, bundling, and delivery. You just focus on outcomes.
                   </span>
                 </div>
                 <div className="text-black text-left font-text-lg-regular-font-family text-text-lg-regular-font-size font-text-lg-regular-font-weight relative self-stretch flex items-center justify-start">
-                 
-From discovery to deployment, NeoZaar simplifies your cloud buying journey — with curated bundles and expert-led delivery.                </div>
+
+                  From discovery to deployment, NeoZaar simplifies your cloud buying journey — with curated bundles and expert-led delivery.                </div>
               </div>
               <div className="col-span-12 lg:col-span-7 ps-3 myshortcard">
                 <Swiper
@@ -769,7 +774,7 @@ From discovery to deployment, NeoZaar simplifies your cloud buying journey — w
                           </h3>
                         </div>
                         <p className="line-clamp-4">
-                        Browse outcome-driven bundles across Security, AI, FinOps, and more — all private offer–aligned to your AWS MACC or Azure EDP.
+                          Browse outcome-driven bundles across Security, AI, FinOps, and more — all private offer–aligned to your AWS MACC or Azure EDP.
                         </p>
                       </div>
                     </SwiperSlide>
