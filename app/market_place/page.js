@@ -653,7 +653,7 @@ export default function Home() {
               <div key={index} onClick={() => router.push(`/bundle?productid=${product.id}`)}>
                
                 <div className="bg-zinc-50 border border-zinc-200 m-auto h-[400px] cursor-pointer w-[295px]">
-                  <div className="w-full h-[258px] relative ">
+                  <div className="w-full h-[250px] relative ">
                     <Image
                       fill
                       alt={product.title || 'Product Image'}
