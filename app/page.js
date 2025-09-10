@@ -708,7 +708,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
+                          <Image src="/image/favicon.ico" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -747,7 +747,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
+                          <Image src="/image/favicon.ico.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -789,7 +789,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
+                          <Image src="/image/favicon.ico.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -829,7 +829,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
+                          <Image src="/image/favicon.ico.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -871,7 +871,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
+                          <Image src="/image/favicon.ico.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
@@ -910,7 +910,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
-                          <Image src="/image/neozareicon.png" alt="icon" fill className="object-contain opacity-40" />
+                          <Image src="/image/favicon.ico.png" alt="icon" fill className="object-contain opacity-40" />
                         </div>
                       </div>
                     </div>
