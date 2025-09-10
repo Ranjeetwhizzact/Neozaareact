@@ -96,12 +96,12 @@ Subscribe to updates on SaaS trends, hyperscaler programs, and exclusive NeoZaar
         <div className="container mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
           <p>© 2025, Designed by Smart Itcentre.</p>
           <div className="flex gap-4 mt-2 md:mt-0">
-            <a href="#" className="hover:underline semibold">
+            <Link href="/terms-and-conditions" className="hover:underline semibold">
               Terms & Condition
-            </a>
-            <a href="#" className="hover:underline semibold">
+            </Link>
+            <Link href="/privacy-policy" className="hover:underline semibold">
               Privacy Policy
-            </a>
+            </Link>
           </div>
         </div>
       </div>

@@ -71,7 +71,7 @@ export default function Page() {
                 <span className='text-6 font-600'>Explore Now</span> <span className="pl-12 inline text-8 font-extrabold">↗</span>
               </button>
               <button className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
-                <img src="/assests/sparkle_png.png" alt="sparkle icon" className="hover:text-black w-6 h-6 inline-block mr-4" />Let AI Find Your Solution
+                <Image src="/assests/sparkle_png.png" width={24} height={24} alt="sparkle icon" className="hover:text-black w-6 h-6 inline-block mr-4" />Let AI Find Your Solution
               </button>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function Page() {
               '/brand-log/O365.png',
               '/brand-log/Veeam_logo.png',
               '/brand-log/wiz-logo-png_seeklogo-455765.png',
-              '/brand-log/brand-log/Zscaler_logo.png',
+              '/brand-log/Zscaler_logo.png',
              
             ].map((src, idx) => (
               <SwiperSlide key={idx} className="flex items-center justify-center">
@@ -208,7 +208,7 @@ export default function Page() {
           <div className="hidden lg:grid grid-cols-3 w-full h-[650px] border-image-horizontal">
             {[
               {
-                img: "/brand-log/individual_products.jpg",
+                img: "/brand-log/individual_products.png",
                 title: "Individual Products",
                 desc: "Explore verified SaaS, cloud, AI, and security solutions. Our catalog features best-in-class tools from global Independent Software Vendors (ISVs).",
                  point1:'Feature-wise comparison',
@@ -219,7 +219,7 @@ export default function Page() {
               },
                
               {
-                img: "/brand-log/curated_bundles.jpg",
+                img: "/brand-log/curated_bundles.png",
                 title: "Curated Bundles",
                 desc: "Accelerate your outcomes with solution-focused bundles. NeoZaar FastTrack FlexBundles combine top products, cloud infrastructure, and deployment support — aligned to your goals",
                   point1:'Security, AI, Modernization, FinOps kits',
@@ -230,7 +230,7 @@ export default function Page() {
 
               },
               {
-                img: "/brand-log/expert_services.jpg",
+                img: "/brand-log/expert_services.png",
                 title: "Expert Services",
                 desc: "Certified MSPs & cloud consultants at your fingertips.Whether you’re migrating, modernizing, or scaling, our service partners are here to deliver success — on time and on budget.",
                  point1:'Cloud migration & DevOps',
@@ -251,7 +251,7 @@ export default function Page() {
                   alt={card.title}
                   width={320}
                   height={160}
-                  className="mb-4 w-full rounded-[20px] opacity-50"
+                  className="mb-4 w-full rounded-[20px]  "
                   style={{ height: "232px", objectFit: "cover" }}
                 />
                 <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
@@ -273,8 +273,6 @@ export default function Page() {
            <li className='list-disc'>
             {card.point4}
             </li>
-             
-              
                       </ul>
                 <div className="mt-auto pl-2 w-full">
                   <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
@@ -289,7 +287,7 @@ export default function Page() {
           <div className="hidden md:grid lg:hidden grid-cols-2 w-full border-image-horizontal">
             {[
               {
-                img: "/brand-log/individual_products.jpg",
+                img: "/brand-log/individual_products.png",
                 title: "Individual Products",
                 desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
                         point1:'Feature-wise comparison',
@@ -299,7 +297,7 @@ export default function Page() {
                 btn: "Explore Products",
               },
               {
-                img: "/brand-log/curated_bundles.jpg",
+                img: "/brand-log/curated_bundles.png",
                 title: "Curated Bundles",
                 desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
                   point1:'Security, AI, Modernization, FinOps kits',
@@ -310,7 +308,7 @@ export default function Page() {
                 btn: "Discover Bundles",
               },
               {
-                img: "/brand-log/expert_services.jpg",
+                img: "/brand-log/expert_services.png",
                 title: "Expert Services",
                 desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
                  point1:'Cloud migration & DevOps',
@@ -372,7 +370,7 @@ export default function Page() {
         <div className="grid md:hidden grid-cols-1 w-full border-image-horizontal">
   {[
     {
-      img: "/brand-log/individual_products.jpg",
+      img: "/brand-log/individual_products.png",
       title: "Individual Products",
       desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
        point1:'Cloud migration & DevOps',
@@ -383,7 +381,7 @@ export default function Page() {
 
     },
     {
-      img: "/brand-log/curated_bundles.jpg",
+      img: "/brand-log/curated_bundles.png",
       title: "Curated Bundles",
       desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
         point1:'Security, AI, Modernization, FinOps kits',
@@ -394,7 +392,7 @@ export default function Page() {
       btn: "Discover Bundles",
     },
     {
-      img: "/brand-log/expert_services.jpg",
+      img: "/brand-log/expert_services.png",
       title: "Expert Services",
       desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
               point1:'Feature-wise comparison',
@@ -550,7 +548,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
 
               <div className="mb-4">
                 <div className="bg-[#2E1700] rounded-lg p-3 inline-block">
-                  <img src="/image/Vector.png" alt="Icon" className="w-5 h-5 block" />
+                  <Image src="/image/Vector.png" width={20} height={20} alt="Icon" className=" block" />
                 </div>
               </div>
 
@@ -593,7 +591,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
 
               <div className="mb-4">
                 <div className="bg-[#2E1700] rounded-lg p-3 inline-block">
-                  <img src="/image/Vector.png" alt="Icon" className="w-5 h-5 block" />
+                  <Image src="/image/Vector.png" alt="Icon" width={20} height={20} className=" block" />
                 </div>
               </div>
 
@@ -927,9 +925,9 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
               href={"/"}
               className="group inline-flex items-center justify-center bg-black text-white border border-white/20 rounded-full px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base transition-all duration-200"
             >
-              <img src="/image/writing-sign.png" alt="Write" className="w-5 h-5" />
+              <Image src="/image/writing-sign.png" alt="Write" width={20} height={20} />
               <span className="mx-2">Write Review</span>
-              <img src="/image/arrow-up.png" alt="arrow" className="w-5 h-5 transform transition-transform duration-300" />
+              <Image src="/image/arrow-up.png" alt="arrow" width={20} height={20} className=" transform transition-transform duration-300" />
             </Link>
           </div>
         </section>
@@ -957,7 +955,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
             </p>
             <Link href={"/"} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
               <span className="mr-2">Let’s Get Started</span>
-              <img src="/image/arrow-up.png" alt="arrow" className="w-5 h-5" />
+              <Image src="/image/arrow-up.png" alt="arrow" width={20} height={20} />
             </Link>
           </div>
         </section>

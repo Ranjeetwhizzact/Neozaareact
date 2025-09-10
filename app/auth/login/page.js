@@ -40,25 +40,26 @@ export default function Page() {
 
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
-        // router.push(`http://192.168.1.4:4200/auth/login-token?token=${token}`)
-        router.push(`http://app.neozaar.skilladders.com/auth/login-token?token=${token}`)
-    
+      
         document.cookie = `token=${token}; path=/; max-age=86400`;
 
-        
-        // switch (user.role_id) {
-        //   case 1:
-        //       router.push(`/`);
-        //     break;
-        //   case 2:
-        //     router.push(`/`);
-        //     break;
-        //   case 3:
-        //     router.push(`/`);;
-        //     break;
-        //   default:
-        //    router.push(`/`);
-        // }
+
+        switch (user.role_id) {
+          case 1:
+            router.push(`/market_place`);
+            break;
+       
+          default:
+            localStorage.clear('token')
+            localStorage.clear('user')
+            const tokenLocal = localStorage.getItem('token')
+            console.log(tokenLocal)
+            if(!tokenLocal) router.push(`http://app.neozaar.skilladders.com/auth/login-token?token=${token}`);
+            // if(!tokenLocal) router.push(`http://localhost:4200/auth/login-token?token=${token}`);
+        }
+
+
+
       } else {
         toast.error(data.message || 'Login failed');
       }
@@ -87,7 +88,7 @@ export default function Page() {
 
           <form onSubmit={handleLogin} className="w-full max-w-sm space-y-5">
             <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-              <img src="/image/RiMailFill.png" alt="Email Icon" className="w-6 h-6 mx-4" />
+              <Image src="/image/RiMailFill.png" alt="Email Icon" width={24} height={24} className=" mx-4" />
               <input
                 type="email"
                 value={email}
@@ -99,7 +100,7 @@ export default function Page() {
             </div>
 
             <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-              <img src="/image/RiKey2Fill.png" alt="Key Icon" className="w-6 h-6 mx-4" />
+              <Image src="/image/RiKey2Fill.png" alt="Key Icon" width={24} height={24} className=" mx-4" />
               <input
                 type="password"
                 value={password}

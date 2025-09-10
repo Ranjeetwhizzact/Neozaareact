@@ -193,7 +193,7 @@ const handleResetPassword = async (e) => {
           >
             {step === 1 && (
               <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-                <img src="/image/RiMailFill.png" alt="Email Icon" className="w-6 h-6 mx-4" />
+                <Image src="/image/RiMailFill.png" alt="Email Icon" className="w-6 h-6 mx-4" />
                 <input
                   type="email"
                   value={email}

@@ -6,12 +6,14 @@ import { useRouter } from 'next/navigation';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { Fascinate } from 'next/font/google';
 
 export default function Page() {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const router = useRouter();
+  const [loading, setloading] = useState(false)
 
   const [legalEntityTypes, setlegalEntityTypes] = useState([
     { value: "Private Limited", name: "Private Limited" },
@@ -24,6 +26,7 @@ export default function Page() {
 
   const [headquaterCountry, setHeadquaterCountry] = useState([
     { value: "India", name: "India" },
+    { value: "UAE", name: "UAE" },
     { value: "United States", name: "United States" },
     { value: "United Kingdom", name: "United Kingdom" },
     { value: "Germany", name: "Germany" },
@@ -85,6 +88,11 @@ export default function Page() {
       pattern: /^[A-Za-z\s]+$/,
       message: "Company name should only contain letters and spaces."
     },
+    designation: {
+      required: true,
+      pattern: /^[A-Za-z\s]+$/,
+      message: "designation name should only contain letters and spaces."
+    },
     registered_business_name: {
       required: true,
       pattern: /^[A-Za-z\s]+$/,
@@ -93,7 +101,7 @@ export default function Page() {
     company_registration_number: {
       required: true,
       validate: (value) => {
-      
+
         return true; // For other countries, just require it to be filled
       },
       message: "Please provide a valid company registration number."
@@ -108,11 +116,17 @@ export default function Page() {
       pattern: /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
       message: "Enter a valid website URL."
     },
+    linkedin_url: {
+      required: false,
+      // pattern: /^(https?:\/\/)?(www\.)?(linkedin\.)?(com\/)[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+      pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9\_\-\.]+\/?$/,
+      message: "Enter a valid website URL."
+    },
     tax_id: {
       required: true,
-       required: true,
+      required: true,
       validate: (value) => {
-      
+
         return true; // For other countries, just require it to be filled
       },
       message: "Please provide your Tax ID."
@@ -154,17 +168,34 @@ export default function Page() {
       minLength: 8,
       message: "Password must be at least 8 characters."
     },
-    email: {
-      required: true,
-      validate: (value) => {
-        if (!website_url) return false;
-        const parts = website_url.split('www.');
-        const companyDomain = parts.length > 1 ? parts[1] : website_url.replace(/https?:\/\//, '').replace('www.', '');
-        const domain = value.split('@')[1]?.toLowerCase();
-        return companyDomain === domain;
-      },
-      message: "Please provide an official (non-personal) email address matching your company domain."
-    },
+ email: {
+  required: true,
+  validate: (value) => {
+    if (!value) return false;
+
+    // List of common personal email domains you want to block
+    const blockedDomains = [
+      "gmail.com",
+      "yahoo.com",
+      "outlook.com",
+      "hotmail.com",
+      "aol.com",
+      "icloud.com",
+      "protonmail.com",
+      "zoho.com",
+      "yandex.com"
+    ];
+
+    const domain = value.split("@")[1]?.toLowerCase();
+    if (!domain) return false;
+
+    // Fail if domain is in blocked list
+    return !blockedDomains.includes(domain);
+  },
+  message:
+    "Please provide an official (non-personal) email address (no Gmail, Yahoo, Outlook, etc.).",
+}
+,
     neozaar_tc: {
       required: true,
       message: "Please agree to the Terms & Conditions"
@@ -179,35 +210,36 @@ export default function Page() {
   const validateField = (name, value) => {
     const rule = validationRules[name];
     if (!rule) return true; // No validation rule for this field
-    
+
     if (rule.required && (!value || (typeof value === 'string' && !value.trim()))) {
       return `Please provide ${name.replace(/_/g, ' ')}.`;
     }
-    
+
     if (rule.pattern && !rule.pattern.test(value)) {
       return rule.message;
     }
-    
+
     if (rule.minLength && value.length < rule.minLength) {
       return rule.message;
     }
-    
+
     if (rule.validate && !rule.validate(value)) {
       return rule.message;
     }
-    
+
     return null; // No error
   };
 
   // Handle field changes with validation
   const handleFieldChange = (fieldName, value) => {
     // Update the field value
-    switch(fieldName) {
+    switch (fieldName) {
       case 'company_name': setCompanyName(value); break;
       case 'registered_business_name': setCompanyregisterName(value); break;
       case 'company_registration_number': setCompanyNumber(value); break;
       case 'brand_name': setBrandtName(value); break;
       case 'website_url': setCompanyWebsite(value); break;
+      case 'linkedin_url': setLinkedin(value); break;
       case 'tax_id': setTaxId(value); break;
       case 'headquater_country': setHeadQuater(value); break;
       case 'Legal_entity_type': setLegalEntityType(value); break;
@@ -220,7 +252,7 @@ export default function Page() {
       case 'data_privacy': setDataPrivacy(value); break;
       default: break;
     }
-    
+
     // Validate the field if it's been touched
     if (touched[fieldName]) {
       const error = validateField(fieldName, value);
@@ -231,15 +263,16 @@ export default function Page() {
   // Handle field blur events
   const handleBlur = (fieldName) => {
     setTouched({ ...touched, [fieldName]: true });
-    
+
     // Validate the field
     let value;
-    switch(fieldName) {
+    switch (fieldName) {
       case 'company_name': value = company_name; break;
       case 'registered_business_name': value = registered_business_name; break;
       case 'company_registration_number': value = company_registration_number; break;
       case 'brand_name': value = brand_name; break;
       case 'website_url': value = website_url; break;
+      case 'linkedin_url': value = linkedin_url; break;
       case 'tax_id': value = tax_id; break;
       case 'headquater_country': value = headquater_country; break;
       case 'Legal_entity_type': value = Legal_entity_type; break;
@@ -253,7 +286,7 @@ export default function Page() {
       case 'brand_logo': value = brand_logo; break;
       default: value = null;
     }
-    
+
     const error = validateField(fieldName, value);
     setErrors(prev => ({ ...prev, [fieldName]: error }));
   };
@@ -261,24 +294,24 @@ export default function Page() {
   // Validate all fields in current step
   const validateStep = (stepNumber) => {
     const stepFields = {
-      1: ['company_name', 'registered_business_name', 'company_registration_number', 
-          'brand_name', 'website_url', 'tax_id', 'headquater_country', 
-          'Legal_entity_type', 'brand_logo'],
+      1: ['company_name', 'registered_business_name', 'company_registration_number',
+        'brand_name', 'website_url', 'tax_id', 'headquater_country',
+        'Legal_entity_type', 'brand_logo'],
       2: ['name', 'designation', 'mobile', 'password', 'email'],
       3: ['neozaar_tc', 'data_privacy']
     };
-    
+
     const fieldsToValidate = stepFields[stepNumber];
     const newErrors = {};
     let isValid = true;
-    
+
     // Mark all fields as touched
     const newTouched = { ...touched };
     fieldsToValidate.forEach(field => {
       newTouched[field] = true;
-      
+
       let value;
-      switch(field) {
+      switch (field) {
         case 'company_name': value = company_name; break;
         case 'registered_business_name': value = registered_business_name; break;
         case 'company_registration_number': value = company_registration_number; break;
@@ -297,17 +330,17 @@ export default function Page() {
         case 'brand_logo': value = brand_logo; break;
         default: value = null;
       }
-      
+
       const error = validateField(field, value);
       if (error) {
         newErrors[field] = error;
         isValid = false;
       }
     });
-    
+
     setTouched(newTouched);
     setErrors({ ...errors, ...newErrors });
-    
+
     return isValid;
   };
 
@@ -330,7 +363,7 @@ export default function Page() {
     if (file) {
       setBrandLogo(file);
       setBrandLogoName(file.name);
-      
+
       // Validate the file
       const error = validateField('brand_logo', file);
       setErrors(prev => ({ ...prev, brand_logo: error }));
@@ -340,7 +373,7 @@ export default function Page() {
   const removeBrandLogo = () => {
     setBrandLogo(null);
     setBrandLogoName('');
-    
+
     // Clear the error
     setErrors(prev => ({ ...prev, brand_logo: null }));
   };
@@ -395,10 +428,10 @@ export default function Page() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (validateStep(3)) {
-      toast.loading('Submitting form...');
 
+    if (validateStep(3)) {
+      const toastId = toast.loading('Submitting form...');
+      setloading(true)
       const formData = new FormData();
       formData.append('name', name);
       formData.append('email', email);
@@ -434,13 +467,17 @@ export default function Page() {
         const data = await res.json();
 
         if (res.ok) {
+          toast.dismiss(toastId)
           toast.success('Registration successful!');
+
           router.push('/auth/login');
         } else {
+          setloading(false)
           toast.error(data.message || 'Registration failed. Please try again.');
         }
       } catch (error) {
         console.error('Error:', error);
+        setloading(false)
         toast.error('Something went wrong. Please try again.');
       }
     } else {
@@ -556,7 +593,7 @@ export default function Page() {
                   <input
                     type='text'
                     value={company_name}
-          
+
                     onChange={(e) => handleFieldChange('company_name', e.target.value)}
                     onBlur={() => handleBlur('company_name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
@@ -568,7 +605,7 @@ export default function Page() {
                   <input
                     type='text'
                     value={brand_name}
-             onChange={(e) => handleFieldChange('brand_name', e.target.value)}
+                    onChange={(e) => handleFieldChange('brand_name', e.target.value)}
                     onBlur={() => handleBlur('brand_name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.brand_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
@@ -579,7 +616,7 @@ export default function Page() {
                   <input
                     type='text'
                     value={registered_business_name}
-                      onChange={(e) => handleFieldChange('registered_business_name', e.target.value)}
+                    onChange={(e) => handleFieldChange('registered_business_name', e.target.value)}
                     onBlur={() => handleBlur('registered_business_name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.registered_business_name ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
@@ -588,26 +625,26 @@ export default function Page() {
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Register Company number</label>
                   <div className='flex'>
-           
 
-                  <input
-                    type='text'
-                    value={company_registration_number}
-                    
-                                 onChange={(e) => handleFieldChange('company_registration_number', e.target.value)}
-                    onBlur={() => handleBlur('company_registration_number')}
-                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
-                  />
+
+                    <input
+                      type='text'
+                      value={company_registration_number}
+
+                      onChange={(e) => handleFieldChange('company_registration_number', e.target.value)}
+                      onBlur={() => handleBlur('company_registration_number')}
+                      className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    />
                   </div>
                   {errors.company_registration_number && (<p className="text-red-500 text-sm mt-1">{errors.company_registration_number}</p>)}
                 </div>
-                
+
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type</label>
 
                   <select
                     value={Legal_entity_type}
-                           onChange={(e) => handleFieldChange('Legal_entity_type', e.target.value)}
+                    onChange={(e) => handleFieldChange('Legal_entity_type', e.target.value)}
                     onBlur={() => handleBlur('Legal_entity_type')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.Legal_entity_type ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   >
@@ -621,7 +658,7 @@ export default function Page() {
 
                   {
                     Legal_entity_type === "Other" && <div className="m-2 flex gap-2 ">
-                      <input type="text" name="" onChange={legalEntityInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1' />
+                      <input type="text" name="" onChange={legalEntityInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1  dark:text-black' />
                       <button onClick={handleSubmitOther} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
                     </div>
                   }
@@ -632,13 +669,13 @@ export default function Page() {
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Tax id</label>
                   <div className='flex'>
-                   
+
                     <input
                       type='text'
                       value={tax_id}
-                             
-                    onChange={(e) => handleFieldChange('tax_id', e.target.value)}
-                    onBlur={() => handleBlur('tax_id')}
+
+                      onChange={(e) => handleFieldChange('tax_id', e.target.value)}
+                      onBlur={() => handleBlur('tax_id')}
                       className={`w-full py-2 px-3  dark:text-black border ${errors.tax_id ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} outline-0`}
                     />
                   </div>
@@ -649,7 +686,7 @@ export default function Page() {
                   <select
                     id="entityType"
                     value={headquater_country}
-                           onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
+                    onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
                     onBlur={() => handleBlur('headquater_country')}
                     className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} dark:text-black py-2.5 px-3 w-full`}
                   >
@@ -676,7 +713,7 @@ export default function Page() {
                     type='text'
                     placeholder=''
                     value={website_url}
-                         onChange={(e) => handleFieldChange('website_url', e.target.value)}
+                    onChange={(e) => handleFieldChange('website_url', e.target.value)}
                     onBlur={() => handleBlur('website_url')}
                     className={`w-full py-2 px-3 outline-0 border dark:text-black ${errors.website_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
@@ -688,7 +725,9 @@ export default function Page() {
                     type='text'
                     placeholder=''
                     value={linkedin_url}
-                    onChange={(e) => setLinkedin(e.target.value)}
+                    onChange={(e) => handleFieldChange('linkedin_url', e.target.value)}
+                    onBlur={() => handleBlur('linkedin_url')}
+                    // onChange={(e) => setLinkedin(e.target.value)}
                     className={`w-full py-2 px-3 outline-0 dark:text-black border ${errors.linkedin_url ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
                   {errors.linkedin_url && (<p className="text-red-500 text-sm mt-1">{errors.linkedin_url}</p>)}
@@ -742,7 +781,7 @@ export default function Page() {
                     type="text"
                     placeholder=""
                     value={name}
-                         onChange={(e) => handleFieldChange('name', e.target.value)}
+                    onChange={(e) => handleFieldChange('name', e.target.value)}
                     onBlur={() => handleBlur('name')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.name ? 'border-red-200 bg-red-500/10' : "border-zinc-200 bg-zinc-100"}`}
                   />
@@ -753,7 +792,7 @@ export default function Page() {
                   <input
                     type="text"
                     value={designation}
-                      onChange={(e) => handleFieldChange('designation', e.target.value)}
+                    onChange={(e) => handleFieldChange('designation', e.target.value)}
                     onBlur={() => handleBlur('designation')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.designation ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   />
@@ -799,9 +838,9 @@ export default function Page() {
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     placeholder=""
- 
-                      onChange={(e) => handleFieldChange('password', e.target.value)}
-                      onBlur={() => handleBlur('password')}
+
+                    onChange={(e) => handleFieldChange('password', e.target.value)}
+                    onBlur={() => handleBlur('password')}
                     className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} pr-10`}
                   />
                   <button
@@ -836,7 +875,7 @@ export default function Page() {
                           />
                           <label
                             htmlFor={platform.id + "cloud"}
-                            className="w-20 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 dark:text-black peer-checked:bg-black peer-checked:text-white"
+                            className=" h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 dark:text-black peer-checked:bg-black peer-checked:text-white"
                           >
                             {platform.label}
                           </label>
@@ -853,13 +892,13 @@ export default function Page() {
                       )}
                     </div>
                     {showPlatformInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[270px] rounded-xl">
                         <input
                           type="text"
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
                           placeholder="Enter cloud name"
-                          className="px-3 py-1 outline-0 dark:text-black rounded-lg text-sm"
+                          className="px-3 py-1 outline-0 m-1 dark:text-black rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -901,7 +940,7 @@ export default function Page() {
                           />
                           <label
                             htmlFor={item.id}
-                            className="w-20 h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 peer-checked:bg-black peer-checked:text-white dark:text-black"
+                            className=" h-8 border border-zinc-200 bg-zinc-100 text-xs flex capitalize justify-center items-center rounded-3xl px-2 peer-checked:bg-black peer-checked:text-white dark:text-black"
                           >
                             {item.label}
                           </label>
@@ -918,13 +957,13 @@ export default function Page() {
                       )}
                     </div>
                     {showMarketplaceInput && (
-                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[260px] rounded-xl">
+                      <div className="flex items-center gap-2 pe-1 border border-zinc-200 w-[270px] rounded-xl">
                         <input
                           type="text"
                           value={newMarketplace}
                           onChange={(e) => setNewMarketplace(e.target.value)}
                           placeholder="Enter marketplace name"
-                          className="px-3 py-1 outline-0 rounded-lg text-sm"
+                          className="px-3 py-1 m-1 text-black outline-0 rounded-lg text-sm"
                         />
                         <button
                           type="button"
@@ -956,7 +995,7 @@ export default function Page() {
                     rows="5"
                     value={competencies_certifications}
                     onChange={(e) => setBusinessDescription(e.target.value)}
-                    className='w-full bg-zinc-100 border border-zinc-200'
+                    className='w-full bg-zinc-100 border  p-4 dark:text-black border-zinc-200'
                   ></textarea>
                 </div>
                 <div className='col-span-2 md:col-span-1'>
@@ -1070,17 +1109,35 @@ export default function Page() {
               )}
 
 
+
+
+
+
+
               <button
-                type={step === 3 ? "submit" : "button"}
-                onClick={step === 3 ? undefined : handleNext}
-                className="w-32 h-10 bg-gradient-to-r cursor-pointer from-[#f79331] via-[#e25c08] to-[#e25c08] font-sans font-semibold text-md rounded-3xl text-white"
+                type={"button"}
+                onClick={step === 3 ? handleSubmit : handleNext}
+                disabled={loading} 
+                className={`w-32 h-10 font-sans font-semibold text-md rounded-3xl text-white
+                    ${loading
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-gradient-to-r from-[#f79331] via-[#e25c08] to-[#e25c08] cursor-pointer"
+                  }`}
               >
-                {step === 3 ? "Submit" : (
+                {loading ? (
+                  <>
+                    <span className="spinner"></span> Submitting...
+                  </>
+                ) : step === 3 ? (
+                  "Submit"
+                ) : (
                   <>
                     Next&nbsp;&nbsp;<i className="ri-arrow-right-line"></i>
                   </>
                 )}
               </button>
+
+
 
             </div>
           </form>

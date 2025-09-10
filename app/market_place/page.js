@@ -191,7 +191,7 @@ export default function Home() {
             <Image
               fill
 
-              src="/assests/hero_bg.png"
+              src="/brand-log/maketplacebanner.jpg"
               alt="Background"
               className="absolute inset-0 w-full h-full object-cover"
             />
