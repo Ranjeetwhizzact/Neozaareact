@@ -54,7 +54,7 @@ export default function Page() {
             localStorage.clear('user')
             const tokenLocal = localStorage.getItem('token')
             console.log(tokenLocal)
-            // if(!tokenLocal) router.push(`http://app.neozaar.whizzact.com/auth/login-token?token=${token}`);
+            // if(!tokenLocal) router.push(`http://localhost:4200/auth/login-token?token=${token}`);
             if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
         }
       } else {
