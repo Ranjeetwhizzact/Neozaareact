@@ -25,24 +25,24 @@ export default function CustomSlider() {
   const [productDetails, setProductDetails] = useState(null)
 
   useEffect(() => {
-    async function fetchProducts() {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+    // async function fetchProducts() {
+    //   const token = localStorage.getItem('token');
+    //   if (!token) return;
 
-      try {
-        const res = await fetch('http://20.83.163.38:5000/api/products/', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (res.ok && Array.isArray(data?.data?.products)) {
-          setProducts(data.data.products);
-        } else {
-          console.error('Invalid product response format');
-        }
-      } catch (err) {
-        console.error('Failed to fetch products:', err);
-      }
-    }
+    //   try {
+    //     const res = await fetch('http://20.83.163.38:5000/api/products/', {
+    //       headers: { Authorization: `Bearer ${token}` },
+    //     });
+    //     const data = await res.json();
+    //     if (res.ok && Array.isArray(data?.data?.products)) {
+    //       setProducts(data.data.products);
+    //     } else {
+    //       console.error('Invalid product response format');
+    //     }
+    //   } catch (err) {
+    //     console.error('Failed to fetch products:', err);
+    //   }
+    // }
 
     // fetch product details 
     async function producDetail() {
