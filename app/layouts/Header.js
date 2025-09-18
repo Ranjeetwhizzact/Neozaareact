@@ -71,6 +71,18 @@ export default function Header() {
     return () => window.removeEventListener("message", messageHandler);
   }, []);
 
+  useEffect(() => {
+    const syncLogout = (event) => {
+      if (event.key === "logout-event") {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        router.push("/auth/login");
+      }
+    };
+    window.addEventListener("storage", syncLogout);
+    return () => window.removeEventListener("storage", syncLogout);
+  }, [router]);
+
   const handleLogout = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -88,7 +100,7 @@ export default function Header() {
       setIsAuthenticated(false);
 
       // broadcast logout
-      window.postMessage({ type: "LOGOUT" }, "*");
+      localStorage.setItem("logout-event", Date.now());
 
       toast.success("Logout Success");
       router.push("/auth/login");
@@ -151,7 +163,7 @@ export default function Header() {
             <div className="h-[40px] w-px bg-white/10" />
             <button onClick={() => setDropdownOpen((prev) => !prev)}>
               <Image
-                src="/image/Shape.png"
+                src="/image/blank-profile.webp"
                 alt="User"
                 width={32}
                 height={32}
@@ -166,14 +178,14 @@ export default function Header() {
                     <Link
                       href="/profile"
                       className="block px-4 py-3 hover:bg-gray-700 transition"
-                      onClick={() => setDropdownOpen(false)}
+                      onMouseDown={() => setDropdownOpen(false)}
                     >
                       Profile
                     </Link>
                   </li>
                   <li>
                     <button
-                      onClick={() => {
+                      onMouseDown={() => {
                         setDropdownOpen(false);
                         handleLogout();
                       }}
@@ -231,7 +243,7 @@ export default function Header() {
             <div className="h-[40px] w-px bg-white/10" />
             <button onClick={() => setDropdownOpen((prev) => !prev)}>
               <Image
-                src="/image/Shape.png"
+                src="/image/blank-profile.webp"
                 alt="User"
                 width={32}
                 height={32}
@@ -246,14 +258,14 @@ export default function Header() {
                     <Link
                       href="/profile"
                       className="block px-4 py-3 hover:bg-gray-700 transition"
-                      onClick={() => setDropdownOpen(false)}
+                      onMouseDown={() => setDropdownOpen(false)}
                     >
                       Profile
                     </Link>
                   </li>
                   <li>
                     <button
-                      onClick={() => {
+                      onMouseDown={() => {
                         setDropdownOpen(false);
                         handleLogout();
                       }}
@@ -298,12 +310,12 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button onClick={() => setDropdownOpen((prev) => !prev)}>
                 <Image
-                  src="/image/Shape.png"
-                  alt="User"
-                  width={32}
-                  height={32}
-                  className="rounded-full cursor-pointer border border-gray-600"
-                />
+                src="/image/blank-profile.webp"
+                alt="User"
+                width={32}
+                height={32}
+                className="rounded-full cursor-pointer border border-gray-600"
+              />
               </button>
 
               {dropdownOpen && (

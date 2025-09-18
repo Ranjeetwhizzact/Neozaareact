@@ -872,6 +872,7 @@ export default function RegistrationForm() {
                       type='text'
                       name="company_registration_number"
                       value={formData.company_registration_number}
+                      maxLength={20}
                       onChange={handleChange}
                       className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
@@ -930,6 +931,7 @@ export default function RegistrationForm() {
                       type='text'
                       name="tax_id"
                       value={formData.tax_id}
+                      maxLength={20}
                       onChange={handleChange}
                       className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.tax_id ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
@@ -1219,6 +1221,7 @@ export default function RegistrationForm() {
                           type="text"
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
+                          maxLength={20}
                           placeholder="Enter cloud name"
                           className="px-3 py-1 m-1 outline-0 rounded-lg text-sm dark:text-black"
                         />
@@ -1287,6 +1290,7 @@ export default function RegistrationForm() {
                           type="text"
                           value={newMarketplace}
                           onChange={(e) => setNewMarketplace(e.target.value)}
+                          maxLength={20}
                           placeholder="Enter marketplace name"
                           className="px-3 py-1 dark:text-black  m-1 outline-0 rounded-lg text-sm"
                         />

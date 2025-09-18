@@ -98,14 +98,14 @@ export default function Page() {
       pattern: /^[A-Za-z\s]+$/,
       message: "Registration name should only contain letters and spaces."
     },
-    company_registration_number: {
-      required: true,
-      validate: (value) => {
-
-        return true; // For other countries, just require it to be filled
-      },
-      message: "Please provide a valid company registration number."
-    },
+company_registration_number: {
+  required: true,
+  validate: (value) => {
+    if (!value) return false;
+    return value.length <= 20; // ✅ max 20 characters
+  },
+  message: "Company registration number must not exceed 20 characters."
+},
     brand_name: {
       required: true,
       pattern: /^[A-Za-z\s]+$/,
@@ -122,15 +122,14 @@ export default function Page() {
       pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9\_\-\.]+\/?$/,
       message: "Enter a valid website URL."
     },
-    tax_id: {
-      required: true,
-      required: true,
-      validate: (value) => {
-
-        return true; // For other countries, just require it to be filled
-      },
-      message: "Please provide your Tax ID."
-    },
+tax_id: {
+  required: true,
+  validate: (value) => {
+    if (!value) return false;
+    return value.length <= 20; // max 20 characters
+  },
+  message: "Tax ID must not exceed 20 characters."
+},
     headquater_country: {
       required: true,
       message: "Please provide the headquarters country."
@@ -897,6 +896,7 @@ export default function Page() {
                           type="text"
                           value={newPlatform}
                           onChange={(e) => setNewPlatform(e.target.value)}
+                          maxLength={20}
                           placeholder="Enter cloud name"
                           className="px-3 py-1 outline-0 m-1 dark:text-black rounded-lg text-sm"
                         />
@@ -962,6 +962,7 @@ export default function Page() {
                           type="text"
                           value={newMarketplace}
                           onChange={(e) => setNewMarketplace(e.target.value)}
+                          maxLength={20}
                           placeholder="Enter marketplace name"
                           className="px-3 py-1 m-1 text-black outline-0 rounded-lg text-sm"
                         />

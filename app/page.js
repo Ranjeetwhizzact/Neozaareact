@@ -10,9 +10,11 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Footer from "./layouts/Footer";
 import Header from './layouts/Header';
+import { useRouter } from "next/navigation";
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : '';
@@ -28,12 +30,19 @@ export default function Page() {
   }, []);
 
   const NAV_LINKS = [
-    { href: '/cyber-protect-cloud', label: 'ISV CoSell360' },
     { href: '/isv-registration', label: 'ISV Registration' },
     { href: '/partner-with-us', label: 'Partner With Us' },
-    { href: '/', label: "FAQ's" },
-    { href: '/', label: 'Contact' },
+    { href: '/contact-us', label: 'Contact' },
   ];
+
+  const handleMarketplaceClick = () => {
+    const isLoggedIn = localStorage.getItem("token"); // or cookie/session check
+    if (isLoggedIn) {
+      router.push("/market_place");
+    } else {
+      router.push("/auth/login");
+    }
+  };
 
   return (
     <>
@@ -67,7 +76,8 @@ export default function Page() {
               <br className="hidden sm:inline" />your AWS MACC or Azure EDP strategy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-              <button className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full">
+              <button onClick={handleMarketplaceClick}
+              className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full">
                 <span className='text-6 font-600'>Explore Now</span> <span className="pl-12 inline text-8 font-extrabold">↗</span>
               </button>
               <button className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
@@ -275,7 +285,8 @@ export default function Page() {
             </li>
                       </ul>
                 <div className="mt-auto pl-2 w-full">
-                  <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+                  <button onClick={handleMarketplaceClick}
+                  className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                     {card.btn}
                   </button>
                 </div>
@@ -357,7 +368,8 @@ export default function Page() {
               
                       </ul>
                   <div className="mt-auto pl-2 w-full">
-                    <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+                    <button onClick={handleMarketplaceClick}
+                    className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                       {card.btn}
                     </button>
                   </div>
@@ -444,7 +456,8 @@ export default function Page() {
               
                       </ul>
       <div className="mt-auto pl-2 w-full">
-        <button className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+        <button onClick={handleMarketplaceClick}
+        className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
           {card.btn}
         </button>
       </div>
@@ -479,7 +492,8 @@ NeoZaar connects you with verified ISVs and solution partners who handle demos, 
                   <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-4">Find the right partner for cloud migration, FinOps, compliance, or managed support.</p>
                 </div>
               </div>
-              <button className="font-['Inter'] cursor-pointer self-start px-5 py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+              <button onClick={handleMarketplaceClick}
+              className="font-['Inter'] cursor-pointer self-start px-5 py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                 Explore the Marketplace
               </button>
             </div>
@@ -504,7 +518,8 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                   <p className="text-[#71717A] text-sm font-['Inter',_sans-serif] overflow-hidden line-clamp-3">Simplify procurement with one contract, one invoice, one support channel.</p>
                 </div>
               </div>
-              <button className="px-5 font-['Inter'] cursor-pointer py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto self-start">
+              <button onClick={handleMarketplaceClick}
+              className="px-5 font-['Inter'] cursor-pointer py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto self-start">
                 View Our Bundles
               </button>
             </div>
@@ -921,14 +936,13 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
             </div>
           </div>
           <div className="text-center mt-6 sm:mt-8 md:mt-10 lg:mt-12 mb-16">
-            <Link
-              href={"/"}
+            <button onClick={handleMarketplaceClick}
               className="group inline-flex items-center justify-center bg-black text-white border border-white/20 rounded-full px-6 py-3 sm:px-8 sm:py-4 text-sm sm:text-base transition-all duration-200"
             >
               <Image src="/image/writing-sign.png" alt="Write" width={20} height={20} />
               <span className="mx-2">Write Review</span>
               <Image src="/image/arrow-up.png" alt="arrow" width={20} height={20} className=" transform transition-transform duration-300" />
-            </Link>
+            </button>
           </div>
         </section>
 
@@ -953,10 +967,10 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
 
             <br className="hidden sm:inline" /> we’re built to guide you every step of the way.
             </p>
-            <Link href={"/"} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
+            <button onClick={handleMarketplaceClick} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
               <span className="mr-2">Let’s Get Started</span>
               <Image src="/image/arrow-up.png" alt="arrow" width={20} height={20} />
-            </Link>
+            </button>
           </div>
         </section>
       </main>
