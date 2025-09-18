@@ -630,7 +630,12 @@ tax_id: {
                       type='text'
                       value={company_registration_number}
 
-                      onChange={(e) => handleFieldChange('company_registration_number', e.target.value)}
+                      onChange={(e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      handleFieldChange('company_registration_number', value);
+    }
+  }}
                       onBlur={() => handleBlur('company_registration_number')}
                       className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
@@ -673,7 +678,12 @@ tax_id: {
                       type='text'
                       value={tax_id}
 
-                      onChange={(e) => handleFieldChange('tax_id', e.target.value)}
+                      onChange={(e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      handleFieldChange('tax_id', value);
+    }
+  }}
                       onBlur={() => handleBlur('tax_id')}
                       className={`w-full py-2 px-3  dark:text-black border ${errors.tax_id ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} outline-0`}
                     />
@@ -895,7 +905,12 @@ tax_id: {
                         <input
                           type="text"
                           value={newPlatform}
-                          onChange={(e) => setNewPlatform(e.target.value)}
+                          onChange={(e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNewPlatform(value);
+    }
+  }}
                           maxLength={20}
                           placeholder="Enter cloud name"
                           className="px-3 py-1 outline-0 m-1 dark:text-black rounded-lg text-sm"
@@ -961,7 +976,12 @@ tax_id: {
                         <input
                           type="text"
                           value={newMarketplace}
-                          onChange={(e) => setNewMarketplace(e.target.value)}
+                                                    onChange={(e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNewMarketplace(value);
+    }
+  }}
                           maxLength={20}
                           placeholder="Enter marketplace name"
                           className="px-3 py-1 m-1 text-black outline-0 rounded-lg text-sm"

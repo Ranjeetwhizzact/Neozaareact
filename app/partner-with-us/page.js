@@ -873,7 +873,12 @@ export default function RegistrationForm() {
                       name="company_registration_number"
                       value={formData.company_registration_number}
                       maxLength={20}
-                      onChange={handleChange}
+                                             onChange={(e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      handleChange(e);
+    }
+  }}
                       className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
                   </div>
@@ -932,7 +937,12 @@ export default function RegistrationForm() {
                       name="tax_id"
                       value={formData.tax_id}
                       maxLength={20}
-                      onChange={handleChange}
+                       onChange={(e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      handleChange(e);
+    }
+  }}
                       className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.tax_id ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
                   </div>
@@ -1220,7 +1230,12 @@ export default function RegistrationForm() {
                         <input
                           type="text"
                           value={newPlatform}
-                          onChange={(e) => setNewPlatform(e.target.value)}
+                                                    onChange={(e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNewPlatform(value);
+    }
+  }}
                           maxLength={20}
                           placeholder="Enter cloud name"
                           className="px-3 py-1 m-1 outline-0 rounded-lg text-sm dark:text-black"
@@ -1289,7 +1304,12 @@ export default function RegistrationForm() {
                         <input
                           type="text"
                           value={newMarketplace}
-                          onChange={(e) => setNewMarketplace(e.target.value)}
+                                                    onChange={(e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNewMarketplace(value);
+    }
+  }}
                           maxLength={20}
                           placeholder="Enter marketplace name"
                           className="px-3 py-1 dark:text-black  m-1 outline-0 rounded-lg text-sm"
