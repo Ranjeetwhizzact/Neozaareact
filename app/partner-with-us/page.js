@@ -606,7 +606,7 @@ export default function RegistrationForm() {
         }
         toast.dismiss(toastId)
         toast.success('Registration successful!', { id: toastId });
-        router.push('/auth/login');
+        router.push('/auth/success');
 
       } catch (error) {
         setLoading(false)

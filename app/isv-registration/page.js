@@ -469,7 +469,7 @@ tax_id: {
           toast.dismiss(toastId)
           toast.success('Registration successful!');
 
-          router.push('/auth/login');
+          router.push('/auth/success');
         } else {
           setloading(false)
           toast.error(data.message || 'Registration failed. Please try again.');

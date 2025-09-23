@@ -124,7 +124,7 @@ const validate = () => {
 
         if (data.data?.user?.role_type === 'CLIENT') {
           toast.success(data.message || 'Registration successful');
-          router.push('/auth/login');
+          router.push('/auth/success');
         }
       } else {
         toast.error(data.message || 'Registration failed');
