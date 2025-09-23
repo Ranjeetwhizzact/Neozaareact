@@ -4,10 +4,8 @@ import Link from 'next/link';
 export default function Footer() {
 
   const NAV_LINKS = [
-    { href: '/cyber-protect-cloud', label: 'ISV CoSell360' },
     { href: '/isv-registration', label: 'ISV Registration' },
     { href: '/partner-with-us', label: 'Partner With Us' },
-    { href: '/', label: "FAQ's" },
     { href: '/', label: 'Contact' },
   ];
 

@@ -14,6 +14,9 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1); // 1: email, 2: OTP, 3: password reset
   const [token, setToken] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
 
   const handleForgetPassword = async (e) => {
     e.preventDefault();
@@ -90,6 +93,7 @@ export default function Page() {
          localStorage.setItem('verify-token',token);
         
         setToken(data.token || data.data.token);
+
         setStep(3); // Move to password reset step
       } else {
         toast.error(data.message || 'OTP verification failed');
@@ -115,7 +119,7 @@ const handleResetPassword = async (e) => {
     toast.error('Passwords do not match');
     return;
   }
-  
+
   if (password.length < 6) {
     toast.error('Password must be at least 6 characters long');
     return;
@@ -193,7 +197,7 @@ const handleResetPassword = async (e) => {
           >
             {step === 1 && (
               <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-                <Image src="/image/RiMailFill.png" alt="Email Icon" className="w-6 h-6 mx-4" />
+                <Image width={6} height={6} src="/image/RiMailFill.png" alt="Email Icon" className="w-6 h-6 mx-4" />
                 <input
                   type="email"
                   value={email}
@@ -225,7 +229,7 @@ const handleResetPassword = async (e) => {
                 <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
                   <i className="ri-key-line text-gray-500 px-3"></i>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="New Password"
@@ -233,12 +237,17 @@ const handleResetPassword = async (e) => {
                     required
                     minLength={6}
                   />
+                  <button 
+                  type='button'
+                  onClick={() => setShowPassword(!showPassword)}>
+                    <Image src="/image/RiEyeFill.png" alt="Show Icon" width={24} height={24} className=" mx-4 cursor-pointer" />
+                  </button>
                 </div>
 
                 <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
               <i className="ri-key-line text-gray-500 px-3"></i>
                   <input
-                    type="password"
+                    type={showConfirm ? "text" : "password"}
                     value={confirm_password}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     placeholder="Confirm Password"
@@ -246,6 +255,10 @@ const handleResetPassword = async (e) => {
                     required
                     minLength={6}
                   />
+                  <button type='button'
+                  onClick={() => setShowConfirm(!showConfirm)}>
+                    <Image src="/image/RiEyeFill.png" alt="Show Icon" width={24} height={24} className=" mx-4 cursor-pointer" />
+                  </button>
                 </div>
               </>
             )}

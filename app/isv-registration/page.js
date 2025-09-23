@@ -98,14 +98,14 @@ export default function Page() {
       pattern: /^[A-Za-z\s]+$/,
       message: "Registration name should only contain letters and spaces."
     },
-    company_registration_number: {
-      required: true,
-      validate: (value) => {
-
-        return true; // For other countries, just require it to be filled
-      },
-      message: "Please provide a valid company registration number."
-    },
+company_registration_number: {
+  required: true,
+  validate: (value) => {
+    if (!value) return false;
+    return value.length <= 20; // ✅ max 20 characters
+  },
+  message: "Company registration number must not exceed 20 characters."
+},
     brand_name: {
       required: true,
       pattern: /^[A-Za-z\s]+$/,
@@ -122,15 +122,14 @@ export default function Page() {
       pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9\_\-\.]+\/?$/,
       message: "Enter a valid website URL."
     },
-    tax_id: {
-      required: true,
-      required: true,
-      validate: (value) => {
-
-        return true; // For other countries, just require it to be filled
-      },
-      message: "Please provide your Tax ID."
-    },
+tax_id: {
+  required: true,
+  validate: (value) => {
+    if (!value) return false;
+    return value.length <= 20; // max 20 characters
+  },
+  message: "Tax ID must not exceed 20 characters."
+},
     headquater_country: {
       required: true,
       message: "Please provide the headquarters country."
@@ -470,7 +469,7 @@ export default function Page() {
           toast.dismiss(toastId)
           toast.success('Registration successful!');
 
-          router.push('/auth/login');
+          router.push('/auth/success');
         } else {
           setloading(false)
           toast.error(data.message || 'Registration failed. Please try again.');
@@ -631,7 +630,12 @@ export default function Page() {
                       type='text'
                       value={company_registration_number}
 
-                      onChange={(e) => handleFieldChange('company_registration_number', e.target.value)}
+                      onChange={(e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      handleFieldChange('company_registration_number', value);
+    }
+  }}
                       onBlur={() => handleBlur('company_registration_number')}
                       className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                     />
@@ -674,7 +678,12 @@ export default function Page() {
                       type='text'
                       value={tax_id}
 
-                      onChange={(e) => handleFieldChange('tax_id', e.target.value)}
+                      onChange={(e) => {
+    const value = e.target.value;
+    if (/^[A-Za-z0-9-]*$/.test(value)) {
+      handleFieldChange('tax_id', value);
+    }
+  }}
                       onBlur={() => handleBlur('tax_id')}
                       className={`w-full py-2 px-3  dark:text-black border ${errors.tax_id ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} outline-0`}
                     />
@@ -896,7 +905,13 @@ export default function Page() {
                         <input
                           type="text"
                           value={newPlatform}
-                          onChange={(e) => setNewPlatform(e.target.value)}
+                          onChange={(e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNewPlatform(value);
+    }
+  }}
+                          maxLength={20}
                           placeholder="Enter cloud name"
                           className="px-3 py-1 outline-0 m-1 dark:text-black rounded-lg text-sm"
                         />
@@ -961,7 +976,13 @@ export default function Page() {
                         <input
                           type="text"
                           value={newMarketplace}
-                          onChange={(e) => setNewMarketplace(e.target.value)}
+                                                    onChange={(e) => {
+    const value = e.target.value;
+    if (/^[a-zA-Z\s]*$/.test(value)) {
+      setNewMarketplace(value);
+    }
+  }}
+                          maxLength={20}
                           placeholder="Enter marketplace name"
                           className="px-3 py-1 m-1 text-black outline-0 rounded-lg text-sm"
                         />

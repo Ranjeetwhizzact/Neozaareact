@@ -63,13 +63,25 @@ export default function Header() {
       if (event.data?.type === "LOGOUT") {
         localStorage.removeItem("token");
         setIsAuthenticated(false);
-        window.location.href = "/auth/login";
+        // window.location.href = "/auth/login";
       }
     };
 
     window.addEventListener("message", messageHandler);
     return () => window.removeEventListener("message", messageHandler);
   }, []);
+
+  useEffect(() => {
+    const syncLogout = (event) => {
+      if (event.key === "logout-event") {
+        localStorage.removeItem("token");
+        setIsAuthenticated(false);
+        router.push("/auth/login");
+      }
+    };
+    window.addEventListener("storage", syncLogout);
+    return () => window.removeEventListener("storage", syncLogout);
+  }, [router]);
 
   const handleLogout = async () => {
     try {
@@ -88,7 +100,7 @@ export default function Header() {
       setIsAuthenticated(false);
 
       // broadcast logout
-      window.postMessage({ type: "LOGOUT" }, "*");
+      localStorage.setItem("logout-event", Date.now());
 
       toast.success("Logout Success");
       router.push("/auth/login");
@@ -151,7 +163,7 @@ export default function Header() {
             <div className="h-[40px] w-px bg-white/10" />
             <button onClick={() => setDropdownOpen((prev) => !prev)}>
               <Image
-                src="/image/Shape.png"
+                src="/image/blank-profile.webp"
                 alt="User"
                 width={32}
                 height={32}
@@ -166,14 +178,14 @@ export default function Header() {
                     <Link
                       href="/profile"
                       className="block px-4 py-3 hover:bg-gray-700 transition"
-                      onClick={() => setDropdownOpen(false)}
+                      onMouseDown={() => setDropdownOpen(false)}
                     >
                       Profile
                     </Link>
                   </li>
                   <li>
                     <button
-                      onClick={() => {
+                      onMouseDown={() => {
                         setDropdownOpen(false);
                         handleLogout();
                       }}
@@ -189,11 +201,11 @@ export default function Header() {
         ) : (
           // Show only Login button when not authenticated
           <div className="flex items-center gap-4">
-            <Link href="/auth/login">
+            {/* <Link href="/auth/login">
               <button className="bg-orange-600 cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-orange-700 transition">
                 Login
               </button>
-            </Link>
+            </Link> */}
           </div>
         )}
       </div>
@@ -231,7 +243,7 @@ export default function Header() {
             <div className="h-[40px] w-px bg-white/10" />
             <button onClick={() => setDropdownOpen((prev) => !prev)}>
               <Image
-                src="/image/Shape.png"
+                src="/image/blank-profile.webp"
                 alt="User"
                 width={32}
                 height={32}
@@ -246,14 +258,14 @@ export default function Header() {
                     <Link
                       href="/profile"
                       className="block px-4 py-3 hover:bg-gray-700 transition"
-                      onClick={() => setDropdownOpen(false)}
+                      onMouseDown={() => setDropdownOpen(false)}
                     >
                       Profile
                     </Link>
                   </li>
                   <li>
                     <button
-                      onClick={() => {
+                      onMouseDown={() => {
                         setDropdownOpen(false);
                         handleLogout();
                       }}
@@ -269,11 +281,11 @@ export default function Header() {
         ) : (
           // Show only Login button when not authenticated
           <div className="flex items-center gap-4">
-            <Link href="/auth/login">
+            {/* <Link href="/auth/login">
               <button className="bg-orange-600 cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-orange-700 transition">
                 Login
               </button>
-            </Link>
+            </Link> */}
           </div>
         )}
       </div>
@@ -298,12 +310,12 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button onClick={() => setDropdownOpen((prev) => !prev)}>
                 <Image
-                  src="/image/Shape.png"
-                  alt="User"
-                  width={32}
-                  height={32}
-                  className="rounded-full cursor-pointer border border-gray-600"
-                />
+                src="/image/blank-profile.webp"
+                alt="User"
+                width={32}
+                height={32}
+                className="rounded-full cursor-pointer border border-gray-600"
+              />
               </button>
 
               {dropdownOpen && (
@@ -334,12 +346,13 @@ export default function Header() {
               )}
             </div>
           ) : (
+            <></>
             // Show login button when not authenticated
-            <Link href="/auth/login">
-              <button className="bg-orange-600 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-orange-700 transition">
-                Login
-              </button>
-            </Link>
+            // <Link href="/auth/login">
+            //   <button className="bg-orange-600 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-orange-700 transition">
+            //     Login
+            //   </button>
+            // </Link>
           )}
           <button onClick={() => setIsOpen(true)} className="text-white focus:outline-none">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -385,11 +398,11 @@ export default function Header() {
               {!isAuthenticated ? (
                 // Show only Login button when not authenticated
                 <div className="mb-3">
-                  <Link href="/auth/login">
+                  {/* <Link href="/auth/login">
                     <button className="bg-orange-600 text-sm px-6 py-2 rounded-full hover:bg-orange-700 transition w-full">
                       Login
                     </button>
-                  </Link>
+                  </Link> */}
                 </div>
               ) : (
                 // Show Marketplace when authenticated

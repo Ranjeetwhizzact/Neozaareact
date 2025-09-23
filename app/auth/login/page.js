@@ -10,6 +10,7 @@ export default function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -56,10 +57,9 @@ export default function Page() {
             console.log(tokenLocal)
             // if(!tokenLocal) router.push(`http://app.neozaar.skilladders.com/auth/login-token?token=${token}`);
             if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
+            // if(!tokenLocal) router.push(`http://localhost:4200/auth/login-token?token=${token}`);
+            // if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
         }
-
-
-
       } else {
         toast.error(data.message || 'Login failed');
       }
@@ -99,17 +99,37 @@ export default function Page() {
               />
             </div>
 
-            <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-              <Image src="/image/RiKey2Fill.png" alt="Key Icon" width={24} height={24} className=" mx-4" />
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="bg-zinc-900 px-4 py-3 h-[52px] text-sm text-zinc-300 w-full outline-none"
-                required
-              />
-            </div>
+<div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
+  <Image
+    src="/image/RiKey2Fill.png"
+    alt="Key Icon"
+    width={24}
+    height={24}
+    className="mx-4"
+  />
+  <input
+    type={showPassword ? "text" : "password"}  // ✅ this is the fix
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    placeholder="Password"
+    className="bg-zinc-900 px-4 py-3 h-[52px] text-sm text-zinc-300 w-full outline-none"
+    required
+  />
+  <button
+    type="button"   // ✅ so it won’t submit form
+    onClick={() => setShowPassword(!showPassword)}
+    className="mr-4"
+  >
+    <Image
+      src="/image/RiEyeFill.png"
+      alt="Show Password Icon"
+      width={24}
+      height={24}
+      className="cursor-pointer"
+    />
+  </button>
+</div>
+
 
             <div className="text-right text-sm text-gray-400">
               <Link href="/auth/forget-password">Forget Password?</Link>
@@ -134,7 +154,7 @@ export default function Page() {
 
           <div className="mt-10 text-sm text-gray-500">
             Need Help?{' '}
-            <a href="#" className="text-white font-bold underline">
+            <a href="/contact-us" className="text-white font-bold underline">
               Contact
             </a>
           </div>

@@ -20,6 +20,7 @@ export default function Page() {
     business_email: '',
     gst: '',
   });
+  const [showPassword, setShowPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -123,7 +124,7 @@ const validate = () => {
 
         if (data.data?.user?.role_type === 'CLIENT') {
           toast.success(data.message || 'Registration successful');
-          router.push('/auth/login');
+          router.push('/auth/success');
         }
       } else {
         toast.error(data.message || 'Registration failed');
@@ -156,65 +157,92 @@ const validate = () => {
             business operations.
           </p>
 
-          <form onSubmit={handleRegister} className="w-full max-w-sm space-y-4">
-            {[{ label: 'Name', key: 'name' },
-              { label: 'Work Email', key: 'email', type: 'email' },
-              { label: 'Password', key: 'password', type: 'password' },
-              { label: 'Company Name', key: 'company_name' },
-              { label: 'Business Email', key: 'business_email' },
-              { label: 'GST Number', key: 'gst' },
-            ].map(({ label, key, type = 'text' }) => (
-              <div key={key}>
-                <input
-                  type={type}
-                  placeholder={label}
-                  value={formData[key]}
-                  onChange={(e) => handleChange(key, e.target.value)}
-                  className={`px-4 py-3 h-[52px] text-sm text-zinc-300 w-full border ${
-                    errors[key] ? 'border-red-500 bg-red-400/15' : 'border-zinc-800 bg-zinc-900'
-                  }`}
+<form onSubmit={handleRegister} className="w-full max-w-sm space-y-4">
+      {[{ label: 'Name', key: 'name' },
+        { label: 'Work Email', key: 'email', type: 'email' },
+        { label: 'Password', key: 'password', type: 'password' },
+        { label: 'Company Name', key: 'company_name' },
+        { label: 'Business Email', key: 'business_email' },
+        { label: 'GST Number', key: 'gst' },
+      ].map(({ label, key, type = 'text' }) => (
+        <div key={key} className="relative">
+          {key === 'password' ? (
+            <>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder={label}
+                value={formData[key]}
+                onChange={(e) => handleChange(key, e.target.value)}
+                className={`px-4 py-3 h-[52px] text-sm text-zinc-300 w-full border pr-12 ${
+                  errors[key] ? 'border-red-500 bg-red-400/15' : 'border-zinc-800 bg-zinc-900'
+                }`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2"
+              >
+                <Image
+                  src="/image/RiEyeFill.png"
+                  alt="Toggle password visibility"
+                  width={20}
+                  height={20}
+                  className="cursor-pointer"
                 />
-                {errors[key] && <p className="text-red-400 text-xs mt-2">{errors[key]}</p>}
-              </div>
-            ))}
-
-            {/* Phone Number */}
-            <div
-              className={`flex items-center text-sm border ${
-                errors.mobile ? 'border-red-500 bg-red-400/15' : 'border-zinc-800 bg-zinc-900'
+              </button>
+            </>
+          ) : (
+            <input
+              type={type}
+              placeholder={label}
+              value={formData[key]}
+              onChange={(e) => handleChange(key, e.target.value)}
+              className={`px-4 py-3 h-[52px] text-sm text-zinc-300 w-full border ${
+                errors[key] ? 'border-red-500 bg-red-400/15' : 'border-zinc-800 bg-zinc-900'
               }`}
-            >
-              <div className="text-sm w-full">
-                <PhoneInput
-                  country={'in'} // 🇮🇳 default to India
-                  value={formData.mobile}
-                  onChange={(phone) => handleChange('mobile', phone)}
-                  inputClass={`!w-full !bg-transparent !text-white !px-14 !py-3 !text-sm !border-none !outline-none placeholder-gray-500`}
-                  containerClass="!w-full"
-                  buttonClass="!bg-zinc-900 border-zinc-800 px-10"
-                  inputProps={{
-                    name: 'mobile',
-                    required: true,
-                  }}
-                />
-              </div>
-            </div>
-                {errors.mobile && <p className="text-red-500 text-xs mt-2">{errors.mobile}</p>}
+            />
+          )}
+          {errors[key] && <p className="text-red-400 text-xs mt-2">{errors[key]}</p>}
+        </div>
+      ))}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-gradient-to-r from-orange-400 to-orange-700 text-white font-medium"
-            >
-              {loading ? 'Registering...' : 'REGISTER'}
-            </button>
-          </form>
+      {/* Phone Number */}
+      <div
+        className={`flex items-center text-sm border ${
+          errors.mobile ? 'border-red-500 bg-red-400/15' : 'border-zinc-800 bg-zinc-900'
+        }`}
+      >
+        <div className="text-sm w-full">
+          <PhoneInput
+            country={'in'}
+            value={formData.mobile}
+            onChange={(phone) => handleChange('mobile', phone)}
+            inputClass="!w-full !bg-transparent !text-white !px-14 !py-3 !text-sm !border-none !outline-none placeholder-gray-500"
+            containerClass="!w-full"
+            buttonClass="!bg-zinc-900 border-zinc-800 px-10"
+            inputProps={{
+              name: 'mobile',
+              required: true,
+            }}
+          />
+        </div>
+      </div>
+      {errors.mobile && <p className="text-red-500 text-xs mt-2">{errors.mobile}</p>}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full py-3 bg-gradient-to-r from-orange-400 to-orange-700 text-white font-medium"
+      >
+        {loading ? 'Registering...' : 'REGISTER'}
+      </button>
+    </form>
 
           <p className="mt-6 text-sm text-zinc-500 text-center">
             Already Have an Account?
-            <Link href="/auth/login" className="text-white underline font-bold ml-1">
+            {/* <Link href="/auth/login" className="text-white underline font-bold ml-1">
               Sign In
-            </Link>
+            </Link> */}
           </p>
         </div>
 
