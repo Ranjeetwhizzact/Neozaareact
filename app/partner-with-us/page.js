@@ -121,6 +121,66 @@ export default function RegistrationForm() {
       pattern: /^[A-Za-z\s]+$/,
       message: "Company name should only contain letters and spaces."
     },
+    company_registration_number: {
+  required: true,
+  validate: (value) => {
+  
+    
+    if (!value || value.trim() === "") {
+      return "Company Registration Number is required.";
+    }
+
+    const country = headquater_country || "";
+ console.log("country r",country);
+    // If country is not selected yet, use generic validation
+    if (!country || country === "") {
+      if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
+        return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+      }
+      return null;
+    }
+
+    // Country-specific validations
+    if (country === "UAE") {
+      if (!/^[0-9]{1,10}$/.test(value)) {
+        return "For UAE, Company Registration Number must be numeric and up to 10 digits.";
+      }
+      return null;
+    }
+
+    if (country === "India") {
+      if (!/^[A-Z0-9]{21}$/.test(value)) {
+        return "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
+      }
+      return null;
+    }
+
+    // For all other countries
+    if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
+      return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+    }
+
+    return null;
+  }
+},
+  tax_id: {
+    required: true,
+    validate: (value, allValues = {}) => {
+      if (!value) return "Tax ID is required.";
+      const country = allValues.headquater_country || "";
+      console.log(country);
+      if (value.length > 20) return "Tax ID must not exceed 20 characters.";
+
+      if (country === "UAE") {
+        return /^[0-9]{15}$/.test(value) ? null : "For UAE, Tax ID must be exactly 15 digits.";
+      }
+      if (country === "India") {
+        return /^[0-9A-Z]{15}$/.test(value) ? null : "For India, Tax ID must be exactly 15 alphanumeric characters.";
+      }
+      
+      return /^[A-Za-z0-9-]*$/.test(value) ? null : "Tax ID can only contain letters, numbers, and hyphens.";
+    }
+  },
     designation: {
       required: true,
       pattern: /^[A-Za-z\s]+$/,
@@ -382,6 +442,8 @@ export default function RegistrationForm() {
     ];
 
     const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
+    const indiavalidation =/^[A-Za-z0-9\s-]{1,20}$/;
+    const uaevalidation =/^[0-9]{1,10}$/;
 
     if (!formData.brand_name.trim()) {
       newErrors.brand_name = "Brand name required";
@@ -402,6 +464,10 @@ export default function RegistrationForm() {
     }
     if (!formData.company_registration_number.trim()) {
       newErrors.company_registration_number = "Registration number required";
+    }else if(formData.headquater_country == "India" && formData.company_registration_number == indiavalidation.test(company_registration_number)){
+        newErrors.company_registration_number = "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
+    }else if(formData.headquater_country == "UAE" && formData.company_registration_number == uaevalidation.test(company_registration_number)){
+        newErrors.company_registration_number = "For UAE, Company Registration Number must be numeric and up to 10 digits.";
     }
 
 

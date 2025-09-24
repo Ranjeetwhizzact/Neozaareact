@@ -24,6 +24,11 @@ export default function Page() {
   ]);
   const [legalEntityTypesData, setlegalEntityTypesData] = useState(null);
 
+
+// Revalidate dependent fields when headquater_country changes
+
+
+
   const [headquaterCountry, setHeadquaterCountry] = useState([
     { value: "India", name: "India" },
     { value: "UAE", name: "UAE" },
@@ -81,153 +86,256 @@ export default function Page() {
   const [showMarketplaceInput, setShowMarketplaceInput] = useState(false);
   const [newMarketplace, setNewMarketplace] = useState('');
 
+  // Revalidate dependent fields when headquater_country changes
+useEffect(() => {
+  if (touched.company_registration_number) {
+    const error = validateField('company_registration_number', company_registration_number);
+    setErrors(prev => ({ ...prev, company_registration_number: error }));
+  }
+  
+  if (touched.tax_id) {
+    const error = validateField('tax_id', tax_id);
+    setErrors(prev => ({ ...prev, tax_id: error }));
+  }
+}, [headquater_country]);
+
+
   // Validation rules
-  const validationRules = {
-    company_name: {
-      required: true,
-      pattern: /^[A-Za-z\s]+$/,
-      message: "Company name should only contain letters and spaces."
-    },
-    designation: {
-      required: true,
-      pattern: /^[A-Za-z\s]+$/,
-      message: "designation name should only contain letters and spaces."
-    },
-    registered_business_name: {
-      required: true,
-      pattern: /^[A-Za-z\s]+$/,
-      message: "Registration name should only contain letters and spaces."
-    },
+const validationRules = {
+  company_name: {
+    required: true,
+    pattern: /^[A-Za-z\s]+$/,
+    message: "Company name should only contain letters and spaces."
+  },
+
+  designation: {
+    required: true,
+    pattern: /^[A-Za-z\s]+$/,
+    message: "Designation should only contain letters and spaces."
+  },
+
+  registered_business_name: {
+    required: true,
+    pattern: /^[A-Za-z\s]+$/,
+    message: "Registration name should only contain letters and spaces."
+  },
+
 company_registration_number: {
   required: true,
   validate: (value) => {
-    if (!value) return false;
-    return value.length <= 20; // ✅ max 20 characters
-  },
-  message: "Company registration number must not exceed 20 characters."
-},
-    brand_name: {
-      required: true,
-      pattern: /^[A-Za-z\s]+$/,
-      message: "Brand name should only contain letters and spaces."
-    },
-    website_url: {
-      required: true,
-      pattern: /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
-      message: "Enter a valid website URL."
-    },
-    linkedin_url: {
-      required: false,
-      // pattern: /^(https?:\/\/)?(www\.)?(linkedin\.)?(com\/)[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
-      pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9\_\-\.]+\/?$/,
-      message: "Enter a valid website URL."
-    },
-tax_id: {
-  required: true,
-  validate: (value) => {
-    if (!value) return false;
-    return value.length <= 20; // max 20 characters
-  },
-  message: "Tax ID must not exceed 20 characters."
-},
-    headquater_country: {
-      required: true,
-      message: "Please provide the headquarters country."
-    },
-    Legal_entity_type: {
-      required: true,
-      message: "Please select your legal entity type."
-    },
-    brand_logo: {
-      required: true,
-      validate: (file) => {
-        if (!file) return false;
-        const MAX_FILE_SIZE = 1 * 1024 * 1024;
-        const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
-        return ALLOWED_TYPES.includes(file.type) && file.size <= MAX_FILE_SIZE;
-      },
-      message: "Please upload a valid brand logo (PNG, JPG, JPEG, WEBP, SVG, max 1MB)."
-    },
-    name: {
-      required: true,
-      pattern: /^[A-Za-z\s]+$/,
-      message: "Personal name should only contain letters and spaces."
-    },
-    designation: {
-      required: true,
-      pattern: /^[A-Za-z\s]+$/,
-      message: "Designation should only contain letters and spaces."
-    },
-    mobile: {
-      required: true,
-      message: "Please provide a mobile number."
-    },
-    password: {
-      required: true,
-      minLength: 8,
-      message: "Password must be at least 8 characters."
-    },
- email: {
-  required: true,
-  validate: (value) => {
-    if (!value) return false;
-
-    // List of common personal email domains you want to block
-    const blockedDomains = [
-      "gmail.com",
-      "yahoo.com",
-      "outlook.com",
-      "hotmail.com",
-      "aol.com",
-      "icloud.com",
-      "protonmail.com",
-      "zoho.com",
-      "yandex.com"
-    ];
-
-    const domain = value.split("@")[1]?.toLowerCase();
-    if (!domain) return false;
-
-    // Fail if domain is in blocked list
-    return !blockedDomains.includes(domain);
-  },
-  message:
-    "Please provide an official (non-personal) email address (no Gmail, Yahoo, Outlook, etc.).",
-}
-,
-    neozaar_tc: {
-      required: true,
-      message: "Please agree to the Terms & Conditions"
-    },
-    data_privacy: {
-      required: true,
-      message: "Please agree to the Privacy Policy"
+  
+    
+    if (!value || value.trim() === "") {
+      return "Company Registration Number is required.";
     }
-  };
+
+    const country = headquater_country || "";
+
+    // If country is not selected yet, use generic validation
+    if (!country || country === "") {
+      if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
+        return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+      }
+      return null;
+    }
+
+    // Country-specific validations
+    if (country === "UAE") {
+      if (!/^[0-9]{1,10}$/.test(value)) {
+        return "For UAE, Company Registration Number must be numeric and up to 10 digits.";
+      }
+      return null;
+    }
+
+    if (country === "India") {
+      if (!/^[A-Z0-9]{21}$/.test(value)) {
+        return "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
+      }
+      return null;
+    }
+
+    // For all other countries
+    if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
+      return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+    }
+
+    return null;
+  }
+},
+  brand_name: {
+    required: true,
+    pattern: /^[A-Za-z\s]+$/,
+    message: "Brand name should only contain letters and spaces."
+  },
+
+  website_url: {
+    required: true,
+    pattern: /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+    message: "Enter a valid website URL."
+  },
+
+  linkedin_url: {
+    required: false,
+    pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9_\-\.]+\/?$/,
+    message: "Enter a valid LinkedIn URL."
+  },
+
+  headquater_country: {
+    required: true,
+    message: "Please provide the headquarters country."
+  },
+
+  tax_id: {
+    required: true,
+    validate: (value, allValues = {}) => {
+      if (!value) return "Tax ID is required.";
+      const country = allValues.headquater_country || "";
+      
+      if (value.length > 20) return "Tax ID must not exceed 20 characters.";
+
+      if (country === "UAE") {
+        return /^[0-9]{15}$/.test(value) ? null : "For UAE, Tax ID must be exactly 15 digits.";
+      }
+      if (country === "India") {
+        return /^[0-9A-Z]{15}$/.test(value) ? null : "For India, Tax ID must be exactly 15 alphanumeric characters.";
+      }
+      
+      return /^[A-Za-z0-9-]*$/.test(value) ? null : "Tax ID can only contain letters, numbers, and hyphens.";
+    }
+  },
+
+  Legal_entity_type: {
+    required: true,
+    message: "Please select your legal entity type."
+  },
+
+  brand_logo: {
+    required: true,
+    validate: (file) => {
+      if (!file) return "Brand logo is required.";
+      const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
+      const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+      
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        return "Please upload a valid image file (PNG, JPG, JPEG, WEBP, SVG).";
+      }
+      if (file.size > MAX_FILE_SIZE) {
+        return "File size must be less than 1MB.";
+      }
+      return null;
+    }
+  },
+
+  name: {
+    required: true,
+    pattern: /^[A-Za-z\s]+$/,
+    message: "Personal name should only contain letters and spaces."
+  },
+
+  mobile: {
+    required: true,
+    message: "Please provide a mobile number."
+  },
+
+  password: {
+    required: true,
+    minLength: 8,
+    message: "Password must be at least 8 characters."
+  },
+
+  email: {
+    required: true,
+    validate: (value) => {
+      if (!value) return "Email is required.";
+      
+      const blockedDomains = [
+        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+        "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+      ];
+      const domain = value.split("@")[1]?.toLowerCase();
+      
+      if (!domain) return "Please enter a valid email address.";
+      if (blockedDomains.includes(domain)) {
+        return "Please provide an official (non-personal) email address.";
+      }
+      return null;
+    }
+  },
+
+  neozaar_tc: {
+    required: true,
+    message: "Please agree to the Terms & Conditions"
+  },
+
+  data_privacy: {
+    required: true,
+    message: "Please agree to the Privacy Policy"
+  }
+};
 
   // Validate a single field
-  const validateField = (name, value) => {
-    const rule = validationRules[name];
-    if (!rule) return true; // No validation rule for this field
+// Corrected validateField function
+const validateField = (name, value) => {
+  const rule = validationRules[name];
+  if (!rule) return null; // No validation rule for this field
 
-    if (rule.required && (!value || (typeof value === 'string' && !value.trim()))) {
-      return `Please provide ${name.replace(/_/g, ' ')}.`;
+  if (rule.required) {
+    if (value === null || value === undefined || value === '') {
+      return rule.message || `Please provide ${name.replace(/_/g, ' ')}.`;
     }
-
-    if (rule.pattern && !rule.pattern.test(value)) {
-      return rule.message;
+    
+    // For checkboxes
+    if (typeof value === 'boolean' && !value) {
+      return rule.message || `Please provide ${name.replace(/_/g, ' ')}.`;
     }
-
-    if (rule.minLength && value.length < rule.minLength) {
-      return rule.message;
+    
+    // For files
+    if (value === null) {
+      return rule.message || `Please provide ${name.replace(/_/g, ' ')}.`;
     }
+  }
 
-    if (rule.validate && !rule.validate(value)) {
-      return rule.message;
+  if (rule.pattern && value && !rule.pattern.test(value)) {
+    return rule.message;
+  }
+
+  if (rule.minLength && value && value.length < rule.minLength) {
+    return rule.message;
+  }
+
+  if (rule.validate) {
+    // Create an object with all current form values to pass to validate functions
+    const allValues = {
+      company_name,
+      registered_business_name,
+      company_registration_number,
+      brand_name,
+      website_url,
+      linkedin_url,
+      tax_id,
+      headquater_country,
+      Legal_entity_type,
+      name,
+      designation,
+      mobile,
+      password,
+      email,
+      neozaar_tc,
+      data_privacy,
+      brand_logo
+    };
+
+    // For company_registration_number, we need to handle it specially since it uses the state variable directly
+    if (name === 'company_registration_number') {
+      return rule.validate(value); // This already uses headquater_country directly
     }
+    
+    // For other fields that need allValues
+    return rule.validate(value, allValues);
+  }
 
-    return null; // No error
-  };
+  return null; // No error
+};
 
   // Handle field changes with validation
   const handleFieldChange = (fieldName, value) => {
@@ -260,12 +368,59 @@ tax_id: {
   };
 
   // Handle field blur events
-  const handleBlur = (fieldName) => {
-    setTouched({ ...touched, [fieldName]: true });
+ // Handle field blur events
+const handleBlur = (fieldName) => {
+  setTouched(prev => ({ ...prev, [fieldName]: true }));
 
-    // Validate the field
+  // Validate the field
+  let value;
+  switch (fieldName) {
+    case 'company_name': value = company_name; break;
+    case 'registered_business_name': value = registered_business_name; break;
+    case 'company_registration_number': value = company_registration_number; break;
+    case 'brand_name': value = brand_name; break;
+    case 'website_url': value = website_url; break;
+    case 'linkedin_url': value = linkedin_url; break;
+    case 'tax_id': value = tax_id; break;
+    case 'headquater_country': value = headquater_country; break;
+    case 'Legal_entity_type': value = Legal_entity_type; break;
+    case 'name': value = name; break;
+    case 'designation': value = designation; break;
+    case 'mobile': value = mobile; break;
+    case 'password': value = password; break;
+    case 'email': value = email; break;
+    case 'neozaar_tc': value = neozaar_tc; break;
+    case 'data_privacy': value = data_privacy; break;
+    case 'brand_logo': value = brand_logo; break;
+    default: value = null;
+  }
+
+  const error = validateField(fieldName, value);
+  setErrors(prev => ({ ...prev, [fieldName]: error }));
+};
+
+  // Validate all fields in current step
+// Validate all fields in current step
+const validateStep = (stepNumber) => {
+  const stepFields = {
+    1: ['company_name', 'registered_business_name', 'company_registration_number',
+      'brand_name', 'website_url', 'tax_id', 'headquater_country',
+      'Legal_entity_type', 'brand_logo'],
+    2: ['name', 'designation', 'mobile', 'password', 'email'],
+    3: ['neozaar_tc', 'data_privacy']
+  };
+
+  const fieldsToValidate = stepFields[stepNumber];
+  const newErrors = {};
+  let isValid = true;
+
+  // Mark all fields as touched
+  const newTouched = { ...touched };
+  fieldsToValidate.forEach(field => {
+    newTouched[field] = true;
+
     let value;
-    switch (fieldName) {
+    switch (field) {
       case 'company_name': value = company_name; break;
       case 'registered_business_name': value = registered_business_name; break;
       case 'company_registration_number': value = company_registration_number; break;
@@ -286,62 +441,18 @@ tax_id: {
       default: value = null;
     }
 
-    const error = validateField(fieldName, value);
-    setErrors(prev => ({ ...prev, [fieldName]: error }));
-  };
+    const error = validateField(field, value);
+    if (error) {
+      newErrors[field] = error;
+      isValid = false;
+    }
+  });
 
-  // Validate all fields in current step
-  const validateStep = (stepNumber) => {
-    const stepFields = {
-      1: ['company_name', 'registered_business_name', 'company_registration_number',
-        'brand_name', 'website_url', 'tax_id', 'headquater_country',
-        'Legal_entity_type', 'brand_logo'],
-      2: ['name', 'designation', 'mobile', 'password', 'email'],
-      3: ['neozaar_tc', 'data_privacy']
-    };
+  setTouched(newTouched);
+  setErrors(newErrors); // Replace completely instead of merging
 
-    const fieldsToValidate = stepFields[stepNumber];
-    const newErrors = {};
-    let isValid = true;
-
-    // Mark all fields as touched
-    const newTouched = { ...touched };
-    fieldsToValidate.forEach(field => {
-      newTouched[field] = true;
-
-      let value;
-      switch (field) {
-        case 'company_name': value = company_name; break;
-        case 'registered_business_name': value = registered_business_name; break;
-        case 'company_registration_number': value = company_registration_number; break;
-        case 'brand_name': value = brand_name; break;
-        case 'website_url': value = website_url; break;
-        case 'tax_id': value = tax_id; break;
-        case 'headquater_country': value = headquater_country; break;
-        case 'Legal_entity_type': value = Legal_entity_type; break;
-        case 'name': value = name; break;
-        case 'designation': value = designation; break;
-        case 'mobile': value = mobile; break;
-        case 'password': value = password; break;
-        case 'email': value = email; break;
-        case 'neozaar_tc': value = neozaar_tc; break;
-        case 'data_privacy': value = data_privacy; break;
-        case 'brand_logo': value = brand_logo; break;
-        default: value = null;
-      }
-
-      const error = validateField(field, value);
-      if (error) {
-        newErrors[field] = error;
-        isValid = false;
-      }
-    });
-
-    setTouched(newTouched);
-    setErrors({ ...errors, ...newErrors });
-
-    return isValid;
-  };
+  return isValid;
+};
 
   // Form navigation
   const handleNext = async () => {
@@ -621,6 +732,32 @@ tax_id: {
                   />
                   {errors.registered_business_name && (<p className="text-red-500 text-sm mt-1">{errors.registered_business_name}</p>)}
                 </div>
+                    <div className='col-span-2 md:col-span-1'>
+                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter country</label>
+                  <select
+                    id="entityType"
+                    value={headquater_country}
+                    onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
+                    onBlur={() => handleBlur('headquater_country')}
+                    className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} dark:text-black py-2.5 px-3 w-full`}
+                  >
+                    <option value="" disabled className='dark:text-black'>Select an option</option>
+                    {
+                      headquaterCountry.map((item, i) => (
+                        <option key={i} value={item.value} className='dark:text-black'>{item.name}</option>
+                      ))
+                    }
+                  </select>
+
+                  {
+                    headquater_country === "Other" && <div className="m-2 flex gap-2 ">
+                      <input type="text" name="" onChange={headquaterCountryInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1 dark:text-black' />
+                      <button onClick={handleSubmitOtherHC} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
+                    </div>
+                  }
+
+                  {errors.headquater_country && (<p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>)}
+                </div>
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Register Company number</label>
                   <div className='flex'>
@@ -642,7 +779,7 @@ tax_id: {
                   </div>
                   {errors.company_registration_number && (<p className="text-red-500 text-sm mt-1">{errors.company_registration_number}</p>)}
                 </div>
-
+              
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type</label>
 
@@ -690,32 +827,7 @@ tax_id: {
                   </div>
                   {errors.tax_id && (<p className="text-red-500 text-sm mt-1">{errors.tax_id}</p>)}
                 </div>
-                <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter country</label>
-                  <select
-                    id="entityType"
-                    value={headquater_country}
-                    onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
-                    onBlur={() => handleBlur('headquater_country')}
-                    className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} dark:text-black py-2.5 px-3 w-full`}
-                  >
-                    <option value="" disabled className='dark:text-black'>Select an option</option>
-                    {
-                      headquaterCountry.map((item, i) => (
-                        <option key={i} value={item.value} className='dark:text-black'>{item.name}</option>
-                      ))
-                    }
-                  </select>
-
-                  {
-                    headquater_country === "Other" && <div className="m-2 flex gap-2 ">
-                      <input type="text" name="" onChange={headquaterCountryInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1 dark:text-black' />
-                      <button onClick={handleSubmitOtherHC} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
-                    </div>
-                  }
-
-                  {errors.headquater_country && (<p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>)}
-                </div>
+              
                 <div className='col-span-2'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Website url</label>
                   <input

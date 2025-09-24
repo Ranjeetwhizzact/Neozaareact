@@ -41,37 +41,11 @@ export default function CustomSlider() {
     const productid = searchParams.get("productid");
     if (productid) setUserId(productid);
   }, [searchParams]);
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const idFromUrl = params.get("productid"); // get the productid
-  //   setUserId(idFromUrl); 
-  // }, []);
+
   useEffect(() => {
 
    
-    // async function fetchProducts() {
-    //   const token = localStorage.getItem('token');
-    //   if (!token) return;
-
-    //   try {
-    //     const res = await fetch('http://20.83.163.38:5000/api/products/', {
-    //       headers: { Authorization: `Bearer ${token}` },
-    //     });
-    //     if (res.status === 401 || res.status === 403) {
-    //     // Token expired → redirect to login
-    //     router.push("/auth/login");
-    //     return;
-    //   }
-    //     const data = await res.json();
-    //     if (res.ok && Array.isArray(data?.data?.products)) {
-    //       setProducts(data.data.products);
-    //     } else {
-    //       console.error('Invalid product response format');
-    //     }
-    //   } catch (err) {
-    //     console.error('Failed to fetch products:', err);
-    //   }
-    // }
+  
 
     // fetch product details 
     async function producDetail() {
