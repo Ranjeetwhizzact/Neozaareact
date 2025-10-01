@@ -64,7 +64,7 @@ export default function Page() {
   const [competencies_certifications, setBusinessDescription] = useState('');
   const [existing_marketplace_listing, setExistingMarket] = useState([]);
   const [cloud_partnership, setCloudPartnership] = useState([]);
-  const [preferred_engagement, setPreferred] = useState('');
+  const [preferred_engagement, setPreferred] = useState('Reseller');
   const [neozaar_tc, setNeozaartc] = useState(false);
   const [data_privacy, setDataPrivacy] = useState(false);
   const [businessCert, setBusinessCert] = useState(null);
@@ -1247,28 +1247,29 @@ const validateStep = (stepNumber) => {
 
 
 
-              <button
-                type={"button"}
-                onClick={step === 3 ? handleSubmit : handleNext}
-                disabled={loading} 
-                className={`w-32 h-10 font-sans font-semibold text-md rounded-3xl text-white
-                    ${loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-gradient-to-r from-[#f79331] via-[#e25c08] to-[#e25c08] cursor-pointer"
-                  }`}
-              >
-                {loading ? (
-                  <>
-                    <span className="spinner"></span> Submitting...
-                  </>
-                ) : step === 3 ? (
-                  "Submit"
-                ) : (
-                  <>
-                    Next&nbsp;&nbsp;<i className="ri-arrow-right-line"></i>
-                  </>
-                )}
-              </button>
+             <button
+  type="button"
+  onClick={step === 3 ? handleSubmit : handleNext}
+  disabled={loading}
+  className={`w-32 h-10 font-sans font-semibold text-md rounded-3xl text-white
+    ${loading
+      ? "bg-gray-400 cursor-not-allowed"
+      : "bg-gradient-to-r from-[#f79331] via-[#e25c08] to-[#e25c08] cursor-pointer"
+    }`}
+>
+  {loading ? (
+    <>
+      <span className="spinner"></span> Submitting...
+    </>
+  ) : step === 3 ? (
+    "Submit"
+  ) : (
+    <>
+      Next&nbsp;&nbsp;<i className="ri-arrow-right-line"></i>
+    </>
+  )}
+</button>
+
 
 
 

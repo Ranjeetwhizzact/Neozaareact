@@ -64,19 +64,19 @@ const validate = () => {
     newErrors.company_name = "Company name is required";
   }
 
-  if (!formData.business_email.trim()) {
-    newErrors.business_email = "Business email required";
-  } else if (!emailRegex.test(formData.business_email)) {
-    newErrors.business_email = "Invalid email";
-  } else if (personalDomains.includes(getDomain(formData.business_email))) {
-    newErrors.business_email = "Please use a business email, not a personal one";
-  }
+  // if (!formData.business_email.trim()) {
+  //   newErrors.business_email = "Business email required";
+  // } else if (!emailRegex.test(formData.business_email)) {
+  //   newErrors.business_email = "Invalid email";
+  // } else if (personalDomains.includes(getDomain(formData.business_email))) {
+  //   newErrors.business_email = "Please use a business email, not a personal one";
+  // }
 
-  if (!formData.gst.trim()) {
-    newErrors.gst = "GST number is required";
-  } else if (!gstRegex.test(formData.gst.toUpperCase())) {
-    newErrors.gst = "Invalid GST format";
-  }
+  // if (!formData.gst.trim()) {
+  //   newErrors.gst = "GST number is required";
+  // } else if (!gstRegex.test(formData.gst.toUpperCase())) {
+  //   newErrors.gst = "Invalid GST format";
+  // }
 
   setErrors(newErrors);
   return Object.keys(newErrors).length === 0;
@@ -101,8 +101,8 @@ const validate = () => {
           role_id,
           profile_details: {
             company_name: formData.company_name,
-            business_email: formData.business_email,
-            gst: formData.gst.toUpperCase(),
+            // business_email: formData.business_email,
+            // gst: formData.gst.toUpperCase(),
           },
         }),
       });
@@ -151,10 +151,8 @@ const validate = () => {
             <Image src="/image/logo-s.png" alt="Logo" width={192} height={48} className="object-contain mb-6" />
           </div>
 
-          <p className="text-center text-white text-base md:text-lg mb-6">
-            Start your journey to optimized <br />
-            cloud infrastructure and enhanced <br />
-            business operations.
+          <p className="text-center text-white text-base md:text-lg mb-6 w-64 lg:w-96">
+            Early registration is now open—secure your place today and be among the first to benefit.
           </p>
 
 <form onSubmit={handleRegister} className="w-full max-w-sm space-y-4">
@@ -162,8 +160,8 @@ const validate = () => {
         { label: 'Work Email', key: 'email', type: 'email' },
         { label: 'Password', key: 'password', type: 'password' },
         { label: 'Company Name', key: 'company_name' },
-        { label: 'Business Email', key: 'business_email' },
-        { label: 'GST Number', key: 'gst' },
+        // { label: 'Business Email', key: 'business_email' },
+        // { label: 'GST Number', key: 'gst' },
       ].map(({ label, key, type = 'text' }) => (
         <div key={key} className="relative">
           {key === 'password' ? (

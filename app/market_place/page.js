@@ -650,7 +650,7 @@ export default function Home() {
               </div>
             </div>
           }
-          <div className="w-11/12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto  xl:grid-cols-4 2xl:grid-cols-5 gap-5 mt-5">
+          <div className="w-11/12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto  xl:grid-cols-4  gap-5 mt-5">
             {Array.isArray(marketplace) && marketplace.map((product, index) => (
 
 

@@ -57,7 +57,8 @@ export default function Page() {
             console.log(tokenLocal)
             // if(!tokenLocal) router.push(`http://app.neozaar.skilladders.com/auth/login-token?token=${token}`);
             // if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
-            if(!tokenLocal) router.push(`http://localhost:4200/angular/auth/login-token?token=${token}`);
+            // if(!tokenLocal) router.push(`http://localhost:4200/angular/auth/login-token?token=${token}`);
+            if(!tokenLocal) router.push(` http://192.168.1.4:4200/angular/auth/login-token?token=${token}`);
             // if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
         }
       } else {

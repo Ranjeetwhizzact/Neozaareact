@@ -120,7 +120,7 @@ export default function Header() {
 
   const NAV_LINKS = [
     { href: '/isv-registration', label: 'ISV Registration' },
-    { href: '/partner-with-us', label: 'Partner With Us' },
+   
     { href: '/contact-us', label: 'Contact' },
   ];
 

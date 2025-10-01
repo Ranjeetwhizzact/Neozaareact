@@ -76,21 +76,26 @@ export default function Page() {
               <br className="hidden sm:inline" />your AWS MACC or Azure EDP strategy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-              <button onClick={handleMarketplaceClick}
-              className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full">
+              <Link href={"/auth/register"}
+              className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full py-3">
                 <span className='text-6 font-600'>Explore Now</span> <span className="pl-12 inline text-8 font-extrabold">↗</span>
-              </button>
-              <button className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
+              </Link>
+              <Link href={"/auth/register"}
+               className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
                 <Image src="/assests/sparkle_png.png" width={24} height={24} alt="sparkle icon" className="hover:text-black w-6 h-6 inline-block mr-4" />Let AI Find Your Solution
-              </button>
+              </Link>
             </div>
           </div>
         </section>
 
         {/* Brand Logos Carousel */}
-        <section className="w-full px-2 sm:px-8 h-60 ">
+        <section className="w-full px-2 sm:px-8  ">
+           <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 py-5 text-center  xl:leading-[60px] flex justify-center items-center mb-20">
+            
+          OUR SUPPORTING PARTNERS
+          </h2>
           <Swiper
-            className="w-full !p-0 [&>.swiper-wrapper]:!m-0 !mt-4 "
+            className="w-full !p-0 [&>.swiper-wrapper]:!m-0 !mt-4 lg:h-60 h-30 "
             modules={[Autoplay]}
             loop={true}
             speed={4000}
@@ -113,12 +118,12 @@ export default function Page() {
           >
             {[
               '/brand-log/Acronis-logo.svg.png',
-              '/brand-log/AWS.png',
-              '/brand-log/Check_Point.png',
-              '/brand-log/Google-cloud.png',
-              '/brand-log/ibm.png',
+              '/brand-log/AWS Logo.png',
+              '/brand-log/Check_Point_Logo_2022.png',
+              '/brand-log/Google cloud.png',
+              '/brand-log/IBM Logo.png',
               '/brand-log/Microsoft_Azure_Logo.svg.png',
-              '/brand-log/O365.png',
+              '/brand-log/O365 Logo.png',
               '/brand-log/Veeam_logo.png',
               '/brand-log/wiz-logo-png_seeklogo-455765.png',
               '/brand-log/Zscaler_logo.png',

@@ -1583,60 +1583,80 @@ if (!formData.company_registration_number.trim()) {
                 {renderUploadSection("Company Profile Upload", "section1")}
                 {renderUploadSection("Case Studies / Reference Projects Upload", "section2")}
                 {renderUploadSection("Business Certificate Upload", "section3")}
+<div className="col-span-2">
+  <div className="flex">
+    <div className="me-2">
+      <input
+        type="checkbox"
+        id="treamscondition"
+        name="neozaar_tc"
+        checked={formData.neozaar_tc}
+        onChange={handleChange}
+        className="w-5 h-5 accent-black"
+      />
+    </div>
+    <label
+      htmlFor="treamscondition"
+      className="text-sm dark:text-black"
+    >
+      I agree to the{" "}
+      <Link
+        href="/terms-and-conditions"
+        className="font-semibold underline"
+      >
+        Terms & Conditions
+      </Link>{" "}
+      and consent to the collection and use of my data as outlined in the{" "}
+      <Link
+        href="/privacy-policy"
+        className="font-semibold underline"
+      >
+        Privacy Policy
+      </Link>.
+    </label>
+  </div>
+  {errors.neozaar_tc && (
+    <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>
+  )}
+</div>
+ 
+<div className="col-span-2">
+  <div className="flex">
+    <div className="me-2">
+      <input
+        type="checkbox"
+        id="treamscondition"
+        name="neozaar_tc"
+        checked={formData.neozaar_tc}
+        onChange={handleChange}
+        className="w-5 h-5 accent-black"
+      />
+    </div>
+    <label
+      htmlFor="treamscondition"
+      className="text-sm dark:text-black"
+    >
+      I agree to the{" "}
+      <Link
+        href="/terms-and-conditions"
+        className="font-semibold underline"
+      >
+        Terms & Conditions
+      </Link>{" "}
+      and consent to the collection and use of my data as outlined in the{" "}
+      <Link
+        href="/privacy-policy"
+        className="font-semibold underline"
+      >
+        Privacy Policy
+      </Link>.
+    </label>
+  </div>
+  {errors.neozaar_tc && (
+    <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>
+  )}
+</div>
 
-                <div className="col-span-2">
-                  <div className='flex'>
-                    <div className='me-2'>
-                      <input
-                        type="checkbox"
-                        id="treamscondition"
-                        name="neozaar_tc"
-                        checked={formData.neozaar_tc}
-                        onChange={handleChange}
-                        className='peer/terms hidden '
-                      />
-                      <label htmlFor='treamscondition' className='block bg-zinc-100 w-5 h-5 border border-zinc-200 peer-checked/terms:hidden dark:text-black'></label>
-                      <label htmlFor='treamscondition' className='hidden justify-center items-center bg-black w-5 h-5 border border-black peer-checked/terms:flex'>
-                        <i className="ri-check-line text-white "></i>
-                      </label>
-                    </div>
-                    <label htmlFor='treamscondition' className='text-sm dark:text-black'>
-                      I agree to the <Link href="/terms-and-conditions" className='font-semibold underline'>Terms & Conditions</Link> and consent to the collection and use of my data as outlined in the <Link href="/privacy-policy" className='font-semibold underline'>Privacy Policy</Link>.
-                    </label>
-                  </div>
-                  {errors.neozaar_tc && <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>}
-                </div>
-
-                <div className="col-span-2">
-                  <div className='flex'>
-                    <div className='me-2'>
-                      <input
-                        type="checkbox"
-                        id="agree"
-                        name="data_privacy"
-                        checked={formData.data_privacy}
-                        onChange={handleChange}
-                        className='peer/agree hidden'
-                      />
-                      <label htmlFor='agree' className='block bg-zinc-100 w-5 h-5 border border-zinc-200 peer-checked/agree:hidden'></label>
-                      <label htmlFor='agree' className='hidden justify-center items-center bg-black w-5 h-5 border border-black peer-checked/agree:flex'>
-                        <i className="ri-check-line text-white"></i>
-                      </label>
-                    </div>
-                    <label htmlFor='agree' className='text-sm dark:text-black'>
-                      I have read and agree to the Privacy Policy and consent to the use of my data for the following purposes.
-                    </label>
-                  </div>
-
-                  <ul className='ms-10 mt-2 text-sm font-sans text-zinc-500 list-disc dark:text-black'>
-                    <li>To provide me with the requested service.</li>
-                    <li>To send me product updates and marketing communications.</li>
-                    <li>To improve my user experience on this website.</li>
-                    <li>To share anonymized data with third-party partners for analytics.</li>
-                  </ul>
-
-                  {errors.data_privacy && <p className="text-red-500 text-xs mt-1">{errors.data_privacy}</p>}
-                </div>
 
               </>
             )}
@@ -1675,6 +1695,9 @@ if (!formData.company_registration_number.trim()) {
                   </>
                 )}
               </button>
+
+
+
 
 
 
