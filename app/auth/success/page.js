@@ -45,9 +45,7 @@ export default function SuccessPage() {
         {/* Message */}
         <div className="w-[90%] sm:w-[80%] md:w-[70%] lg:w-[80%] mx-auto">
           <p className="text-gray-300 sm:text-[10px] md:text-md lg:text-xl xl:text-2xl mb-4 sm:mb-6 lg:mb-8">
-            Thank you for registering with us! Please wait while we verify your
-            credentials. Once verified, we will contact you via email. Below you
-            can see the steps of your verification process.
+           We appreciate your registration! Our team is reviewing your information and will contact you by email once confirmed.
           </p>
         </div>
 
@@ -128,9 +126,9 @@ export default function SuccessPage() {
         </div>
 
         {/* Loader */}
-        <div className="flex justify-center mb-4 sm:mb-6 lg:mb-8">
+        {/* <div className="flex justify-center mb-4 sm:mb-6 lg:mb-8">
           <div className="animate-spin rounded-full h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 lg:h-14 lg:w-14 border-t-2 border-b-2 border-orange-500"></div>
-        </div>
+        </div> */}
 
         {/* Back Button */}
         <a

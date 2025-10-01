@@ -5,7 +5,7 @@ export default function Footer() {
 
   const NAV_LINKS = [
     { href: '/isv-registration', label: 'ISV Registration' },
-    { href: '/partner-with-us', label: 'Partner With Us' },
+    { href: '/partner-with-us', label: 'Solution Partner Registration form' },
     { href: '/', label: 'Contact' },
   ];
 
@@ -22,13 +22,13 @@ We help ISVs scale through streamlined onboarding, bundled deployment offers, an
             </p>
 
             <div className="flex flex-wrap gap-[10px] pt-28 pb-8 text-sm items-center">
-              <a href="#" className="hover:underline">
+              <a href="https://www.linkedin.com/company/neozaar/" target="_blank" className="hover:underline">
                 LinkedIn
               </a>
-              <a href="#" className="hover:underline">
+              <a href="https://www.facebook.com/people/Neozaar/61576376054230/" target="_blank" className="hover:underline">
                 FaceBook
               </a>
-              <a href="#" className="hover:underline">
+              <a href="https://www.instagram.com/neozaarofficial/" target="_blank" className="hover:underline">
                 Instagram
               </a>
               <a href="#" className="hover:underline">
@@ -92,7 +92,7 @@ Subscribe to updates on SaaS trends, hyperscaler programs, and exclusive NeoZaar
 
       <div className="border-t border-white/10 mt-6 relative z-10">
         <div className="container mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
-          <p>© 2025, Designed by Smart Itcentre.</p>
+          <p>© 2025, Designed by NeoZaar.</p>
           <div className="flex gap-4 mt-2 md:mt-0">
             <Link href="/terms-and-conditions" className="hover:underline semibold">
               Terms & Condition

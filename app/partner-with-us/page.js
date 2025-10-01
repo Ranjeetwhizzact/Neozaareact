@@ -121,6 +121,66 @@ export default function RegistrationForm() {
       pattern: /^[A-Za-z\s]+$/,
       message: "Company name should only contain letters and spaces."
     },
+    company_registration_number: {
+  required: true,
+  validate: (value) => {
+  
+    
+    if (!value || value.trim() === "") {
+      return "Company Registration Number is required.";
+    }
+
+    const country = headquater_country || "";
+ console.log("country r",country);
+    // If country is not selected yet, use generic validation
+    if (!country || country === "") {
+      if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
+        return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+      }
+      return null;
+    }
+
+    // Country-specific validations
+    if (country === "UAE") {
+      if (!/^[0-9]{1,10}$/.test(value)) {
+        return "For UAE, Company Registration Number must be numeric and up to 10 digits.";
+      }
+      return null;
+    }
+
+    if (country === "India") {
+      if (!/^[A-Z0-9]{21}$/.test(value)) {
+        return "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
+      }
+      return null;
+    }
+
+    // For all other countries
+    if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
+      return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+    }
+
+    return null;
+  }
+},
+  tax_id: {
+    required: true,
+    validate: (value, allValues = {}) => {
+      if (!value) return "Tax ID is required.";
+      const country = allValues.headquater_country || "";
+      console.log(country);
+      if (value.length > 20) return "Tax ID must not exceed 20 characters.";
+
+      if (country === "UAE") {
+        return /^[0-9]{15}$/.test(value) ? null : "For UAE, Tax ID must be exactly 15 digits.";
+      }
+      if (country === "India") {
+        return /^[0-9A-Z]{15}$/.test(value) ? null : "For India, Tax ID must be exactly 15 alphanumeric characters.";
+      }
+      
+      return /^[A-Za-z0-9-]*$/.test(value) ? null : "Tax ID can only contain letters, numbers, and hyphens.";
+    }
+  },
     designation: {
       required: true,
       pattern: /^[A-Za-z\s]+$/,
@@ -382,6 +442,9 @@ export default function RegistrationForm() {
     ];
 
     const onlyLettersAndSpaces = /^[A-Za-z\s]+$/;
+   const indiavalidation = /^[A-Za-z0-9]{21}$/; 
+const uaevalidation = /^[0-9]{1,10}$/;      
+
 
     if (!formData.brand_name.trim()) {
       newErrors.brand_name = "Brand name required";
@@ -400,9 +463,22 @@ export default function RegistrationForm() {
     if (!formData.registered_business_name.trim()) {
       newErrors.registered_business_name = "Group / Holding Company name required";
     }
-    if (!formData.company_registration_number.trim()) {
-      newErrors.company_registration_number = "Registration number required";
-    }
+if (!formData.company_registration_number.trim()) {
+  newErrors.company_registration_number = "Registration number required";
+} else if (
+  formData.headquater_country === "India" &&
+  !indiavalidation.test(formData.company_registration_number)
+) {
+  newErrors.company_registration_number =
+    "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
+} else if (
+  formData.headquater_country === "UAE" &&
+  !uaevalidation.test(formData.company_registration_number)
+) {
+  newErrors.company_registration_number =
+    "For UAE, Company Registration Number must be numeric and up to 10 digits.";
+}
+
 
 
     if (!formData.website_url.trim()) newErrors.website_url = "Website required";
@@ -864,26 +940,7 @@ export default function RegistrationForm() {
                   {errors.registered_business_name && <p className="text-red-500 text-xs mt-1">{errors.registered_business_name}</p>}
                 </div>
 
-                <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium dark:text-black font-sans'>Company registration number</label>
-                  <div className='flex'>
 
-                    <input
-                      type='text'
-                      name="company_registration_number"
-                      value={formData.company_registration_number}
-                      maxLength={20}
-                                             onChange={(e) => {
-    const value = e.target.value;
-    if (/^[A-Za-z0-9-]*$/.test(value)) {
-      handleChange(e);
-    }
-  }}
-                      className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
-                    />
-                  </div>
-                  {errors.company_registration_number && <p className="text-red-500 text-xs mt-1">{errors.company_registration_number}</p>}
-                </div>
 
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm font-medium font-sans dark:text-black'>Legal entity type</label>
@@ -928,26 +985,132 @@ export default function RegistrationForm() {
                   {errors.Legal_entity_type && <p className="text-red-500 text-xs mt-1">{errors.Legal_entity_type}</p>}
                 </div>
 
-                <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium dark:text-black font-sans'>Tax id</label>
-                  <div className='flex'>
 
-                    <input
-                      type='text'
-                      name="tax_id"
-                      value={formData.tax_id}
-                      maxLength={20}
-                       onChange={(e) => {
-    const value = e.target.value;
-    if (/^[A-Za-z0-9-]*$/.test(value)) {
-      handleChange(e);
-    }
-  }}
-                      className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.tax_id ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
-                    />
-                  </div>
-                  {errors.tax_id && <p className="text-red-500 text-xs mt-1">{errors.tax_id}</p>}
-                </div>
+<div className='col-span-2 md:col-span-1'>
+  <label className='text-sm font-medium dark:text-black font-sans'>
+    VAT ID
+  </label>
+  <div className='flex'>
+    <input
+      type='text'
+      name='vat_id'
+      value={formData.vat_id || ""}  // ✅ always fallback to ""
+      maxLength={
+        formData.headquater_country === "India"
+          ? 15
+          : formData.headquater_country === "UAE"
+          ? 15
+          : 20
+      }
+      onChange={(e) => {
+        const rawValue = e.target.value;
+        const country = formData.headquater_country || "";
+        const value = country === "India" ? rawValue.toUpperCase() : rawValue;
+
+        // Update form data
+        handleChange({
+          target: { name: "vat_id", value },
+        });
+
+        // Validation
+        let error = "";
+        if (!value.trim()) {
+          error = "VAT ID is required.";
+        } else if (country === "India" && !/^[0-9A-Z]{15}$/.test(value)) {
+          error =
+            "For India, GSTIN must be exactly 15 alphanumeric uppercase characters.";
+        } else if (country === "UAE" && !/^[0-9]{15}$/.test(value)) {
+          error = "For UAE, TRN must be exactly 15 digits.";
+        } else if (
+          country !== "India" &&
+          country !== "UAE" &&
+          !/^[A-Za-z0-9-]{1,20}$/.test(value)
+        ) {
+          error =
+            "For other countries, VAT ID must be up to 20 characters (letters, numbers, hyphen allowed).";
+        }
+
+        // Update errors
+        setErrors((prev) => ({
+          ...prev,
+          vat_id: error,
+        }));
+      }}
+      className={`outline-0 w-full py-2 px-3 border dark:text-black ${
+        errors.vat_id
+          ? "border-red-300 bg-red-500/10"
+          : "border-zinc-200 bg-zinc-100"
+      }`}
+    />
+  </div>
+  {errors.vat_id && (
+    <p className='text-red-500 text-xs mt-1'>{errors.vat_id}</p>
+  )}
+</div>
+
+  <div className='col-span-2 md:col-span-1'>
+  <label className='text-sm font-medium dark:text-black font-sans'>
+    Company registration number
+  </label>
+  <div className='flex'>
+    <input
+      type='text'
+      name='company_registration_number'
+      value={formData.company_registration_number}
+      maxLength={
+        formData.headquater_country === "India"
+          ? 21
+          : formData.headquater_country === "UAE"
+          ? 10
+          : 30
+      }
+      onChange={(e) => {
+        const value = e.target.value;
+        handleChange(e); // always update formData
+
+        let error = "";
+
+        if (!value.trim()) {
+          error = "Registration number required";
+        } else if (
+          formData.headquater_country === "India" &&
+          !/^[A-Za-z0-9]{21}$/.test(value)
+        ) {
+          error =
+            "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
+        } else if (
+          formData.headquater_country === "UAE" &&
+          !/^[0-9]{1,10}$/.test(value)
+        ) {
+          error =
+            "For UAE, Company Registration Number must be numeric and up to 10 digits.";
+        } else if (
+          formData.headquater_country !== "India" &&
+          formData.headquater_country !== "UAE" &&
+          !/^(?!.*-.*-)[A-Za-z0-9\s-]{1,30}$/.test(value)
+        ) {
+          error =
+            "For other countries, max 30 characters allowed with only one dash (-).";
+        }
+
+        setErrors((prev) => ({
+          ...prev,
+          company_registration_number: error,
+        }));
+      }}
+      className={`outline-0 w-full py-2 px-3 border dark:text-black ${
+        errors.company_registration_number
+          ? "border-red-300 bg-red-500/10"
+          : "border-zinc-200 bg-zinc-100"
+      }`}
+    />
+  </div>
+  {errors.company_registration_number && (
+    <p className='text-red-500 text-xs mt-1'>
+      {errors.company_registration_number}
+    </p>
+  )}
+</div>
 
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm font-medium font-sans dark:text-black'>Headquarter country</label>
@@ -1420,60 +1583,80 @@ export default function RegistrationForm() {
                 {renderUploadSection("Company Profile Upload", "section1")}
                 {renderUploadSection("Case Studies / Reference Projects Upload", "section2")}
                 {renderUploadSection("Business Certificate Upload", "section3")}
+<div className="col-span-2">
+  <div className="flex">
+    <div className="me-2">
+      <input
+        type="checkbox"
+        id="treamscondition"
+        name="neozaar_tc"
+        checked={formData.neozaar_tc}
+        onChange={handleChange}
+        className="w-5 h-5 accent-black"
+      />
+    </div>
+    <label
+      htmlFor="treamscondition"
+      className="text-sm dark:text-black"
+    >
+      I agree to the{" "}
+      <Link
+        href="/terms-and-conditions"
+        className="font-semibold underline"
+      >
+        Terms & Conditions
+      </Link>{" "}
+      and consent to the collection and use of my data as outlined in the{" "}
+      <Link
+        href="/privacy-policy"
+        className="font-semibold underline"
+      >
+        Privacy Policy
+      </Link>.
+    </label>
+  </div>
+  {errors.neozaar_tc && (
+    <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>
+  )}
+</div>
+ 
+<div className="col-span-2">
+  <div className="flex">
+    <div className="me-2">
+      <input
+        type="checkbox"
+        id="treamscondition"
+        name="neozaar_tc"
+        checked={formData.neozaar_tc}
+        onChange={handleChange}
+        className="w-5 h-5 accent-black"
+      />
+    </div>
+    <label
+      htmlFor="treamscondition"
+      className="text-sm dark:text-black"
+    >
+      I agree to the{" "}
+      <Link
+        href="/terms-and-conditions"
+        className="font-semibold underline"
+      >
+        Terms & Conditions
+      </Link>{" "}
+      and consent to the collection and use of my data as outlined in the{" "}
+      <Link
+        href="/privacy-policy"
+        className="font-semibold underline"
+      >
+        Privacy Policy
+      </Link>.
+    </label>
+  </div>
+  {errors.neozaar_tc && (
+    <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>
+  )}
+</div>
 
-                <div className="col-span-2">
-                  <div className='flex'>
-                    <div className='me-2'>
-                      <input
-                        type="checkbox"
-                        id="treamscondition"
-                        name="neozaar_tc"
-                        checked={formData.neozaar_tc}
-                        onChange={handleChange}
-                        className='peer/terms hidden '
-                      />
-                      <label htmlFor='treamscondition' className='block bg-zinc-100 w-5 h-5 border border-zinc-200 peer-checked/terms:hidden dark:text-black'></label>
-                      <label htmlFor='treamscondition' className='hidden justify-center items-center bg-black w-5 h-5 border border-black peer-checked/terms:flex'>
-                        <i className="ri-check-line text-white "></i>
-                      </label>
-                    </div>
-                    <label htmlFor='treamscondition' className='text-sm dark:text-black'>
-                      I agree to the <Link href="/terms-and-conditions" className='font-semibold underline'>Terms & Conditions</Link> and consent to the collection and use of my data as outlined in the <Link href="/privacy-policy" className='font-semibold underline'>Privacy Policy</Link>.
-                    </label>
-                  </div>
-                  {errors.neozaar_tc && <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>}
-                </div>
-
-                <div className="col-span-2">
-                  <div className='flex'>
-                    <div className='me-2'>
-                      <input
-                        type="checkbox"
-                        id="agree"
-                        name="data_privacy"
-                        checked={formData.data_privacy}
-                        onChange={handleChange}
-                        className='peer/agree hidden'
-                      />
-                      <label htmlFor='agree' className='block bg-zinc-100 w-5 h-5 border border-zinc-200 peer-checked/agree:hidden'></label>
-                      <label htmlFor='agree' className='hidden justify-center items-center bg-black w-5 h-5 border border-black peer-checked/agree:flex'>
-                        <i className="ri-check-line text-white"></i>
-                      </label>
-                    </div>
-                    <label htmlFor='agree' className='text-sm dark:text-black'>
-                      I have read and agree to the Privacy Policy and consent to the use of my data for the following purposes.
-                    </label>
-                  </div>
-
-                  <ul className='ms-10 mt-2 text-sm font-sans text-zinc-500 list-disc dark:text-black'>
-                    <li>To provide me with the requested service.</li>
-                    <li>To send me product updates and marketing communications.</li>
-                    <li>To improve my user experience on this website.</li>
-                    <li>To share anonymized data with third-party partners for analytics.</li>
-                  </ul>
-
-                  {errors.data_privacy && <p className="text-red-500 text-xs mt-1">{errors.data_privacy}</p>}
-                </div>
 
               </>
             )}
@@ -1512,6 +1695,9 @@ export default function RegistrationForm() {
                   </>
                 )}
               </button>
+
+
+
 
 
 

@@ -59,7 +59,7 @@ export default function Page() {
   const [competencies_certifications, setBusinessDescription] = useState('');
   const [existing_marketplace_listing, setExistingMarket] = useState([]);
   const [cloud_partnership, setCloudPartnership] = useState([]);
-  const [preferred_engagement, setPreferred] = useState('');
+  const [preferred_engagement, setPreferred] = useState('Reseller');
   const [neozaar_tc, setNeozaartc] = useState(false);
   const [data_privacy, setDataPrivacy] = useState(false);
   const [businessCert, setBusinessCert] = useState(null);
