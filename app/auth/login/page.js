@@ -2,8 +2,36 @@
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+
+// Cookie utility functions (client-side only)
+const cookieUtils = {
+  set: (name, value, days = 1) => {
+    if (typeof document === 'undefined') return;
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+  },
+
+  get: (name) => {
+    if (typeof document === 'undefined') return null;
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  },
+
+  remove: (name) => {
+    if (typeof document === 'undefined') return;
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  }
+};
 
 export default function Page() {
   const router = useRouter();
@@ -11,6 +39,45 @@ export default function Page() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  // Set isClient to true when component mounts on client
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Check for existing login on component mount (client-side only)
+  useEffect(() => {
+    if (!isClient) return;
+
+    const existingToken = cookieUtils.get("token");
+    const existingUser = cookieUtils.get("user");
+    
+    if (existingToken && existingUser) {
+      try {
+        const user = JSON.parse(existingUser);
+        redirectUser(user.role_id, existingToken);
+      } catch (error) {
+        // If user data is corrupted, clear cookies
+        cookieUtils.remove("token");
+        cookieUtils.remove("user");
+      }
+    }
+  }, [isClient]);
+
+  const redirectUser = (roleId, token) => {
+    switch (roleId) {
+      case 1:
+        router.push(`/market_place`);
+        break;
+      default:
+        const tokenLocal = localStorage.getItem('token');
+        if (!tokenLocal) {
+          // router.push(`http://192.168.1.4:4200/angular/auth/login-token?token=${token}`);
+          router.push(`http://neozaar.com/angular/auth/login-token?token=${token}`);
+        }
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,28 +106,22 @@ export default function Page() {
       if (res.ok && data.status === 'success') {
         const { token, user } = data.data;
 
+        // Store in localStorage (existing)
         localStorage.setItem('token', token);
         localStorage.setItem('user', JSON.stringify(user));
       
-        document.cookie = `token=${token}; path=/; max-age=86400`;
+        // Store in cookies (new - with 1 day expiration)
+        cookieUtils.set('token', token, 1);
+        cookieUtils.set('user', JSON.stringify(user), 1);
+        
+        // Store additional user info in cookies for quick access
+        cookieUtils.set('user_email', user.email, 1);
+        cookieUtils.set('user_role', user.role_id.toString(), 1);
+        cookieUtils.set('user_name', user.name || user.email.split('@')[0], 1);
 
+        toast.success('Login successful!');
+        redirectUser(user.role_id, token);
 
-        switch (user.role_id) {
-          case 1:
-            router.push(`/market_place`);
-            break;
-       
-          default:
-            localStorage.clear('token')
-            localStorage.clear('user')
-            const tokenLocal = localStorage.getItem('token')
-            console.log(tokenLocal)
-            // if(!tokenLocal) router.push(`http://app.neozaar.skilladders.com/auth/login-token?token=${token}`);
-            // if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
-            // if(!tokenLocal) router.push(`http://localhost:4200/angular/auth/login-token?token=${token}`);
-            if(!tokenLocal) router.push(` http://192.168.1.4:4200/angular/auth/login-token?token=${token}`);
-            // if(!tokenLocal) router.push(`http://20.83.163.38/angular/auth/login-token?token=${token}`);
-        }
       } else {
         toast.error(data.message || 'Login failed');
       }
@@ -71,6 +132,44 @@ export default function Page() {
       setLoading(false);
     }
   };
+
+  // Function to check login status (useful for other components)
+  const checkLoginStatus = () => {
+    if (!isClient) return { isLoggedIn: false };
+    
+    const token = cookieUtils.get("token");
+    const user = cookieUtils.get("user");
+    
+    if (token && user) {
+      try {
+        return {
+          isLoggedIn: true,
+          user: JSON.parse(user),
+          token: token
+        };
+      } catch (error) {
+        return { isLoggedIn: false };
+      }
+    }
+    return { isLoggedIn: false };
+  };
+
+  // Function to logout (clear both localStorage and cookies)
+  const handleLogout = () => {
+    if (!isClient) return;
+    
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    
+    cookieUtils.remove('token');
+    cookieUtils.remove('user');
+    cookieUtils.remove('user_email');
+    cookieUtils.remove('user_role');
+    cookieUtils.remove('user_name');
+    
+    router.push('/auth/login');
+  };
+
   return (
     <div className="max-w-[1920px] m-auto">
       {/* ✅ Include Toaster here */}
@@ -100,37 +199,36 @@ export default function Page() {
               />
             </div>
 
-<div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-  <Image
-    src="/image/RiKey2Fill.png"
-    alt="Key Icon"
-    width={24}
-    height={24}
-    className="mx-4"
-  />
-  <input
-    type={showPassword ? "text" : "password"}  // ✅ this is the fix
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-    placeholder="Password"
-    className="bg-zinc-900 px-4 py-3 h-[52px] text-sm text-zinc-300 w-full outline-none"
-    required
-  />
-  <button
-    type="button"   // ✅ so it won’t submit form
-    onClick={() => setShowPassword(!showPassword)}
-    className="mr-4"
-  >
-    <Image
-      src="/image/RiEyeFill.png"
-      alt="Show Password Icon"
-      width={24}
-      height={24}
-      className="cursor-pointer"
-    />
-  </button>
-</div>
-
+            <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
+              <Image
+                src="/image/RiKey2Fill.png"
+                alt="Key Icon"
+                width={24}
+                height={24}
+                className="mx-4"
+              />
+              <input
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+                className="bg-zinc-900 px-4 py-3 h-[52px] text-sm text-zinc-300 w-full outline-none"
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="mr-4"
+              >
+                <Image
+                  src="/image/RiEyeFill.png"
+                  alt="Show Password Icon"
+                  width={24}
+                  height={24}
+                  className="cursor-pointer"
+                />
+              </button>
+            </div>
 
             <div className="text-right text-sm text-gray-400">
               <Link href="/auth/forget-password">Forget Password?</Link>
@@ -145,7 +243,7 @@ export default function Page() {
             </button>
 
             <p className="text-sm text-center text-gray-400">
-              Don’t Have an Account?{' '}
+              Don{`'`}t Have an Account?{' '}
               <Link href="/auth/register" className="text-white underline font-bold">
                 Sign Up
               </Link>
@@ -159,6 +257,9 @@ export default function Page() {
               Contact
             </a>
           </div>
+
+          {/* Debug button to check cookies - remove in production */}
+       
         </div>
 
         <div className="w-full h-[400px] md:h-auto hidden md:block">
@@ -171,7 +272,6 @@ export default function Page() {
                 and manage every step<br />
                from selection to deployment<br />
                 services.
-                    
               </p>
             </div>
           </div>

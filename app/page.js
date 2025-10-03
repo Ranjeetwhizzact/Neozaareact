@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
+import CookieConsent from "./components/CookieConsent";
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -979,6 +980,10 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
           </div>
         </section>
       </main>
+      <div className='w-1/3 m-auto'>
+
+         <CookieConsent />
+      </div>
       <Footer />
     </>
   );

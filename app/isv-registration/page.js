@@ -7,6 +7,8 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import toast, { Toaster } from 'react-hot-toast';
 import { Fascinate } from 'next/font/google';
+import { cookies } from "next/headers";
+
 
 export default function Page() {
   const [step, setStep] = useState(1);

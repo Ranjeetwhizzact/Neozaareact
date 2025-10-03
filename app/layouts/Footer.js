@@ -8,10 +8,50 @@ export default function Footer() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // "idle" | "loading" | "success" | "error"
   const [message, setMessage] = useState("");
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  // Cookie utility functions
+  const setCookie = (name, value, days = 15) => {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = "expires=" + date.toUTCString();
+    document.cookie = name + "=" + value + ";" + expires + ";path=/";
+  };
+
+  const getCookie = (name) => {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  };
+
+  // Check if user already subscribed on component mount
+  useEffect(() => {
+    const hasSubscribed = getCookie("newsletter_subscribed");
+    if (hasSubscribed) {
+      setIsSubscribed(true);
+      const savedEmail = getCookie("subscriber_email");
+      if (savedEmail) {
+        setEmail(savedEmail);
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email) return;
+
+    // Check if already subscribed
+    const hasSubscribed = getCookie("newsletter_subscribed");
+    if (hasSubscribed) {
+      setStatus("success");
+      setMessage("🎉 You're already subscribed to our newsletter!");
+      return;
+    }
 
     setStatus("loading");
     setMessage("");
@@ -29,6 +69,11 @@ export default function Footer() {
         setStatus("success");
         setMessage(data.message || "🎉 You have subscribed successfully!");
         setEmail("");
+        setIsSubscribed(true);
+        
+        // Set cookies for 15 days
+        setCookie("newsletter_subscribed", "true", 15);
+        setCookie("subscriber_email", email, 15);
       } else {
         setStatus("error");
         setMessage(data.message || "Something went wrong.");
@@ -39,7 +84,7 @@ export default function Footer() {
     }
   };
 
-    // 🔥 Auto-close modal after 3 seconds
+  // 🔥 Auto-close modal after 3 seconds
   useEffect(() => {
     if (status !== "idle" && status !== "loading") {
       const timer = setTimeout(() => {
@@ -49,6 +94,7 @@ export default function Footer() {
       return () => clearTimeout(timer);
     }
   }, [status]);
+
   const NAV_LINKS = [
     { href: "/isv-registration", label: "ISV Registration" },
     { href: "/partner-with-us", label: "Our Solution Partners " },
@@ -64,7 +110,7 @@ export default function Footer() {
               <p className="text-sm leading-relaxed mt-4">
                 NeoZaar is a GTM accelerator and AI-powered marketplace for SaaS
                 and cloud-native solutions.
-                We help ISVs scale through streamlined onboarding, bundled deployment offers, and credit-aligned sales via AWS, Azure, and NeoZaar’s own platform.
+                We help ISVs scale through streamlined onboarding, bundled deployment offers, and credit-aligned sales via AWS, Azure, and NeoZaar{`'`}s own platform.
               </p>
 
               <div className="flex flex-wrap gap-[10px] pt-28 pb-8 text-sm items-center">
@@ -114,16 +160,17 @@ export default function Footer() {
             <form onSubmit={handleSubmit} className="relative mt-4 max-w-full">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={isSubscribed ? "You're subscribed! ✓" : "Enter your email"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-12 bg-transparent border border-gray-500 rounded text-sm placeholder-gray-400 pl-4 pr-12 focus:outline-none"
+                className="w-full h-12 bg-transparent border border-gray-500 rounded text-sm placeholder-gray-400 pl-4 pr-12 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
                 required
+                disabled={isSubscribed}
               />
               <button
                 type="submit"
-                disabled={status === "loading"}
-                className="absolute cursor-pointer inset-y-0 right-0"
+                disabled={status === "loading" || isSubscribed}
+                className="absolute cursor-pointer inset-y-0 right-0 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <img src="/image/arrow.png" alt="Submit" className="w-12 h-12" />
               </button>
@@ -132,6 +179,11 @@ export default function Footer() {
               Stay Ahead with Cloud GTM Insights
               Subscribe to updates on SaaS trends, hyperscaler programs, and exclusive NeoZaar deals.
             </p>
+            {isSubscribed && (
+              <p className="mt-2 text-green-400 text-xs">
+                ✓ Subscribed! You{`'`}ll receive updates for the next 15 days.
+              </p>
+            )}
           </div>
         </div>
 
@@ -157,33 +209,31 @@ export default function Footer() {
       </footer>
 
       {/* Status Modal */}
-{/* Status Modal */}
-{status !== "idle" && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end items-start overflow-hidden">
-    <div className="relative bg-gray-900 rounded-xl shadow-lg p-6 w-80 m-6">
-      
-      {/* Close Button Top-Right */}
-      <button
-        className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 font-bold"
-        onClick={() => setStatus("idle")}
-      >
-        ✕
-      </button>
+      {status !== "idle" && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end items-start overflow-hidden">
+          <div className="relative bg-gray-900 rounded-xl shadow-lg p-6 w-80 m-6">
+            
+            {/* Close Button Top-Right */}
+            <button
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 font-bold"
+              onClick={() => setStatus("idle")}
+            >
+              ✕
+            </button>
 
-      {/* Modal Content */}
-      {status === "loading" && (
-        <p className="text-gray-700 text-center">Submitting...</p>
+            {/* Modal Content */}
+            {status === "loading" && (
+              <p className="text-gray-700 text-center">Submitting...</p>
+            )}
+            {status === "success" && (
+              <p className="text-green-600 font-semibold text-center">{message}</p>
+            )}
+            {status === "error" && (
+              <p className="text-red-600 font-semibold text-center">{message}</p>
+            )}
+          </div>
+        </div>
       )}
-      {status === "success" && (
-        <p className="text-green-600 font-semibold text-center">{message}</p>
-      )}
-      {status === "error" && (
-        <p className="text-red-600 font-semibold text-center">{message}</p>
-      )}
-    </div>
-  </div>
-)}
-
     </div>
   );
 }
