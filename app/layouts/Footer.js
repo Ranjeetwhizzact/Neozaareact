@@ -57,7 +57,7 @@ export default function Footer() {
     setMessage("");
 
     try {
-      const res = await fetch("http://20.83.163.38:5000/api/subscribe/create", {
+      const res = await fetch("https://www.neozaar.com/api/subscribe/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, source: "website" }),

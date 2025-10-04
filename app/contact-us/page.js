@@ -45,7 +45,7 @@ export default function Page() {
     const formattedPhone = mobile.startsWith('+') ? mobile : `+${mobile}`;
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/contact', {
+      const res = await fetch('https://www.neozaar.com/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

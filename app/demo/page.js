@@ -97,7 +97,7 @@ export default function Page() {
     };
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/enquiry/create', {
+      const res = await fetch('https://www.neozaar.com/api/enquiry/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

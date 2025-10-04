@@ -87,7 +87,7 @@ export default function Header() {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch("http://20.83.163.38:5000/api/logout", {
+      await fetch("https://www.neozaar.com/api/logout", {
         method: "POST",
         credentials: "include",
         headers: {

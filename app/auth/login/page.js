@@ -84,7 +84,7 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/login', {
+      const res = await fetch('https://www.neozaar.com/api/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

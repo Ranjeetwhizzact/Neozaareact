@@ -44,7 +44,7 @@ export default function CustomSlider() {
       if (!token) return;
 
       try {
-        const res = await fetch('http://20.83.163.38:5000/api/products/', {
+        const res = await fetch('https://www.neozaar.com/api/products/', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -64,7 +64,7 @@ export default function CustomSlider() {
       if (!token) return;
 
       try {
-        const res = await fetch(`http://20.83.163.38:5000/api/catalog/marketplace/products/${userId}`, {
+        const res = await fetch(`https://www.neozaar.com/api/catalog/marketplace/products/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -115,7 +115,7 @@ const handleSubmit = async (e) => {
   
   try {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://20.83.163.38:5000/api/lead/create", {
+    const res = await fetch("https://www.neozaar.com/api/lead/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -174,7 +174,7 @@ const handleSubmitB = async (e) => {
   try {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://20.83.163.38:5000/api/lead/create", {
+    const res = await fetch("https://www.neozaar.com/api/lead/create", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

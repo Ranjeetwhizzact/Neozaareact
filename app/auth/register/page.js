@@ -90,7 +90,7 @@ const validate = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/user/register', {
+      const res = await fetch('https://www.neozaar.com/api/user/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
