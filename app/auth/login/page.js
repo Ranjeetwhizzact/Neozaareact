@@ -69,13 +69,13 @@ export default function Page() {
     switch (roleId) {
       case 1:
         router.push(`/market_place`);
+        const tokenLocal = localStorage.getItem('token');
         break;
       default:
-        const tokenLocal = localStorage.getItem('token');
-        if (!tokenLocal) {
+        // if (!tokenLocal) {
           // router.push(`http://192.168.1.4:4200/angular/auth/login-token?token=${token}`);
-          router.push(`http://neozaar.com/app/auth/login-token?token=${token}`);
-        }
+          router.push(`https://neozaar.com/app/auth/login-token?token=${token}`);
+        // }
     }
   };
 

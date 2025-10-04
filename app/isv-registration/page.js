@@ -571,7 +571,7 @@ const validateStep = (stepNumber) => {
       if (businessCert) formData.append('business_certification', businessCert);
 
       try {
-        const res = await fetch('http://20.83.163.38:5000/api/user/register', {
+        const res = await fetch('https://www.neozaar.com/api/user/register', {
           method: 'POST',
           body: formData,
         });
