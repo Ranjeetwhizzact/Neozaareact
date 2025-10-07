@@ -1,3 +1,5 @@
+
+
 "use client";
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -12,6 +14,13 @@ import 'swiper/css/pagination';
 import Footer from "./layouts/Footer";
 import Header from './layouts/Header';
 import { useRouter } from "next/navigation";
+import SEO from "../components/SEO";
+import { NextSeo } from 'next-seo';
+
+
+// import { SEO_DATA } from "../config/seo.config";
+
+
 export default function Page() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -47,6 +56,40 @@ export default function Page() {
 
   return (
     <>
+    {/* <SEO pageKey="home" /> */}
+  <head>
+  <title>NeoZaar | Smarter Cloud Marketplace</title>
+  <meta
+    name="description"
+    content="Discover smarter cloud solutions with NeoZaar — curated SaaS bundles, verified ISVs, and managed services aligned with your AWS, Azure & GCP goals."
+  />
+  <meta
+    name="keywords"
+    content="Primary cloud marketplace, SaaS marketplace, cloud solutions, cloud bundles, AWS marketplace partner, Azure EDP accelerator, curated SaaS bundles, ISV enablement, cloud modernization, FinOps, AI for cloud buyers, NeoZaar marketplace, NeoZaar CoSell360, NeoZaar bundles"
+  />
+  <link rel="canonical" href="https://neozaar.com/" />
+
+  {/* Open Graph */}
+  <meta property="og:title" content="NeoZaar | Smarter Cloud Marketplace" />
+  <meta
+    property="og:description"
+    content="Explore NeoZaar — the smarter way to discover, bundle, and co-sell SaaS and cloud solutions across AWS, Azure, and GCP."
+  />
+  <meta property="og:image" content="https://neozaar.com/assets/home-og-image.jpg" />
+  <meta property="og:url" content="https://neozaar.com/" />
+  <meta property="og:type" content="website" />
+
+  {/* Twitter Cards */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="NeoZaar | Smarter Cloud Marketplace" />
+  <meta
+    name="twitter:description"
+    content="Discover smarter cloud solutions — curated SaaS bundles, verified ISVs, and managed services aligned with your cloud goals."
+  />
+  <meta name="twitter:image" content="https://neozaar.com/assets/home-og-image.jpg" />
+</head>
+
+      
       <main className="bg-black min-h-screen w-full mx-auto max-w-[1920px]">
         {/* Hero Section */}
         <section className="relative w-full flex flex-col items-center justify-start pt-8 px-2 sm:px-6 pb-15 min-h-screen lg:min-h-screen 2xl:min-h-auto">

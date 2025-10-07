@@ -7,6 +7,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import toast, { Toaster } from 'react-hot-toast';
 import { Fascinate } from 'next/font/google';
+import { NextSeo } from 'next-seo';
 
 
 
@@ -635,6 +636,40 @@ const validateStep = (stepNumber) => {
     }
   }
   return (
+    <>
+  <head>
+  <title>ISV Registration | List Your SaaS Solution on NeoZaar Marketplace</title>
+  <meta
+    name="description"
+    content="Join NeoZaar’s marketplace to list your SaaS, cloud, or AI solution. Unlock co-sell growth, private offers, and cloud-aligned bundle opportunities."
+  />
+  <meta
+    name="keywords"
+    content="ISV registration, SaaS listing, cloud marketplace onboarding, ISV partner program, AWS ISV onboarding, Azure marketplace partner, co-sell enablement, private offers, NeoZaar ISV registration, NeoZaar CoSell360, NeoZaar partner program"
+  />
+  <link rel="canonical" href="https://neozaar.com/isv-registration/" />
+
+  {/* Open Graph */}
+  <meta property="og:title" content="ISV Registration | NeoZaar Marketplace" />
+  <meta
+    property="og:description"
+    content="List your SaaS, AI, or cloud solution with NeoZaar — the go-to-market accelerator and marketplace built around your cloud goals."
+  />
+  <meta property="og:image" content="https://neozaar.com/assets/isv-og-image.jpg" />
+  <meta property="og:url" content="https://neozaar.com/isv-registration/" />
+  <meta property="og:type" content="website" />
+
+  {/* Twitter Cards */}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ISV Registration | NeoZaar Marketplace" />
+  <meta
+    name="twitter:description"
+    content="Join NeoZaar’s ISV program — connect with enterprise buyers, unlock co-sell opportunities, and list your SaaS solution."
+  />
+  <meta name="twitter:image" content="https://neozaar.com/assets/isv-og-image.jpg" />
+</head>
+
+ 
     <div className='max-w-[1920px] m-auto flex'>
       <div className='h-[100vh] w-[295px] bg-[#212121] hidden lg:flex items-center justify-between'>
         <div className='z-10 w-[260px] mx-5 h-80'>
@@ -1281,6 +1316,7 @@ const validateStep = (stepNumber) => {
 
       </div>
     </div>
+    </>
   );
 }
 

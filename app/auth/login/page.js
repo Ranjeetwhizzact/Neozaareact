@@ -65,73 +65,64 @@ export default function Page() {
     }
   }, [isClient]);
 
-  const redirectUser = (roleId, token) => {
-    switch (roleId) {
-      case 1:
-        router.push(`/market_place`);
-        const tokenLocal = localStorage.getItem('token');
-        break;
-      default:
-        // if (!tokenLocal) {
-          // router.push(`http://192.168.1.4:4200/angular/auth/login-token?token=${token}`);
-          router.push(`https://neozaar.com/app/auth/login-token?token=${token}`);
-        // }
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const res = await fetch('https://www.neozaar.com/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const contentType = res.headers.get('content-type');
+    let data;
+
+    if (contentType && contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      toast.error(`Unexpected server response: ${text}`);
+      return;
     }
-  };
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+    if (res.ok && data.status === 'success') {
+      const { token, user } = data.data;
 
-    try {
-      const res = await fetch('https://www.neozaar.com/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      // Store in localStorage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(user));
 
-      const contentType = res.headers.get('content-type');
-      let data;
+      // Store in cookies (1 day expiry)
+      cookieUtils.set('token', token, 1);
+      cookieUtils.set('user', JSON.stringify(user), 1);
+      cookieUtils.set('user_email', user.email, 1);
+      cookieUtils.set('user_role', user.role_id.toString(), 1);
+      cookieUtils.set('user_name', user.name || user.email.split('@')[0], 1);
 
-      if (contentType && contentType.includes('application/json')) {
-        data = await res.json();
+      toast.success('Login successful!');
+
+      // 🔹 Redirect logic directly here
+      if (user.role_id === 1) {
+        router.push('/market_place');
       } else {
-        const text = await res.text();
-        toast.error(`Unexpected server response: ${text}`);
-        return;
+       
+        window.location.href = `http://192.168.1.4:4200/angular/auth/login-token?token=${token}`;
       }
-
-      if (res.ok && data.status === 'success') {
-        const { token, user } = data.data;
-
-        // Store in localStorage (existing)
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(user));
-      
-        // Store in cookies (new - with 1 day expiration)
-        cookieUtils.set('token', token, 1);
-        cookieUtils.set('user', JSON.stringify(user), 1);
-        
-        // Store additional user info in cookies for quick access
-        cookieUtils.set('user_email', user.email, 1);
-        cookieUtils.set('user_role', user.role_id.toString(), 1);
-        cookieUtils.set('user_name', user.name || user.email.split('@')[0], 1);
-
-        toast.success('Login successful!');
-        redirectUser(user.role_id, token);
-
-      } else {
-        toast.error(data.message || 'Login failed');
-      }
-    } catch (error) {
-      console.error('Login error:', error);
-      toast.error('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error(data.message || 'Login failed');
     }
-  };
+  } catch (error) {
+    console.error('Login error:', error);
+    toast.error('Something went wrong. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   // Function to check login status (useful for other components)
   const checkLoginStatus = () => {

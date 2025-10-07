@@ -98,7 +98,7 @@ export default function Footer() {
   const NAV_LINKS = [
     { href: "/isv-registration", label: "ISV Registration" },
     { href: "/partner-with-us", label: "Our Solution Partners " },
-    { href: "/", label: "Contact" },
+    { href: "/contact-us", label: "Contact" },
   ];
 
   return (
