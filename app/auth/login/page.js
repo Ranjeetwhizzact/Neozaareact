@@ -110,7 +110,8 @@ const handleLogin = async (e) => {
         router.push('/market_place');
       } else {
        
-        window.location.href = `http://192.168.1.4:4200/angular/auth/login-token?token=${token}`;
+        window.location.href = `https://neozaar.com/app/auth/login-token?token=${token}`;
+        // window.location.href = `http://192.168.1.4:4200/angular/auth/login-token?token=${token}`;
       }
     } else {
       toast.error(data.message || 'Login failed');
