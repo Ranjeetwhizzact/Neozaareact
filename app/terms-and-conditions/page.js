@@ -32,26 +32,25 @@ export default function TermsPage() {
           </p>
 
           <h2 className="text-xl font-semibold mt-6 mb-3 text-black">3. ISV and Partner Submissions</h2>
+          <p className="mb-6  text-gray-700">
+            By submitting your product, service, or profile to NeoZaar, you represent that:
+          </p>
           <ul className="list-disc pl-6 mb-6 space-y-2  text-gray-700">
             <li>You are authorized to act on behalf of your organization.</li>
             <li>The information provided is accurate and current.</li>
             <li>
-              You have the rights to the intellectual property, licenses, and
-              claims made in your listing.
+              You have the rights to the intellectual property, licenses, and claims made in your listing.
             </li>
           </ul>
           <p className="mb-6  text-gray-700">
-            NeoZaar reserves the right to accept, reject, or modify submissions
-            at its discretion.
+            NeoZaar reserves the right to accept, reject, or modify submissions at its discretion.
           </p>
 
           <h2 className="text-xl font-semibold mt-6 mb-3 text-black">
             4. Platform Modifications and Availability
           </h2>
           <p className="mb-6  text-gray-700">
-            We may update, change, or discontinue parts of the platform without
-            notice. We are not liable for any downtime, delays, or data loss
-            resulting from platform updates or third-party integrations.
+            We may update, change, or discontinue parts of the platform without notice. We are not liable for any downtime, delays, or data loss resulting from platform updates or third-party integrations.
           </p>
 
           <h2 className="text-xl font-semibold mt-6 mb-3 text-black">5. Intellectual Property</h2>
@@ -83,8 +82,7 @@ export default function TermsPage() {
 
           <h2 className="text-xl font-semibold mt-6 mb-3 text-black">8. Termination</h2>
           <p className="mb-6  text-gray-700">
-            We may suspend or terminate your access to NeoZaar if we believe you
-            have violated these terms or acted against the spirit of the platform.
+            We may suspend or terminate your access to NeoZaar if we believe you’ve violated these terms or acted against the spirit of the platform.
           </p>
 
           <h2 className="text-xl font-semibold mt-6 mb-3 text-black">9. Disclaimers</h2>
@@ -125,3 +123,10 @@ export default function TermsPage() {
     </>
   );
 }
+
+
+
+
+
+
+

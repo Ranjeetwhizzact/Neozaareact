@@ -273,7 +273,28 @@ company_registration_number: {
   data_privacy: {
     required: true,
     message: "Please agree to the Privacy Policy"
+  },
+  businessCert: {
+  required: true,
+  validate: (file) => {
+    if (!file) return "Business certification document is required.";
+    const MAX_FILE_SIZE = 200 * 1024; // 200 KB
+    const ALLOWED_TYPES = [
+      "application/pdf",
+      "image/png",
+      "image/jpeg",
+      "image/jpg"
+    ];
+
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      return "Please upload a valid file (PDF, PNG, JPG, JPEG).";
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      return "File size must be less than 200kb.";
+    }
+    return null;
   }
+},
 };
 
   // Validate a single field
@@ -325,7 +346,8 @@ const validateField = (name, value) => {
       email,
       neozaar_tc,
       data_privacy,
-      brand_logo
+      brand_logo,
+      businessCert
     };
 
     // For company_registration_number, we need to handle it specially since it uses the state variable directly
@@ -395,6 +417,7 @@ const handleBlur = (fieldName) => {
     case 'neozaar_tc': value = neozaar_tc; break;
     case 'data_privacy': value = data_privacy; break;
     case 'brand_logo': value = brand_logo; break;
+    case 'businessCert': value = businessCert; break;
     default: value = null;
   }
 
@@ -410,7 +433,7 @@ const validateStep = (stepNumber) => {
       'brand_name', 'website_url', 'tax_id', 'headquater_country',
       'Legal_entity_type', 'brand_logo'],
     2: ['name', 'designation', 'mobile', 'password', 'email'],
-    3: ['neozaar_tc', 'data_privacy']
+    3: ['neozaar_tc', 'data_privacy', 'businessCert'],
   };
 
   const fieldsToValidate = stepFields[stepNumber];
@@ -496,12 +519,18 @@ const validateStep = (stepNumber) => {
     if (file) {
       setBusinessCert(file);
       setBusinessCertName(file.name);
+    // Validate the file
+      const error = validateField('businessCert', file);
+    setErrors(prev => ({ ...prev, businessCert: error }));
     }
   };
 
   const removeBusinessCert = () => {
     setBusinessCert(null);
     setBusinessCertName('');
+    // Clear the error
+    setErrors(prev => ({ ...prev, businessCert: null }));
+
   };
 
   // Platform and marketplace management
@@ -1192,6 +1221,9 @@ const validateStep = (stepNumber) => {
                       </button>
                     </div>
                   )}
+                  {errors.businessCert && (
+    <p className="text-red-500 text-sm mt-1">{errors.businessCert}</p>
+  )}
                 </div>
                 <div className="col-span-2">
                   <div className='flex'>
@@ -1211,7 +1243,7 @@ const validateStep = (stepNumber) => {
                       <label
                         htmlFor='treamscondition' className='hidden justify-center items-center bg-black w-5 h-5 border border-black  peer-checked/terms:flex'><i className="ri-check-line text-white"></i></label>
                     </div>
-                    <label htmlFor='treamscondition' className='text-sm dark:text-black '>I agree to the <a href="" className='font-semibold underline'>Terms & Conditions</a>  and consent to the collection and use of my data as outlined in the <a href="" className='font-semibold underline'>Privacy Policy</a> . </label>
+                    <label htmlFor='treamscondition' className='text-sm dark:text-black '>I agree to the <a href="/terms-and-conditions" className='font-semibold underline'>Terms & Conditions</a>  and consent to the collection and use of my data as outlined in the <a href="/privacy-policy" className='font-semibold underline'>Privacy Policy</a> . </label>
                   </div>
                   {errors.neozaar_tc && <p className="text-red-500 text-sm mt-1">{errors.neozaar_tc}</p>}
                 </div>
@@ -1289,3 +1321,5 @@ const validateStep = (stepNumber) => {
     </>
   );
 }
+
+
