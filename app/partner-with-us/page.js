@@ -415,6 +415,7 @@ export default function RegistrationForm() {
   };
 
   const handleNext = async () => {
+
     if (step === 1 && validateStep1()) {
       setStep(2);
     } else if (step === 2 && validateStep2()) {
@@ -917,7 +918,7 @@ if (!formData.company_registration_number.trim()) {
                 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium dark:text-black font-sans'>Brand name</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Brand Name</label>
                   <input
                     type='text'
                     name="brand_name"
@@ -943,7 +944,7 @@ if (!formData.company_registration_number.trim()) {
 
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans dark:text-black'>Legal entity type</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Legal Entity Type</label>
 
 
                   <select
@@ -1050,7 +1051,7 @@ if (!formData.company_registration_number.trim()) {
 
   <div className='col-span-2 md:col-span-1'>
   <label className='text-sm font-medium dark:text-black font-sans'>
-    Company registration number
+    Company Registration Number
   </label>
   <div className='flex'>
     <input
@@ -1113,7 +1114,7 @@ if (!formData.company_registration_number.trim()) {
 </div>
 
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm font-medium font-sans dark:text-black'>Headquarter country</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Headquarter Country</label>
                   <select
                     id="headquater_country"
                     name="headquater_country"
@@ -1157,7 +1158,7 @@ if (!formData.company_registration_number.trim()) {
                 </div>
 
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium dark:text-black font-sans'>Website url</label>
+                  <label className='text-sm font-medium dark:text-black font-sans'>Website URL</label>
                   <input
                     type='text'
                     name="website_url"
@@ -1169,7 +1170,7 @@ if (!formData.company_registration_number.trim()) {
                 </div>
 
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans dark:text-black'>Linkedin url</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>LinkedIn URL</label>
                   <input
                     type='text'
                     name="linkedin_url"
@@ -1268,7 +1269,7 @@ if (!formData.company_registration_number.trim()) {
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm font-medium font-sans dark:text-black">Phone number</label>
+                  <label className="text-sm font-medium font-sans dark:text-black">Phone Number</label>
                   <PhoneInput
                     country={'in'}
                     value={formData.mobile}
@@ -1310,7 +1311,7 @@ if (!formData.company_registration_number.trim()) {
             {step === 3 && (
               <>
                 <div className='col-span-2'>
-                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Primary cloud alignment</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Primary Cloud Alignment</label>
                   <div className="flex gap-3 flex-wrap">
                     {['AWS', 'Azure', 'GCP', 'Multi-Cloud'].map(cloud => (
                       <div key={cloud}>
@@ -1336,7 +1337,7 @@ if (!formData.company_registration_number.trim()) {
                 </div>
 
                 <div className='col-span-2'>
-                  <label className='text-sm font-medium font-sans dark:text-black'>Solution partner type</label>
+                  <label className='text-sm font-medium font-sans dark:text-black'>Solution Partner Type</label>
                   <div className='px-1 bg-zinc-100 border border-zinc-200'>
                     <select
                       id="solution_partner_type"
@@ -1355,7 +1356,7 @@ if (!formData.company_registration_number.trim()) {
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm font-semibold font-sans mb-1 dark:text-black">Core service offer</label>
+                  <label className="text-sm font-semibold font-sans mb-1 dark:text-black">Core Service Offer</label>
                   <div className="flex flex-col gap-4 dark:text-black">
                     <div className="flex gap-3 flex-wrap dark:text-black">
                       {platforms.map((platform) => (
@@ -1620,7 +1621,7 @@ if (!formData.company_registration_number.trim()) {
   )}
 </div>
  
-<div className="col-span-2">
+{/* <div className="col-span-2">
   <div className="flex">
     <div className="me-2">
       <input
@@ -1655,7 +1656,7 @@ if (!formData.company_registration_number.trim()) {
   {errors.neozaar_tc && (
     <p className="text-red-500 text-xs mt-1">{errors.neozaar_tc}</p>
   )}
-</div>
+</div> */}
 
 
               </>

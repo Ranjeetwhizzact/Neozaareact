@@ -747,7 +747,7 @@ const validateStep = (stepNumber) => {
                   {errors.company_name && (<p className="text-red-500 text-sm mt-1">{errors.company_name}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Brand name</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Brand Name</label>
                   <input
                     type='text'
                     value={brand_name}
@@ -769,7 +769,7 @@ const validateStep = (stepNumber) => {
                   {errors.registered_business_name && (<p className="text-red-500 text-sm mt-1">{errors.registered_business_name}</p>)}
                 </div>
                     <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter country</label>
+                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter Country</label>
                   <select
                     id="entityType"
                     value={headquater_country}
@@ -795,7 +795,7 @@ const validateStep = (stepNumber) => {
                   {errors.headquater_country && (<p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Register Company number</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Register Company Number</label>
                   <div className='flex'>
 
 
@@ -844,7 +844,7 @@ const validateStep = (stepNumber) => {
                   {errors.Legal_entity_type && (<p className="text-red-500 text-sm mt-1">{errors.Legal_entity_type}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Tax id</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Tax ID</label>
                   <div className='flex'>
 
                     <input
@@ -865,7 +865,7 @@ const validateStep = (stepNumber) => {
                 </div>
               
                 <div className='col-span-2'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Website url</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Website URL</label>
                   <input
                     type='text'
                     placeholder=''
@@ -877,7 +877,7 @@ const validateStep = (stepNumber) => {
                   {errors.website_url && (<p className="text-red-500 text-sm mt-1">{errors.website_url}</p>)}
                 </div>
                 <div className='col-span-2'>
-                  <label className='text-sm  font-medium dark:text-black font-sans'>Linkedin url</label>
+                  <label className='text-sm  font-medium dark:text-black font-sans'>LinkedIn URL</label>
                   <input
                     type='text'
                     placeholder=''
@@ -971,7 +971,7 @@ const validateStep = (stepNumber) => {
                   )}
                 </div>
                 <div className="col-span-2">
-                  <label className="text-sm dark:text-black font-medium font-sans">Phone number</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Phone Number</label>
                   <PhoneInput
                     country={'in'}
                     value={mobile}
@@ -1089,7 +1089,7 @@ const validateStep = (stepNumber) => {
 
                 {/* 🛒 Marketplace */}
                 <div className="col-span-2">
-                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Existing marketplace listing</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Existing Marketplace Listing</label>
                   <div className="flex flex-col gap-4">
                     <div className="flex gap-3 flex-wrap">
                       {marketplace.map((item) => (
@@ -1159,7 +1159,7 @@ const validateStep = (stepNumber) => {
                 </div>
 
                 <div className="col-span-2">
-                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Competencies & certifications</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Competencies & Certifications</label>
                   <textarea
                     rows="5"
                     value={competencies_certifications}
@@ -1168,7 +1168,7 @@ const validateStep = (stepNumber) => {
                   ></textarea>
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans  '>Preferred engagement</label>
+                  <label className='text-sm dark:text-black font-medium font-sans  '>Preferred Engagement</label>
                   <div className='bg-zinc-100 px-1 border border-zinc-200'>
                     <select
                       id="entityType"
