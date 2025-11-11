@@ -670,7 +670,7 @@ if (!formData.company_registration_number.trim()) {
           console.log(key, value instanceof File ? `[FILE] ${value.name}` : value);
         }
         setLoading(true)
-        const response = await fetch('https://www.neozaar.com/api/user/register', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}user/register`, {
           method: 'POST',
           body: formDataToSend,
         });
