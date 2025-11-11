@@ -799,6 +799,7 @@ const validateStep = (stepNumber) => {
                 </div>
                     <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter Country<span className='text-red-500'>*</span></label>
+
                   <select
                     id="entityType"
                     value={headquater_country}
