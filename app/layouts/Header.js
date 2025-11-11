@@ -87,7 +87,7 @@ export default function Header() {
     try {
       const token = localStorage.getItem("token");
 
-      await fetch("https://www.neozaar.com/api/logout", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_BASE}api/logout`, {
         method: "POST",
         credentials: "include",
         headers: {

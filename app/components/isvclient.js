@@ -46,7 +46,8 @@ export default function Page() {
   // Form state
   const role_id = 2;
   const [company_name, setCompanyName] = useState('');
-  const [company_registration_number, setCompanyNumber] = useState('');
+  const [sla_link, setSlaLink] = useState('');
+  const [terms_of_use_url, setTermsofuseurl] = useState('');
   const [country_type, setCountryType] = useState('IN');
   const [registered_business_name, setCompanyregisterName] = useState('');
   const [brand_name, setBrandtName] = useState('');
@@ -60,16 +61,18 @@ export default function Page() {
   const [Legal_entity_type, setLegalEntityType] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [ support_desk_email, setDeskEmail] = useState('');
   const [mobile, setMobile] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [designation, setDesignation] = useState('');
-  const [competencies_certifications, setBusinessDescription] = useState('');
+  // const [competencies_certifications, setDeskEmail] = useState('');
   const [existing_marketplace_listing, setExistingMarket] = useState([]);
   const [cloud_partnership, setCloudPartnership] = useState([]);
   const [preferred_engagement, setPreferred] = useState('Reseller');
   const [neozaar_tc, setNeozaartc] = useState(false);
   const [data_privacy, setDataPrivacy] = useState(false);
+
   const [businessCert, setBusinessCert] = useState(null);
   const [businessCertName, setBusinessCertName] = useState('');
 
@@ -91,10 +94,7 @@ export default function Page() {
 
   // Revalidate dependent fields when headquater_country changes
 useEffect(() => {
-  if (touched.company_registration_number) {
-    const error = validateField('company_registration_number', company_registration_number);
-    setErrors(prev => ({ ...prev, company_registration_number: error }));
-  }
+
   
   if (touched.tax_id) {
     const error = validateField('tax_id', tax_id);
@@ -123,48 +123,41 @@ const validationRules = {
     message: "Registration name should only contain letters and spaces."
   },
 
-company_registration_number: {
+sla_link: {
   required: true,
   validate: (value) => {
-  
-    
     if (!value || value.trim() === "") {
-      return "Company Registration Number is required.";
+      return "SLA Link is required.";
     }
 
-    const country = headquater_country || "";
+    // Optional: enforce https:// or http://
+    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
 
-    // If country is not selected yet, use generic validation
-    if (!country || country === "") {
-      if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
-        return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
-      }
-      return null;
-    }
-
-    // Country-specific validations
-    if (country === "UAE") {
-      if (!/^[0-9]{1,10}$/.test(value)) {
-        return "For UAE, Company Registration Number must be numeric and up to 10 digits.";
-      }
-      return null;
-    }
-
-    if (country === "India") {
-      if (!/^[A-Z0-9]{21}$/.test(value)) {
-        return "For India, Company Identification Number (CIN) must be exactly 21 alphanumeric characters.";
-      }
-      return null;
-    }
-
-    // For all other countries
-    if (!/^[A-Za-z0-9\s-]{1,20}$/.test(value)) {
-      return "Company Registration Number must be up to 20 characters (letters, numbers, spaces, hyphen allowed).";
+    if (!urlPattern.test(value)) {
+      return "Please enter a valid URL (e.g., https://example.com/sla).";
     }
 
     return null;
-  }
+  },
 },
+terms_of_use_url: {
+  required: true,
+  validate: (value) => {
+    if (!value || value.trim() === "") {
+      return "terms_of_use_url Link is required.";
+    }
+
+    // Optional: enforce https:// or http://
+    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+
+    if (!urlPattern.test(value)) {
+      return "Please enter a valid URL (e.g., https://example.com/sla).";
+    }
+
+    return null;
+  },
+},
+
   brand_name: {
     required: true,
     pattern: /^[A-Za-z\s]+$/,
@@ -240,13 +233,36 @@ company_registration_number: {
     message: "Please provide a mobile number."
   },
 
-  password: {
-    required: true,
-    minLength: 8,
-    message: "Password must be at least 8 characters."
-  },
+password: {
+  required: true,
+  minLength: 8,
+  maxLength: 16,
+  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+  message:
+    "Password must be 8–16 characters long and include uppercase, lowercase, number, and special character."
+}
+,
 
   email: {
+    required: true,
+    validate: (value) => {
+      if (!value) return "Email is required.";
+      
+      const blockedDomains = [
+        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+        "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+      ];
+      const domain = value.split("@")[1]?.toLowerCase();
+      
+      if (!domain) return "Please enter a valid email address.";
+      if (blockedDomains.includes(domain)) {
+        return "Please provide an official (non-personal) email address.";
+      }
+      return null;
+    }
+  },
+
+  support_desk_email: {
     required: true,
     validate: (value) => {
       if (!value) return "Email is required.";
@@ -332,7 +348,8 @@ const validateField = (name, value) => {
     const allValues = {
       company_name,
       registered_business_name,
-      company_registration_number,
+      sla_link,
+      terms_of_use_url,
       brand_name,
       website_url,
       linkedin_url,
@@ -344,14 +361,18 @@ const validateField = (name, value) => {
       mobile,
       password,
       email,
+       support_desk_email,
       neozaar_tc,
       data_privacy,
       brand_logo,
-      businessCert
+      businessCert,
     };
 
-    // For company_registration_number, we need to handle it specially since it uses the state variable directly
-    if (name === 'company_registration_number') {
+    // For sla_link, we need to handle it specially since it uses the state variable directly
+    if (name === 'sla_link') {
+      return rule.validate(value); // This already uses headquater_country directly
+    }
+    if (name === 'terms_of_use_url') {
       return rule.validate(value); // This already uses headquater_country directly
     }
     
@@ -368,7 +389,8 @@ const validateField = (name, value) => {
     switch (fieldName) {
       case 'company_name': setCompanyName(value); break;
       case 'registered_business_name': setCompanyregisterName(value); break;
-      case 'company_registration_number': setCompanyNumber(value); break;
+      case 'sla_link': setSlaLink(value); break;
+      case 'terms_of_use_url': setTermsofuseurl(value); break;
       case 'brand_name': setBrandtName(value); break;
       case 'website_url': setCompanyWebsite(value); break;
       case 'linkedin_url': setLinkedin(value); break;
@@ -380,6 +402,7 @@ const validateField = (name, value) => {
       case 'mobile': setMobile(value); break;
       case 'password': setPassword(value); break;
       case 'email': setEmail(value); break;
+      case 'support_desk_email': setDeskEmail(value); break;
       case 'neozaar_tc': setNeozaartc(value); break;
       case 'data_privacy': setDataPrivacy(value); break;
       default: break;
@@ -402,7 +425,8 @@ const handleBlur = (fieldName) => {
   switch (fieldName) {
     case 'company_name': value = company_name; break;
     case 'registered_business_name': value = registered_business_name; break;
-    case 'company_registration_number': value = company_registration_number; break;
+    case 'sla_link': value = sla_link; break;
+    case 'terms_of_use_url': value = terms_of_use_url; break;
     case 'brand_name': value = brand_name; break;
     case 'website_url': value = website_url; break;
     case 'linkedin_url': value = linkedin_url; break;
@@ -414,6 +438,7 @@ const handleBlur = (fieldName) => {
     case 'mobile': value = mobile; break;
     case 'password': value = password; break;
     case 'email': value = email; break;
+    case 'support_desk_email': value =  support_desk_email; break;
     case 'neozaar_tc': value = neozaar_tc; break;
     case 'data_privacy': value = data_privacy; break;
     case 'brand_logo': value = brand_logo; break;
@@ -429,11 +454,11 @@ const handleBlur = (fieldName) => {
 // Validate all fields in current step
 const validateStep = (stepNumber) => {
   const stepFields = {
-    1: ['company_name', 'registered_business_name', 'company_registration_number',
+    1: ['company_name', 'registered_business_name', 'sla_link',
       'brand_name', 'website_url', 'tax_id', 'headquater_country',
       'Legal_entity_type', 'brand_logo'],
-    2: ['name', 'designation', 'mobile', 'password', 'email'],
-    3: ['neozaar_tc', 'data_privacy', 'businessCert'],
+    2: ['name', 'designation', 'mobile', 'password', 'email','support_desk_email'],
+    3: ['neozaar_tc', 'data_privacy','terms_of_use_url']
   };
 
   const fieldsToValidate = stepFields[stepNumber];
@@ -449,7 +474,8 @@ const validateStep = (stepNumber) => {
     switch (field) {
       case 'company_name': value = company_name; break;
       case 'registered_business_name': value = registered_business_name; break;
-      case 'company_registration_number': value = company_registration_number; break;
+      case 'sla_link': value = sla_link; break;
+      case 'terms_of_use_url': value = terms_of_use_url; break;
       case 'brand_name': value = brand_name; break;
       case 'website_url': value = website_url; break;
       case 'linkedin_url': value = linkedin_url; break;
@@ -461,6 +487,7 @@ const validateStep = (stepNumber) => {
       case 'mobile': value = mobile; break;
       case 'password': value = password; break;
       case 'email': value = email; break;
+      case 'support_desk_email': value =  support_desk_email; break;
       case 'neozaar_tc': value = neozaar_tc; break;
       case 'data_privacy': value = data_privacy; break;
       case 'brand_logo': value = brand_logo; break;
@@ -592,16 +619,18 @@ const validateStep = (stepNumber) => {
       formData.append('existing_marketplace_listing', JSON.stringify(existing_marketplace_listing));
       formData.append('neozaar_tc', neozaar_tc);
       formData.append('preferred_engagement', preferred_engagement);
-      formData.append('competencies_certifications', competencies_certifications);
+      formData.append(' support_desk_email',  support_desk_email);
       formData.append('designation', designation);
-      formData.append('company_registration_number', company_registration_number);
+      formData.append('sla_link', sla_link);
+      formData.append('terms_of_use_url', terms_of_use_url);
       formData.append('data_privacy', data_privacy);
 
       if (brand_logo) formData.append('brand_logo', brand_logo);
       if (businessCert) formData.append('business_certification', businessCert);
 
       try {
-        const res = await fetch('https://www.neozaar.com/api/user/register', {
+        // const res = await fetch('https://www.neozaar.com/api/user/register', {
+        const res = await fetch('http://20.55.55.10:5000/api/user/register', {
           method: 'POST',
           body: formData,
         });
@@ -735,7 +764,7 @@ const validateStep = (stepNumber) => {
             {step === 1 && (
               <>
                 <div className='col-span-2'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Company Name</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Company Name <span className='text-red-500'>*</span></label>
                   <input
                     type='text'
                     value={company_name}
@@ -747,7 +776,7 @@ const validateStep = (stepNumber) => {
                   {errors.company_name && (<p className="text-red-500 text-sm mt-1">{errors.company_name}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Brand name</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Brand Name <span className='text-red-500'>*</span></label>
                   <input
                     type='text'
                     value={brand_name}
@@ -758,7 +787,7 @@ const validateStep = (stepNumber) => {
                   {errors.brand_name && (<p className="text-red-500 text-sm mt-1">{errors.brand_name}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Group / Holding Company (same as company name)</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Group / Holding Company (same as company name) <span className='text-red-500'>*</span></label>
                   <input
                     type='text'
                     value={registered_business_name}
@@ -769,7 +798,7 @@ const validateStep = (stepNumber) => {
                   {errors.registered_business_name && (<p className="text-red-500 text-sm mt-1">{errors.registered_business_name}</p>)}
                 </div>
                     <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter country</label>
+                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter Country<span className='text-red-500'>*</span></label>
                   <select
                     id="entityType"
                     value={headquater_country}
@@ -794,30 +823,41 @@ const validateStep = (stepNumber) => {
 
                   {errors.headquater_country && (<p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>)}
                 </div>
-                <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Register Company number</label>
-                  <div className='flex'>
+              <div className="col-span-2 md:col-span-1">
+  <label className="text-sm dark:text-black font-medium font-sans">SLA Link <span className='text-red-500'>*</span></label>
+  <div className="flex">
+    <input
+      type="text"
+      value={sla_link}
+      placeholder="https://example.com/sla"
+      onChange={(e) => handleFieldChange("sla_link", e.target.value)}
+      onBlur={() => {
+        const urlPattern =
+          /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+        if (!sla_link.trim()) {
+          handleFieldChange("sla_link", "");
+          handleBlur("sla_link", "SLA link is required");
+        } else if (!urlPattern.test(sla_link)) {
+          handleBlur("sla_link", "Please enter a valid URL (e.g., https://example.com)");
+        } else {
+          handleBlur("sla_link", "");
+        }
+      }}
+      className={`outline-0 w-full py-2 px-3 dark:text-black border ${
+        errors.sla_link
+          ? "border-red-300 bg-red-500/10"
+          : "border-zinc-200 bg-zinc-100"
+      }`}
+    />
+  </div>
+  {errors.sla_link && (
+    <p className="text-red-500 text-sm mt-1">{errors.sla_link}</p>
+  )}
+</div>
 
-
-                    <input
-                      type='text'
-                      value={company_registration_number}
-
-                      onChange={(e) => {
-    const value = e.target.value;
-    if (/^[A-Za-z0-9-]*$/.test(value)) {
-      handleFieldChange('company_registration_number', value);
-    }
-  }}
-                      onBlur={() => handleBlur('company_registration_number')}
-                      className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.company_registration_number ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
-                    />
-                  </div>
-                  {errors.company_registration_number && (<p className="text-red-500 text-sm mt-1">{errors.company_registration_number}</p>)}
-                </div>
               
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type <span className='text-red-500'>*</span></label>
 
                   <select
                     value={Legal_entity_type}
@@ -844,7 +884,7 @@ const validateStep = (stepNumber) => {
                   {errors.Legal_entity_type && (<p className="text-red-500 text-sm mt-1">{errors.Legal_entity_type}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Tax id</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Tax Id</label>
                   <div className='flex'>
 
                     <input
@@ -865,7 +905,7 @@ const validateStep = (stepNumber) => {
                 </div>
               
                 <div className='col-span-2'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Website url</label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Website URl<span className='text-red-500'>*</span></label>
                   <input
                     type='text'
                     placeholder=''
@@ -877,7 +917,7 @@ const validateStep = (stepNumber) => {
                   {errors.website_url && (<p className="text-red-500 text-sm mt-1">{errors.website_url}</p>)}
                 </div>
                 <div className='col-span-2'>
-                  <label className='text-sm  font-medium dark:text-black font-sans'>Linkedin url</label>
+                  <label className='text-sm  font-medium dark:text-black font-sans'>Linkedin URL</label>
                   <input
                     type='text'
                     placeholder=''
@@ -891,7 +931,7 @@ const validateStep = (stepNumber) => {
                 </div>
                 <div className="col-span-2">
                   <label htmlFor="brand_logo" className="text-sm dark:text-black font-medium font-sans">
-                    Upload Brand Logo
+                    Upload Brand Logo<span className='text-red-500'>*</span>
                   </label>
                   <label
                     htmlFor="brand_logo"
@@ -932,8 +972,9 @@ const validateStep = (stepNumber) => {
             )}
             {step === 2 && (
               <>
+              <h5>Primary Contact</h5>
                 <div className="col-span-2">
-                  <label className="text-sm dark:text-black font-medium font-sans"> Full Name</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Contact Person Name<span className='text-red-500'>*</span></label>
                   <input
                     type="text"
                     placeholder=""
@@ -945,7 +986,7 @@ const validateStep = (stepNumber) => {
                   {errors.name && (<p className="text-red-500 text-sm mt-1">{errors.name}</p>)}
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm dark:text-black font-medium font-sans">Designation</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Designation<span className='text-red-500'>*</span></label>
                   <input
                     type="text"
                     value={designation}
@@ -956,7 +997,8 @@ const validateStep = (stepNumber) => {
                   {errors.designation && (<p className="text-red-500 text-sm mt-1">{errors.designation}</p>)}
                 </div>
                 <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm dark:text-black font-medium font-sans">Email</label>
+                  <label className="text-sm dark:text-black font-medium font-sans">Email<span className='text-red-500'>*</span>
+                  </label>
                   <input
                     type="email"
                     value={email}
@@ -970,8 +1012,23 @@ const validateStep = (stepNumber) => {
                     <p className="text-red-500 text-sm mt-1">{errors.email}</p>
                   )}
                 </div>
-                <div className="col-span-2">
-                  <label className="text-sm dark:text-black font-medium font-sans">Phone number</label>
+                <div className="col-span-2 md:col-span-1">
+                  <label className="text-sm dark:text-black font-medium  font-sans"> Support Desk Email<span className='text-red-500'>*</span></label>
+                  <input
+                    type="email"
+                    value={support_desk_email}
+                    onChange={(e) => handleFieldChange('support_desk_email', e.target.value)}
+                    onBlur={() => handleBlur('support_desk_email')}
+                    className={`outline-0 w-full py-2 px-3 border dark:text-black ${errors.support_desk_email ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'
+                      }`}
+                    required
+                  />
+                  {errors.support_desk_email && (
+                    <p className="text-red-500 text-sm mt-1">{errors.support_desk_email}</p>
+                  )}
+                </div>
+                <div className="col-span-2 md:col-span-1">
+                  <label className="text-sm dark:text-black font-medium font-sans">Phone Number</label>
                   <PhoneInput
                     country={'in'}
                     value={mobile}
@@ -989,29 +1046,69 @@ const validateStep = (stepNumber) => {
                   />
                   {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
                 </div>
-                <div className="col-span-2 relative">
-                  <label className="text-sm dark:text-black font-medium font-sans">Password</label>
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    placeholder=""
+             <div className="col-span-2 relative">
+  <label className="text-sm dark:text-black font-medium font-sans">Password</label>
 
-                    onChange={(e) => handleFieldChange('password', e.target.value)}
-                    onBlur={() => handleBlur('password')}
-                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.password ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} pr-10`}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-9 text-zinc-500 hover:text-zinc-700"
-                    tabIndex={-1}
-                  >
-                    {showPassword ? <i className="ri-eye-line"></i> : <i className="ri-eye-close-line"></i>}
-                  </button>
-                  {errors.password && (
-                    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-                  )}
-                </div>
+  <input
+    type={showPassword ? 'text' : 'password'}
+    value={password}
+    placeholder="Enter a strong password"
+    onChange={(e) => {
+      const val = e.target.value;
+      handleFieldChange('password', val);
+
+      // 🔒 Inline validation
+      const strongPasswordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/;
+
+      if (!val) {
+        setErrors((prev) => ({ ...prev, password: 'Password is required.' }));
+      } else if (val.length < 8) {
+        setErrors((prev) => ({
+          ...prev,
+          password: 'Password must be at least 8 characters.'
+        }));
+      } else if (val.length > 16) {
+        setErrors((prev) => ({
+          ...prev,
+          password: 'Password cannot exceed 16 characters.'
+        }));
+      } else if (!strongPasswordRegex.test(val)) {
+        setErrors((prev) => ({
+          ...prev,
+          password:
+            'Password must include uppercase, lowercase, number, and special character.'
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, password: '' })); // ✅ Valid password
+      }
+    }}
+    onBlur={() => handleBlur('password')}
+    className={`outline-0 w-full py-2 px-3 dark:text-black border ${
+      errors.password
+        ? 'border-red-400 bg-red-50'
+        : 'border-zinc-200 bg-zinc-100'
+    } pr-10 rounded-md transition`}
+  />
+
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="absolute right-3 top-9 text-zinc-500 hover:text-zinc-700"
+    tabIndex={-1}
+  >
+    {showPassword ? (
+      <i className="ri-eye-line"></i>
+    ) : (
+      <i className="ri-eye-close-line"></i>
+    )}
+  </button>
+
+  {errors.password && (
+    <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+  )}
+</div>
+
               </>
             )}
             {step === 3 && (
@@ -1086,10 +1183,40 @@ const validateStep = (stepNumber) => {
                     )}
                   </div>
                 </div>
-
+                                 <div className="col-span-2 md:col-span-1">
+  <label className="text-sm dark:text-black font-medium font-sans">Terms of use URL <span className='text-red-500'>*</span></label>
+  <div className="flex">
+    <input
+      type="text"
+      value={terms_of_use_url}
+      placeholder="https://example.com/terms_of_use_url"
+      onChange={(e) => handleFieldChange("terms_of_use_url", e.target.value)}
+      onBlur={() => {
+        const urlPattern =
+          /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+        if (!terms_of_use_url.trim()) {
+          handleFieldChange("terms_of_use_url", "");
+          handleBlur("terms_of_use_url", "Terms of use URL is required");
+        } else if (!urlPattern.test(terms_of_use_url)) {
+          handleBlur("terms_of_use_url", "Please enter a valid URL (e.g., https://example.com)");
+        } else {
+          handleBlur("terms_of_use_url", "");
+        }
+      }}
+      className={`outline-0 w-full py-2 px-3 dark:text-black border ${
+        errors.terms_of_use_url
+          ? "border-red-300 bg-red-500/10"
+          : "border-zinc-200 bg-zinc-100"
+      }`}
+    />
+  </div>
+  {errors.terms_of_use_url && (
+    <p className="text-red-500 text-sm mt-1">{errors.terms_of_use_url}</p>
+  )}
+</div>
                 {/* 🛒 Marketplace */}
                 <div className="col-span-2">
-                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Existing marketplace listing</label>
+                  <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Existing Marketplace Listing</label>
                   <div className="flex flex-col gap-4">
                     <div className="flex gap-3 flex-wrap">
                       {marketplace.map((item) => (
@@ -1158,7 +1285,7 @@ const validateStep = (stepNumber) => {
                   </div>
                 </div>
 
-                <div className="col-span-2">
+                {/* <div className="col-span-2">
                   <label className="text-sm block font-semibold font-sans mb-1 dark:text-black">Competencies & certifications</label>
                   <textarea
                     rows="5"
@@ -1166,9 +1293,9 @@ const validateStep = (stepNumber) => {
                     onChange={(e) => setBusinessDescription(e.target.value)}
                     className='w-full bg-zinc-100 border  p-4 dark:text-black border-zinc-200'
                   ></textarea>
-                </div>
+                </div> */}
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans  '>Preferred engagement</label>
+                  <label className='text-sm dark:text-black font-medium font-sans  '>Preferred Engagement</label>
                   <div className='bg-zinc-100 px-1 border border-zinc-200'>
                     <select
                       id="entityType"

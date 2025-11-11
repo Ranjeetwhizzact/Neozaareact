@@ -70,7 +70,8 @@ const handleLogin = async (e) => {
   setLoading(true);
 
   try {
-    const res = await fetch('https://www.neozaar.com/api/login', {
+    // const res = await fetch('http://192.168.1.3:3000/api/login', {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}login`, { 
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -109,14 +110,15 @@ const handleLogin = async (e) => {
       if (user.role_id === 1) {
         router.push('/market_place');
       } else {
-       
-        window.location.href = `https://neozaar.com/app/auth/login-token?token=${token}`;
-        // window.location.href = `http://192.168.1.4:4200/angular/auth/login-token?token=${token}`;
+       alert(process.env.NEXT_ADMIN_URL);
+        // window.location.href = `https://neozaar.com/app/auth/login-token?token=${token}`;
+        window.location.href = `${process.env.NEXT_PUBLIC_ADMIN_URL}/auth/login-token?token=${token}`;
+        
       }
     } else {
       toast.error(data.message || 'Login failed');
     }
-  } catch (error) {
+  // } catch (error) {
     console.error('Login error:', error);
     toast.error('Something went wrong. Please try again.');
   } finally {

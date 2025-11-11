@@ -97,7 +97,7 @@ export default function Page() {
     };
 
     try {
-      const res = await fetch('https://www.neozaar.com/api/enquiry/create', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}enquiry/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
