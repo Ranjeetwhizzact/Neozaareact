@@ -47,7 +47,7 @@ export default function Page() {
   const role_id = 2;
   const [company_name, setCompanyName] = useState('');
   const [sla_link, setSlaLink] = useState('');
-  const [terms_of_use_url, setTermsofuseurl] = useState('');
+  const [terms_of_use_link, setTermsofuseurl] = useState('');
   const [country_type, setCountryType] = useState('IN');
   const [registered_business_name, setCompanyregisterName] = useState('');
   const [brand_name, setBrandtName] = useState('');
@@ -102,8 +102,6 @@ useEffect(() => {
   }
 }, [headquater_country]);
 
-
-  // Validation rules
 const validationRules = {
   company_name: {
     required: true,
@@ -140,11 +138,11 @@ sla_link: {
     return null;
   },
 },
-terms_of_use_url: {
+terms_of_use_link: {
   required: true,
   validate: (value) => {
     if (!value || value.trim() === "") {
-      return "terms_of_use_url Link is required.";
+      return "terms_of_use_link Link is required.";
     }
 
     // Optional: enforce https:// or http://
@@ -349,7 +347,7 @@ const validateField = (name, value) => {
       company_name,
       registered_business_name,
       sla_link,
-      terms_of_use_url,
+      terms_of_use_link,
       brand_name,
       website_url,
       linkedin_url,
@@ -372,7 +370,7 @@ const validateField = (name, value) => {
     if (name === 'sla_link') {
       return rule.validate(value); // This already uses headquater_country directly
     }
-    if (name === 'terms_of_use_url') {
+    if (name === 'terms_of_use_link') {
       return rule.validate(value); // This already uses headquater_country directly
     }
     
@@ -390,7 +388,7 @@ const validateField = (name, value) => {
       case 'company_name': setCompanyName(value); break;
       case 'registered_business_name': setCompanyregisterName(value); break;
       case 'sla_link': setSlaLink(value); break;
-      case 'terms_of_use_url': setTermsofuseurl(value); break;
+      case 'terms_of_use_link': setTermsofuseurl(value); break;
       case 'brand_name': setBrandtName(value); break;
       case 'website_url': setCompanyWebsite(value); break;
       case 'linkedin_url': setLinkedin(value); break;
@@ -426,7 +424,7 @@ const handleBlur = (fieldName) => {
     case 'company_name': value = company_name; break;
     case 'registered_business_name': value = registered_business_name; break;
     case 'sla_link': value = sla_link; break;
-    case 'terms_of_use_url': value = terms_of_use_url; break;
+    case 'terms_of_use_link': value = terms_of_use_link; break;
     case 'brand_name': value = brand_name; break;
     case 'website_url': value = website_url; break;
     case 'linkedin_url': value = linkedin_url; break;
@@ -458,7 +456,7 @@ const validateStep = (stepNumber) => {
       'brand_name', 'website_url', 'tax_id', 'headquater_country',
       'legal_entity_type', 'brand_logo'],
     2: ['name', 'designation', 'mobile', 'password', 'email','support_desk_email'],
-    3: ['neozaar_tc', 'data_privacy','terms_of_use_url']
+    3: ['neozaar_tc', 'data_privacy','terms_of_use_link']
   };
 
   const fieldsToValidate = stepFields[stepNumber];
@@ -475,7 +473,7 @@ const validateStep = (stepNumber) => {
       case 'company_name': value = company_name; break;
       case 'registered_business_name': value = registered_business_name; break;
       case 'sla_link': value = sla_link; break;
-      case 'terms_of_use_url': value = terms_of_use_url; break;
+      case 'terms_of_use_link': value = terms_of_use_link; break;
       case 'brand_name': value = brand_name; break;
       case 'website_url': value = website_url; break;
       case 'linkedin_url': value = linkedin_url; break;
@@ -619,10 +617,10 @@ const validateStep = (stepNumber) => {
       formData.append('existing_marketplace_listing', JSON.stringify(existing_marketplace_listing));
       formData.append('neozaar_tc', neozaar_tc);
       formData.append('preferred_engagement', preferred_engagement);
-      formData.append(' support_desk_email',  support_desk_email);
+      formData.append('support_desk_email',  support_desk_email);
       formData.append('designation', designation);
       formData.append('sla_link', sla_link);
-      formData.append('terms_of_use_url', terms_of_use_url);
+      formData.append('terms_of_use_link', terms_of_use_link);
       formData.append('data_privacy', data_privacy);
 
       if (brand_logo) formData.append('brand_logo', brand_logo);
@@ -1189,30 +1187,30 @@ const validateStep = (stepNumber) => {
   <div className="flex">
     <input
       type="text"
-      value={terms_of_use_url}
-      placeholder="https://example.com/terms_of_use_url"
-      onChange={(e) => handleFieldChange("terms_of_use_url", e.target.value)}
+      value={terms_of_use_link}
+      placeholder="https://example.com/terms_of_use_link"
+      onChange={(e) => handleFieldChange("terms_of_use_link", e.target.value)}
       onBlur={() => {
         const urlPattern =
           /^(https?:\/\/)?([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
-        if (!terms_of_use_url.trim()) {
-          handleFieldChange("terms_of_use_url", "");
-          handleBlur("terms_of_use_url", "Terms of use URL is required");
-        } else if (!urlPattern.test(terms_of_use_url)) {
-          handleBlur("terms_of_use_url", "Please enter a valid URL (e.g., https://example.com)");
+        if (!terms_of_use_link.trim()) {
+          handleFieldChange("terms_of_use_link", "");
+          handleBlur("terms_of_use_link", "Terms of use URL is required");
+        } else if (!urlPattern.test(terms_of_use_link)) {
+          handleBlur("terms_of_use_link", "Please enter a valid URL (e.g., https://example.com)");
         } else {
-          handleBlur("terms_of_use_url", "");
+          handleBlur("terms_of_use_link", "");
         }
       }}
       className={`outline-0 w-full py-2 px-3 dark:text-black border ${
-        errors.terms_of_use_url
+        errors.terms_of_use_link
           ? "border-red-300 bg-red-500/10"
           : "border-zinc-200 bg-zinc-100"
       }`}
     />
   </div>
-  {errors.terms_of_use_url && (
-    <p className="text-red-500 text-sm mt-1">{errors.terms_of_use_url}</p>
+  {errors.terms_of_use_link && (
+    <p className="text-red-500 text-sm mt-1">{errors.terms_of_use_link}</p>
   )}
 </div>
                 {/* 🛒 Marketplace */}

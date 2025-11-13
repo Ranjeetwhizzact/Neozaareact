@@ -267,7 +267,6 @@ export default function Page() {
                   ))}
                 </div>
               </div>
-
               <label className="flex items-center space-x-2 col-span-2">
                 <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
                 <span>I agree to receive communications</span>
