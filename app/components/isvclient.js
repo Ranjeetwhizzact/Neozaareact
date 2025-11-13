@@ -58,7 +58,7 @@ export default function Page() {
   const [headquater_country, setHeadQuater] = useState('');
   const [tax_id, setTaxId] = useState('');
   const [tax_type, setTaxType] = useState('GST');
-  const [Legal_entity_type, setLegalEntityType] = useState('');
+  const [legal_entity_type, setLegalEntityType] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [ support_desk_email, setDeskEmail] = useState('');
@@ -200,7 +200,7 @@ terms_of_use_url: {
     }
   },
 
-  Legal_entity_type: {
+  legal_entity_type: {
     required: true,
     message: "Please select your legal entity type."
   },
@@ -355,7 +355,7 @@ const validateField = (name, value) => {
       linkedin_url,
       tax_id,
       headquater_country,
-      Legal_entity_type,
+      legal_entity_type,
       name,
       designation,
       mobile,
@@ -396,7 +396,7 @@ const validateField = (name, value) => {
       case 'linkedin_url': setLinkedin(value); break;
       case 'tax_id': setTaxId(value); break;
       case 'headquater_country': setHeadQuater(value); break;
-      case 'Legal_entity_type': setLegalEntityType(value); break;
+      case 'legal_entity_type': setLegalEntityType(value); break;
       case 'name': setName(value); break;
       case 'designation': setDesignation(value); break;
       case 'mobile': setMobile(value); break;
@@ -432,7 +432,7 @@ const handleBlur = (fieldName) => {
     case 'linkedin_url': value = linkedin_url; break;
     case 'tax_id': value = tax_id; break;
     case 'headquater_country': value = headquater_country; break;
-    case 'Legal_entity_type': value = Legal_entity_type; break;
+    case 'legal_entity_type': value = legal_entity_type; break;
     case 'name': value = name; break;
     case 'designation': value = designation; break;
     case 'mobile': value = mobile; break;
@@ -456,7 +456,7 @@ const validateStep = (stepNumber) => {
   const stepFields = {
     1: ['company_name', 'registered_business_name', 'sla_link',
       'brand_name', 'website_url', 'tax_id', 'headquater_country',
-      'Legal_entity_type', 'brand_logo'],
+      'legal_entity_type', 'brand_logo'],
     2: ['name', 'designation', 'mobile', 'password', 'email','support_desk_email'],
     3: ['neozaar_tc', 'data_privacy','terms_of_use_url']
   };
@@ -481,7 +481,7 @@ const validateStep = (stepNumber) => {
       case 'linkedin_url': value = linkedin_url; break;
       case 'tax_id': value = tax_id; break;
       case 'headquater_country': value = headquater_country; break;
-      case 'Legal_entity_type': value = Legal_entity_type; break;
+      case 'legal_entity_type': value = legal_entity_type; break;
       case 'name': value = name; break;
       case 'designation': value = designation; break;
       case 'mobile': value = mobile; break;
@@ -610,7 +610,7 @@ const validateStep = (stepNumber) => {
       formData.append('company_name', company_name);
       formData.append('registered_business_name', registered_business_name);
       formData.append('brand_name', brand_name);
-      formData.append('Legal_entity_type', Legal_entity_type);
+      formData.append('legal_entity_type', legal_entity_type);
       formData.append('tax_id', tax_id);
       formData.append('headquater_country', headquater_country);
       formData.append('website_url', website_url);
@@ -669,7 +669,7 @@ const validateStep = (stepNumber) => {
   function handleSubmitOther() {
     if (legalEntityTypesData != null) {
       setlegalEntityTypes([legalEntityTypesData, ...legalEntityTypes]);
-      if (Legal_entity_type === "Other") {
+      if (legal_entity_type === "Other") {
         setLegalEntityType(legalEntityTypesData.value);
       }
     }
@@ -861,10 +861,10 @@ const validateStep = (stepNumber) => {
                   <label className='text-sm dark:text-black font-medium font-sans'>Legal Entity Type <span className='text-red-500'>*</span></label>
 
                   <select
-                    value={Legal_entity_type}
-                    onChange={(e) => handleFieldChange('Legal_entity_type', e.target.value)}
-                    onBlur={() => handleBlur('Legal_entity_type')}
-                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.Legal_entity_type ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
+                    value={legal_entity_type}
+                    onChange={(e) => handleFieldChange('legal_entity_type', e.target.value)}
+                    onBlur={() => handleBlur('legal_entity_type')}
+                    className={`outline-0 w-full py-2 px-3  dark:text-black border ${errors.legal_entity_type ? 'border-red-300 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'}`}
                   >
                     <option value="" disabled>Select an option</option>
                     {
@@ -875,14 +875,14 @@ const validateStep = (stepNumber) => {
                   </select>
 
                   {
-                    Legal_entity_type === "Other" && <div className="m-2 flex gap-2 ">
+                    legal_entity_type === "Other" && <div className="m-2 flex gap-2 ">
                       <input type="text" name="" onChange={legalEntityInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1  dark:text-black' />
                       <button onClick={handleSubmitOther} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
                     </div>
                   }
 
 
-                  {errors.Legal_entity_type && (<p className="text-red-500 text-sm mt-1">{errors.Legal_entity_type}</p>)}
+                  {errors.legal_entity_type && (<p className="text-red-500 text-sm mt-1">{errors.legal_entity_type}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
                   <label className='text-sm dark:text-black font-medium font-sans'>Tax Id</label>

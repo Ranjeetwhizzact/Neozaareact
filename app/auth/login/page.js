@@ -110,7 +110,7 @@ const handleLogin = async (e) => {
       if (user.role_id === 1) {
         router.push('/market_place');
       } else {
-       alert(process.env.NEXT_ADMIN_URL);
+     
         // window.location.href = `https://neozaar.com/app/auth/login-token?token=${token}`;
         window.location.href = `${process.env.NEXT_PUBLIC_ADMIN_URL}/auth/login-token?token=${token}`;
         
