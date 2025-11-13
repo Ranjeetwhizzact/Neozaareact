@@ -118,7 +118,7 @@ export default function Home() {
         query += `&category=${encodeURIComponent(categori)}`;
       }
 
-      const res = await fetch(`https://www.neozaar.com/api/catalog/marketplace/products${query}`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products${query}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -160,7 +160,7 @@ export default function Home() {
     };
     const catalog = async () => {
       try {
-        const res = await fetch(`https://www.neozaar.com/api/catalog/categories`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/categories`)
 
         const data = await res.json()
 

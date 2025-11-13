@@ -68,7 +68,7 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/verify-email', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}verify-email`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

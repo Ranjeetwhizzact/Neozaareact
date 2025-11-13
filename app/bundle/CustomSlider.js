@@ -54,7 +54,7 @@ export default function CustomSlider() {
       if (!token) return;
 
       try {
-        const res = await fetch('http://20.83.163.38:5000/api/products/', {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}products/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         if (res.status === 401 || res.status === 403) {
