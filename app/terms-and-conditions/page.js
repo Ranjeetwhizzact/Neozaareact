@@ -24,7 +24,6 @@ export default function TermsPage() {
            or “your”) agree to be legally bound by the terms and conditions set forth in this Terms of Use Agreement 
            (“Agreement”).
           </p>
-
           <p className="mb-6  text-black">
            Please read this Agreement carefully before using the Services. By accessing or using NeoZaar in any
            manner, including visiting the website, creating an account, or utilizing any product or feature, you 

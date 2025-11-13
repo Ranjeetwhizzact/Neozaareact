@@ -126,7 +126,6 @@ export default function Page() {
             <li>Text queries, prompts, responses, and feedback provided by users;</li>
             <li>Interaction metadata such as frequency, session duration, and engagement history; and</li>
             <li>Data necessary to enhance AI accuracy, personalization, and compliance with ethical AI usage standards.</li>
-            
           </ul>
 
            <p className="mb-6  text-black">
@@ -216,7 +215,6 @@ export default function Page() {
             <li>
               <strong>Internal Teams and Affiliates:</strong> To enable operations, account management, technical maintenance, analytics, billing, and customer support activities within NeoZaar’s affiliated group entities or controlled subsidiaries, subject to appropriate confidentiality obligations.
               </li>
-
            <li>
               <strong>Third-Party Service Providers and Technology Partners:</strong> NeoZaar may engage third-party service providers, including but not limited to Zoho, Wix, OpenAI, and Google Analytics, for CRM, website hosting, AI assistance, analytics, communication, and operational support. Such third parties are contractually bound to maintain confidentiality and process data only under NeoZaar’s lawful instructions.
               </li>
