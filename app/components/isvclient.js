@@ -628,7 +628,7 @@ const validateStep = (stepNumber) => {
 
       try {
         // const res = await fetch('https://www.neozaar.com/api/user/register', {
-        const res = await fetch('http://20.55.55.10:5000/api/user/register', {
+        const res = await fetch('${process.env.NEXT_PUBLIC_API_BASE}user/register', {
           method: 'POST',
           body: formData,
         });
