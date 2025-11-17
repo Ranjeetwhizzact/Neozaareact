@@ -102,8 +102,6 @@ useEffect(() => {
   }
 }, [headquater_country]);
 
-
-  // Validation rules
 const validationRules = {
   company_name: {
     required: true,

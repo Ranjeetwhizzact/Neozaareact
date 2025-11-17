@@ -110,13 +110,11 @@ export default function TermsPage() {
              <p className="mb-6  text-black">
               NeoZaar encourages all Users to periodically review this Agreement to remain informed of their rights and obligations.
              </p>
-
           <h2 className="text-xl font-semibold mt-6 mb-3 text-black">2. 2. Use of the Platform</h2>
           <h5 className="text-base font-semibold mt-6 mb-3 text-black">2.1 Permitted Use</h5>
           <p className="mb-6  text-black">
            The NeoZaar Software-as-a-Service (“SaaS” or “Platform”) and all related services are provided to you strictly for lawful, authorized, and legitimate business purposes in accordance with these Terms of Use, the Privacy Policy, and all applicable laws and regulations, including data protection and cybersecurity laws.
           </p>
-
           <p className="mb-6  text-black">
            You agree to access and use the Platform only in the manner expressly permitted by NeoZaar and solely for the purposes intended — including business enablement, partner collaboration, marketplace participation, or other authorized functions within the scope of your account.
           </p>
