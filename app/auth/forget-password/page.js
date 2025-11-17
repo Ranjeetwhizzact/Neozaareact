@@ -23,7 +23,7 @@ export default function Page() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/forget-password', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}forget-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
