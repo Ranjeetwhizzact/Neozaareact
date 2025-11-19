@@ -635,23 +635,26 @@ const validateStep = (stepNumber) => {
 
         const data = await res.json();
 
-        if (res.ok) {
-          toast.dismiss(toastId)
-          toast.success('Registration successful!');
-
-          router.push('/auth/success');
-        } else {
-          setloading(false)
-          toast.error(data.message || 'Registration failed. Please try again.');
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        setloading(false)
-        toast.error('Something went wrong. Please try again.');
+       if (res.ok) {
+        toast.dismiss(toastId);
+        toast.success('Registration successful!');
+        router.push('/auth/success');
+      } else {
+        toast.dismiss(toastId);  // ❗ dismiss loading
+        setloading(false);
+        toast.error(data.message || 'Registration failed. Please try again.');
       }
-    } else {
-      toast.error("Please agree to the Terms & Conditions and Privacy Policy");
+
+    } catch (error) {
+      console.error('Error:', error);
+      toast.dismiss(toastId);  // ❗ dismiss loading
+      setloading(false);
+      toast.error('Something went wrong. Please try again.');
     }
+
+  } else {
+    toast.error("Please agree to the Terms & Conditions and Privacy Policy");
+  }
   };
 
   function legalEntityInput(e) {
