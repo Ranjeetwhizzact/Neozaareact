@@ -28,7 +28,11 @@ export default function Page() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errs.email = 'Invalid Email';
     }
-    if (!mobile) errs.mobile = 'Phone number required';
+   if (!mobile) {
+  errs.mobile = 'Phone number is required';
+} else if (!/^\d{10}$/.test(mobile)) {
+ errs.mobile = 'Please enter a valid phone number.';
+}
     if (!message) errs.message = 'Message required';
     if (!inquiryType) errs.inquiryType = 'Please select a category';
     if (!consent) errs.consent = 'You must agree to the terms and conditions';
