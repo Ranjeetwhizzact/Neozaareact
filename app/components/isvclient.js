@@ -63,7 +63,7 @@ export default function Page() {
   const [email, setEmail] = useState('');
   const [ support_desk_email, setDeskEmail] = useState('');
   const [mobile, setMobile] = useState('');
-  // const [password, setPassword] = useState('');
+  // const [password, setPassword] = useState('12345689');
   // const [showPassword, setShowPassword] = useState(false);
   const [designation, setDesignation] = useState('');
   // const [competencies_certifications, setDeskEmail] = useState('');
@@ -239,6 +239,7 @@ terms_of_use_link: {
 //   message:
 //     "Password must be 8–16 characters long and include uppercase, lowercase, number, and special character."
 // }
+// ,
 
   email: {
     required: true,
@@ -454,7 +455,7 @@ const validateStep = (stepNumber) => {
     1: ['company_name', 'registered_business_name', 'sla_link',
       'brand_name', 'website_url', 'tax_id', 'headquater_country',
       'legal_entity_type', 'brand_logo'],
-    2: ['name', 'designation', 'mobile', 'email','support_desk_email'],
+    2: ['name', 'designation', 'mobile',  'email','support_desk_email'],
     3: ['neozaar_tc', 'data_privacy','terms_of_use_link']
   };
 
@@ -885,7 +886,7 @@ const validateStep = (stepNumber) => {
                   {errors.legal_entity_type && (<p className="text-red-500 text-sm mt-1">{errors.legal_entity_type}</p>)}
                 </div>
                 <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Tax Id</label>
+                  <label className='text-sm dark:text-black req font-medium font-sans'>Tax Id <span className='text-red-500'>*</span></label>
                   <div className='flex'>
 
                     <input
@@ -906,7 +907,7 @@ const validateStep = (stepNumber) => {
                 </div>
               
                 <div className='col-span-2'>
-                  <label className='text-sm dark:text-black font-medium font-sans'>Website URl<span className='text-red-500'>*</span></label>
+                  <label className='text-sm dark:text-black font-medium font-sans'>Website URL<span className='text-red-500'>*</span></label>
                   <input
                     type='text'
                     placeholder=''
@@ -1048,9 +1049,9 @@ const validateStep = (stepNumber) => {
                   {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
                 </div>
              {/* <div className="col-span-2 relative">
-  <label className="text-sm dark:text-black font-medium font-sans">Password</label> */}
+  <label className="text-sm dark:text-black font-medium font-sans">Password</label>
 
-  {/* <input
+  <input
     type={showPassword ? 'text' : 'password'}
     value={password}
     placeholder="Enter a strong password"
@@ -1090,9 +1091,9 @@ const validateStep = (stepNumber) => {
         ? 'border-red-400 bg-red-50'
         : 'border-zinc-200 bg-zinc-100'
     } pr-10 rounded-md transition`}
-  /> */}
+  />
 
-  {/* <button
+  <button
     type="button"
     onClick={() => setShowPassword(!showPassword)}
     className="absolute right-3 top-9 text-zinc-500 hover:text-zinc-700"
@@ -1103,12 +1104,12 @@ const validateStep = (stepNumber) => {
     ) : (
       <i className="ri-eye-close-line"></i>
     )}
-  </button> */}
+  </button>
 
-  {/* {errors.password && (
+  {errors.password && (
     <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-  )} */}
-{/* </div> */}
+  )}
+</div> */}
 
               </>
             )}
