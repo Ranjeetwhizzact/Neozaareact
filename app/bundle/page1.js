@@ -50,7 +50,7 @@ export default function CustomSlider() {
       if (!token) return;
 
       try {
-        const res = await fetch(`http://20.83.163.38:5000/api/catalog/marketplace/products/${userId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
