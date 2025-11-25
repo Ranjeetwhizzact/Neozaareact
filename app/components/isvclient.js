@@ -63,7 +63,7 @@ export default function Page() {
   const [email, setEmail] = useState('');
   const [ support_desk_email, setDeskEmail] = useState('');
   const [mobile, setMobile] = useState('');
-  // const [password, setPassword] = useState('12345689');
+  const [password, setPassword] = useState('12345689');
   // const [showPassword, setShowPassword] = useState(false);
   const [designation, setDesignation] = useState('');
   // const [competencies_certifications, setDeskEmail] = useState('');
@@ -357,7 +357,7 @@ const validateField = (name, value) => {
       name,
       designation,
       mobile,
-      // password,
+      password,
       email,
        support_desk_email,
       neozaar_tc,
@@ -398,7 +398,7 @@ const validateField = (name, value) => {
       case 'name': setName(value); break;
       case 'designation': setDesignation(value); break;
       case 'mobile': setMobile(value); break;
-      // case 'password': setPassword(value); break;
+      case 'password': setPassword(value); break;
       case 'email': setEmail(value); break;
       case 'support_desk_email': setDeskEmail(value); break;
       case 'neozaar_tc': setNeozaartc(value); break;
@@ -434,7 +434,7 @@ const handleBlur = (fieldName) => {
     case 'name': value = name; break;
     case 'designation': value = designation; break;
     case 'mobile': value = mobile; break;
-    // case 'password': value = password; break;
+    case 'password': value = password; break;
     case 'email': value = email; break;
     case 'support_desk_email': value =  support_desk_email; break;
     case 'neozaar_tc': value = neozaar_tc; break;
@@ -483,7 +483,7 @@ const validateStep = (stepNumber) => {
       case 'name': value = name; break;
       case 'designation': value = designation; break;
       case 'mobile': value = mobile; break;
-      // case 'password': value = password; break;
+      case 'password': value = password; break;
       case 'email': value = email; break;
       case 'support_desk_email': value =  support_desk_email; break;
       case 'neozaar_tc': value = neozaar_tc; break;
@@ -603,7 +603,7 @@ const validateStep = (stepNumber) => {
       formData.append('name', name);
       formData.append('email', email);
       formData.append('mobile', mobile);
-      // formData.append('password', password);
+      formData.append('password', password);
       formData.append('role_id', role_id);
       formData.append('company_name', company_name);
       formData.append('registered_business_name', registered_business_name);
@@ -1048,11 +1048,11 @@ const validateStep = (stepNumber) => {
                   />
                   {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
                 </div>
-             {/* <div className="col-span-2 relative">
-  <label className="text-sm dark:text-black font-medium font-sans">Password</label>
+             <div className="col-span-2 relative">
+  {/* <label className="text-sm dark:text-black font-medium font-sans">Password</label> */}
 
   <input
-    type={showPassword ? 'text' : 'password'}
+    type="hidden"
     value={password}
     placeholder="Enter a strong password"
     onChange={(e) => {
@@ -1092,7 +1092,7 @@ const validateStep = (stepNumber) => {
         : 'border-zinc-200 bg-zinc-100'
     } pr-10 rounded-md transition`}
   />
-
+{/* 
   <button
     type="button"
     onClick={() => setShowPassword(!showPassword)}
@@ -1104,12 +1104,12 @@ const validateStep = (stepNumber) => {
     ) : (
       <i className="ri-eye-close-line"></i>
     )}
-  </button>
+  </button> */}
 
   {errors.password && (
     <p className="text-red-500 text-sm mt-1">{errors.password}</p>
   )}
-</div> */}
+</div>
 
               </>
             )}
