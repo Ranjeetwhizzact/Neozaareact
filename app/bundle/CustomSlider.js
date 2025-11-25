@@ -79,7 +79,7 @@ export default function CustomSlider() {
       if (!token) return;
 
       try {
-        const res = await fetch(`http://20.83.163.38:5000/api/catalog/marketplace/products/${userId}`, {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products/${userId}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -107,7 +107,7 @@ useEffect(() => {
     if (!token) return;
 
     try {
-      const res = await fetch('http://20.83.163.38:5000/api/products/', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}products/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.status === 401 || res.status === 403) {
@@ -162,7 +162,7 @@ const handleSubmit = async (e) => {
   
   try {
     const token = localStorage.getItem("token");
-    const res = await fetch("http://20.83.163.38:5000/api/lead/create", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}lead/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -221,7 +221,7 @@ const handleSubmitB = async (e) => {
   try {
     const token = localStorage.getItem("token");
 
-    const res = await fetch("http://20.83.163.38:5000/api/lead/create", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}lead/create`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

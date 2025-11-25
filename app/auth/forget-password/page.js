@@ -43,7 +43,7 @@ export default function Page() {
       }
 
       if (res.ok && data.status === 'success') {
-         const res = await fetch('http://20.83.163.38:5000/api/send-otp', {
+         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -129,7 +129,7 @@ const handleResetPassword = async (e) => {
 
   try {
     // Option 1: Send token as query parameter (as in your original code)
-    const res = await fetch(`http://20.83.163.38:5000/api/reset-password?token=${checktoken}`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}reset-password?token=${checktoken}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
