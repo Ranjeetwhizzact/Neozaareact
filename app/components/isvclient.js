@@ -974,7 +974,7 @@ const validateStep = (stepNumber) => {
             )}
             {step === 2 && (
               <>
-              <h5>Primary Contact</h5>
+              <h5 class="text-dark">Primary Contact</h5>
                 <div className="col-span-2">
                   <label className="text-sm dark:text-black font-medium font-sans">Contact Person Name<span className='text-red-500'>*</span></label>
                   <input
@@ -1308,7 +1308,7 @@ const validateStep = (stepNumber) => {
                       <option value=""></option>
                       <option value="Direct">Direct</option>
                       <option value="Reseller">Reseller</option>
-                      <option value="Both">Both</option>
+                      <option value="Accelerator">Accelerator</option>
                     </select>
                   </div>
                 </div>
