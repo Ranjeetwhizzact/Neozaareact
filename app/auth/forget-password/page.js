@@ -43,13 +43,13 @@ export default function Page() {
       }
 
       if (res.ok && data.status === 'success') {
-         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}send-otp`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
+      //    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}send-otp`, {
+      //   method: 'POST',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify({ email }),
+      // });
         toast.success('OTP sent to your email');
         setStep(2); // Move to OTP verification step
       } else {
