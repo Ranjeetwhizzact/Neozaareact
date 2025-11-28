@@ -11,6 +11,7 @@ import { NextSeo } from 'next-seo';
 
 
 
+
 export default function Page() {
   const [step, setStep] = useState(1);
   const [errors, setErrors] = useState({});
@@ -23,7 +24,8 @@ export default function Page() {
     { value: "Public Limited", name: "Public Limited" },
     { value: "Sole Proprietorship", name: "Sole Proprietorship" },
     { value: "Partnership", name: "Partnership" },
-    { value: "Other", name: "Other" },
+    { value: "LLP", name: "LLP" },
+
   ]);
   const [legalEntityTypesData, setlegalEntityTypesData] = useState(null);
 
@@ -67,6 +69,7 @@ export default function Page() {
   // const [showPassword, setShowPassword] = useState(false);
   const [designation, setDesignation] = useState('');
   // const [competencies_certifications, setDeskEmail] = useState('');
+  
   const [existing_marketplace_listing, setExistingMarket] = useState([]);
   const [cloud_partnership, setCloudPartnership] = useState([]);
   const [preferred_engagement, setPreferred] = useState('Reseller');
@@ -105,19 +108,19 @@ useEffect(() => {
 const validationRules = {
   company_name: {
     required: true,
-    pattern: /^[A-Za-z\s]+$/,
+    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
     message: "Company name should only contain letters and spaces."
   },
 
   designation: {
     required: true,
-    pattern: /^[A-Za-z\s]+$/,
+    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
     message: "Designation should only contain letters and spaces."
   },
 
   registered_business_name: {
     required: true,
-    pattern: /^[A-Za-z\s]+$/,
+    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
     message: "Registration name should only contain letters and spaces."
   },
 
@@ -158,7 +161,7 @@ terms_of_use_link: {
 
   brand_name: {
     required: true,
-    pattern: /^[A-Za-z\s]+$/,
+    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
     message: "Brand name should only contain letters and spaces."
   },
 
@@ -222,14 +225,40 @@ terms_of_use_link: {
 
   name: {
     required: true,
-    pattern: /^[A-Za-z\s]+$/,
+    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
     message: "Personal name should only contain letters and spaces."
   },
 
-  mobile: {
-    required: true,
-    message: "Please provide a mobile number."
-  },
+mobile: {
+  required: true,
+  validate: (value, allValues = {}) => {
+    if (!value) return "Please provide a mobile number.";
+
+    const countryPhoneLength = {
+      IN: 12,
+      AE: 12,
+      SG: 10,
+      US: 11,
+      UK: 12,
+      SA: 12,
+      AU: 11,
+      DE: 12,
+      FR: 11,
+    };
+
+    const selectedCountry = allValues.country_type?.toUpperCase() || "IN";
+    const minLen = countryPhoneLength[selectedCountry] ?? 8;
+
+    const digits = value.replace(/\D/g, "");
+
+    if (digits.length < minLen) {
+      return `Please provide a valid phone number for ${selectedCountry}`;
+    }
+
+    return null;
+  }
+},
+
 
 // password: {
 //   required: true,
@@ -485,7 +514,7 @@ const validateStep = (stepNumber) => {
       case 'mobile': value = mobile; break;
       case 'password': value = password; break;
       case 'email': value = email; break;
-      case 'support_desk_email': value =  support_desk_email; break;
+      case 'support_desk_email': value = support_desk_email; break;
       case 'neozaar_tc': value = neozaar_tc; break;
       case 'data_privacy': value = data_privacy; break;
       case 'brand_logo': value = brand_logo; break;
@@ -499,11 +528,18 @@ const validateStep = (stepNumber) => {
     }
   });
 
+  // 🔥 Extra condition for "Other" in Headquarter Country
+  if (stepNumber === 1 && headquater_country === "Other") {
+    newErrors.headquater_country = "Please enter the country name and click Add";
+    isValid = false;
+  }
+
   setTouched(newTouched);
-  setErrors(newErrors); // Replace completely instead of merging
+  setErrors(newErrors);
 
   return isValid;
 };
+
 
   // Form navigation
   const handleNext = async () => {
@@ -687,13 +723,31 @@ const validateStep = (stepNumber) => {
   }
 
   function handleSubmitOtherHC() {
-    if (headquaterCountryData != null) {
-      setHeadquaterCountry([headquaterCountryData, ...headquaterCountry]);
-      if (headquater_country === "Other") {
-        setHeadQuater(headquaterCountryData.value);
-      }
-    }
+  // 🔍 Validate input first
+  if (!headquaterCountryData || !headquaterCountryData.value.trim()) {
+    setErrors(prev => ({
+      ...prev,
+      headquater_country: "Please enter the country name before adding"
+    }));
+    return;
   }
+
+  // ✅ Add new country to the list
+  setHeadquaterCountry(prev => [headquaterCountryData, ...prev]);
+
+  // If currently "Other", replace it with the new value
+  if (headquater_country === "Other") {
+    setHeadQuater(headquaterCountryData.value);
+  }
+
+  // Clear temp data and error
+  setheadquaterCountryData(null);
+  setErrors(prev => ({
+    ...prev,
+    headquater_country: null
+  }));
+}
+
   return (
     <>
 
@@ -798,33 +852,77 @@ const validateStep = (stepNumber) => {
                   />
                   {errors.registered_business_name && (<p className="text-red-500 text-sm mt-1">{errors.registered_business_name}</p>)}
                 </div>
-                    <div className='col-span-2 md:col-span-1'>
-                  <label className='text-sm dark:text-gray-500 font-medium font-sans'>Headquarter Country<span className='text-red-500'>*</span></label>
+        <div className='col-span-2 md:col-span-1'>
+  <label className='text-sm dark:text-gray-500 font-medium font-sans'>
+    Headquarter Country<span className='text-red-500'>*</span>
+  </label>
 
-                  <select
-                    id="entityType"
-                    value={headquater_country}
-                    onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
-                    onBlur={() => handleBlur('headquater_country')}
-                    className={`border ${errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'} dark:text-black py-2.5 px-3 w-full`}
-                  >
-                    <option value="" disabled className='dark:text-black'>Select an option</option>
-                    {
-                      headquaterCountry.map((item, i) => (
-                        <option key={i} value={item.value} className='dark:text-black'>{item.name}</option>
-                      ))
-                    }
-                  </select>
+  <select
+    id="entityType"
+    value={headquater_country}
+    onChange={(e) => handleFieldChange('headquater_country', e.target.value)}
+    onBlur={() => handleBlur('headquater_country')}
+    className={`border ${
+      errors.headquater_country ? 'border-red-200 bg-red-500/10' : 'border-zinc-200 bg-zinc-100'
+    } dark:text-black py-2.5 px-3 w-full`}
+  >
+    <option value="" disabled className='dark:text-black'>
+      Select an option
+    </option>
+    {headquaterCountry.map((item, i) => (
+      <option key={i} value={item.value} className='dark:text-black'>
+        {item.name}
+      </option>
+    ))}
+  </select>
 
-                  {
-                    headquater_country === "Other" && <div className="m-2 flex gap-2 ">
-                      <input type="text" name="" onChange={headquaterCountryInput} placeholder='add legal entity type' className='bg-zinc-100 outline-1 p-1 dark:text-black' />
-                      <button onClick={handleSubmitOtherHC} className='bg-gray-950  text-white p-1 rounded cursor-pointer px-3'>Add</button>
-                    </div>
-                  }
+  {/* Error message for main select */}
+  {errors.headquater_country && (
+    <p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>
+  )}
 
-                  {errors.headquater_country && (<p className="text-red-500 text-sm mt-1">{errors.headquater_country}</p>)}
-                </div>
+  {/* Show input when Other is selected */}
+  {headquater_country === "Other" && (
+    <div className="m-2 flex gap-2">
+     <input
+  type="text"
+  value={headquaterCountryData?.value || ""}
+  onChange={(e) => {
+    const val = e.target.value;
+
+    // Allow only letters & spaces
+    if (/^[A-Za-z\s]*$/.test(val)) {
+      headquaterCountryInput(e);
+    }
+  }}
+  onBlur={(e) => {
+    // Show error if less than 3 letters
+    if (!/^(?=(?:.*[A-Za-z]){3,})[A-Za-z\s]+$/.test(e.target.value)) {
+      setErrors(prev => ({
+        ...prev,
+        headquater_country: "Minimum 3 letters required (letters and spaces only)"
+      }));
+    } else {
+      setErrors(prev => ({
+        ...prev,
+        headquater_country: null
+      }));
+    }
+  }}
+  placeholder="add legal entity type"
+  className="bg-zinc-100 outline-1 p-1 dark:text-black"
+/>
+
+      <button
+        onClick={handleSubmitOtherHC}
+        className="bg-gray-950 text-white p-1 rounded cursor-pointer px-3"
+      >
+        Add
+      </button>
+    </div>
+  )}
+</div>
+
               <div className="col-span-2 md:col-span-1">
   <label className="text-sm dark:text-black font-medium font-sans">SLA Link <span className='text-red-500'>*</span></label>
   <div className="flex">
@@ -974,7 +1072,7 @@ const validateStep = (stepNumber) => {
             )}
             {step === 2 && (
               <>
-              <h5 class="text-dark">Primary Contact</h5>
+              <h5 className="text-dark">Primary Contact</h5>
                 <div className="col-span-2">
                   <label className="text-sm dark:text-black font-medium font-sans">Contact Person Name<span className='text-red-500'>*</span></label>
                   <input
@@ -1029,25 +1127,32 @@ const validateStep = (stepNumber) => {
                     <p className="text-red-500 text-sm mt-1">{errors.support_desk_email}</p>
                   )}
                 </div>
-                <div className="col-span-2 md:col-span-1">
-                  <label className="text-sm dark:text-black font-medium font-sans">Phone Number</label>
-                  <PhoneInput
-                    country={'in'}
-                    value={mobile}
-                    onChange={(value) => handleFieldChange('mobile', value)}
-                    onBlur={() => handleBlur('mobile')}
-                    inputClass={`!w-full !px-14 !py-3 !text-sm !rounded-none !outline-none ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'
-                      }`}
-                    containerClass="!w-full"
-                    buttonClass={`px-10 ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'
-                      }`}
-                    inputProps={{
-                      name: 'mobile',
-                      required: true,
-                    }}
-                  />
-                  {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
-                </div>
+             <div className="col-span-2 md:col-span-1">
+  <label className="text-sm dark:text-black font-medium font-sans">Phone Number</label>
+
+<PhoneInput
+  country={'in'}
+  value={mobile}
+  onChange={(value, data) => {
+    handleFieldChange('mobile', value);
+    setCountryType(data.countryCode.toUpperCase());
+  }}
+  onBlur={() => handleBlur('mobile')}
+  inputClass={`!w-full !px-14 !py-3 !text-sm !rounded-none !outline-none ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'}`}
+  containerClass="!w-full"
+  buttonClass={`px-10 ${errors.mobile ? '!border-red-200 !bg-red-500/10' : '!border-zinc-200 !bg-zinc-100'}`}
+  inputProps={{
+    name: 'mobile',
+    required: true,
+  }}
+/>
+
+{errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
+
+
+ 
+</div>
+
              <div className="col-span-2 relative">
   {/* <label className="text-sm dark:text-black font-medium font-sans">Password</label> */}
 
