@@ -311,7 +311,7 @@ const handleSubmitB = async (e) => {
           {/* for laptop and tablets */}
           <section
             className="hidden md:block w-full lg:border-t-0 lg:border lg:border-l-0 lg:px-0 py-6 lg:min-h-[95vh] h-full px-2 ">
-            <nav className="flex flex-wrap gap-4 border-b pl-10 pb-2 mb-4 text-sm font-medium">
+            <nav className="flex flex-wrap gap-5 border-b pl-10 pb-2 mb-4 text-md font-medium">
               <button
                 onClick={() => setActiveTab("info")}
                 className={`${activeTab === "info" ? "text-black" : "text-gray-400"
@@ -333,13 +333,13 @@ const handleSubmitB = async (e) => {
               >
                 Pricing & Licensing
               </button>
-              <button
+              {/* <button
                 onClick={() => setActiveTab("support_info")}
                 className={`${activeTab === "support_info" ? "text-black" : "text-gray-400"
                   } hover:text-black`}
               >
                 Support INFO
-              </button>
+              </button> */}
               <button
                 onClick={() => setActiveTab("media_assets")}
                 className={`${activeTab === "media_assets" ? "text-black" : "text-gray-400"
@@ -363,19 +363,37 @@ const handleSubmitB = async (e) => {
 
                   <div className="mb-5">
                     <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Key Features</p>
-                    <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.key_features}</p>
+                    {/* <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.key_features}</p> */}
+                      <ul className="list-disc pl-5 text-gray-600 text-lg font-normal font-[inter]">
+    {(() => {
+      try {
+        const arr = JSON.parse(productDetails?.product?.key_features);
+        return arr.map((item, i) => <li key={i}>{item}</li>);
+      } catch {
+        return <li>{productDetails?.product?.key_features}</li>;
+      }
+    })()}
+  </ul>
                   </div>
-                  <div className="mb-5">
+                  <div className="my-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Target Audience</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.target_audience}</p>
+                  {/* <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.target_audience}</p> */}
+                      <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.target_audience?.map((item, index) => (
+      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
+    ))}</p>
                   </div>
-                  <div className="mb-5">
+                  <div className="my-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Category & Subcategory</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.category_subcategory}</p>
+                  <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.category_subcategory?.map((item, index) => (
+      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
+    ))}</p>
                   </div>
-                  <div className="mb-5">
+                  <div className="my-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Regions Supported</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.regions_supported}</p>
+                  {/* <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.regions_supported}</p> */}
+                      <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.regions_supported?.map((item, index) => (
+      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
+    ))}</p>
                   </div>
                 </div>
 
@@ -385,11 +403,14 @@ const handleSubmitB = async (e) => {
                 <div className="flex flex-col space-y-1">
                 <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Cloud Provider Support</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
+                      <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.cloud_provider_support?.map((item, index) => (
+      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
+    ))}</p>
+                  {/* <p className="text-gray-600 text-lg font-normal font-[inter]">
                     {productDetails?.product?.cloud_provider_support}
-                  </p>
+                  </p> */}
                 </div>
-                <div className="mb-5">
+                {/* <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Supported AWS Services</p>
                   <p className="text-gray-600 text-lg font-normal font-[inter]">
                     {productDetails?.product?.supported_aws_services}
@@ -400,7 +421,7 @@ const handleSubmitB = async (e) => {
                   <p className="text-gray-600 text-lg font-normal font-[inter]">
                     {productDetails?.product?.supported_azure_services}
                   </p>
-                </div>
+                </div> */}
                 <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Deployment Model</p>
                   <p className="text-gray-600 text-lg font-normal font-[inter]">
@@ -408,9 +429,15 @@ const handleSubmitB = async (e) => {
                   </p>
                 </div>
                 <div className="mb-5">
+                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Primary Use Cases</p>
+                  <p className="text-gray-600 text-lg font-normal font-[inter]"  dangerouslySetInnerHTML={{ __html: productDetails?.product?.primary_use_cases || ""}}>
+                   
+                  </p>
+                </div>
+                <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Technical Prerequisites</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.technical_prerequisites}
+                  <p className="text-gray-600 text-lg font-normal font-[inter]"  dangerouslySetInnerHTML={{ __html: productDetails?.product?.technical_prerequisites || ""}}>
+                   
                   </p>
                 </div>
                 <div className="mb-5">
@@ -430,22 +457,22 @@ const handleSubmitB = async (e) => {
                     {productDetails?.product?.pricing_model}
                   </p>
                 </div>
-                <div className="mb-5">
+                {/* <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Billing Dimension</p>
                   <p className="text-gray-600 text-lg font-normal font-[inter]">
                     {productDetails?.product?.billing_dimension}
                   </p>
-                </div>
-                <div className="mb-5">
+                </div> */}
+                {/* <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">License Model</p>
                   <p className="text-gray-600 text-lg font-normal font-[inter]">
                     {productDetails?.product?.license_model}
                   </p>
-                </div>
+                </div> */}
                 <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Free Trial Available</p>
                   <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.free_trial_available ? "Yes" : "No"}
+                    {/* {productDetails?.product?.free_trial_available ? "Yes" : "No"} */}Yes
                   </p>
                 </div>
                 <div className="mb-5">
@@ -457,7 +484,7 @@ const handleSubmitB = async (e) => {
                 </div>
               )}
 
-              {activeTab === "support_info" && (
+              {/* {activeTab === "support_info" && (
               <div className="flex flex-col space-y-1">
                 <div className="mb-5">
                   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Support Contact Person</p>
@@ -508,26 +535,35 @@ const handleSubmitB = async (e) => {
 </div>
 
                 </div>
-              )}
+              )} */}
               {activeTab === "media_assets" && (
                 <div className="flex flex-col space-y-1">
-                <div>
-                  <p className="font-semibold mb-1 text-sm font-[inter] underlin text-gray-800">Screenshots</p>
-                  {productDetails?.product?.screenshots?.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {productDetails.product.screenshots.map((imgUrl, index) => (
-                        <img
-                          key={index}
-                          src={imgUrl}
-                          alt={`Screenshot ${index + 1}`}
-                          className="w-full h-50"
-                        />
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600 lg:text-md">No Screenshot available</p>
-                  )}
-                </div>
+<div>
+  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">
+    Screenshots
+  </p>
+
+  {productDetails?.product?.screenshots?.length > 0 ? (
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {productDetails.product.screenshots.map((imgUrl, index) => (
+        <div
+          key={index}
+          className="bg-gray-300 p-3 rounded-md shadow-sm"
+        >
+          <img
+            src={imgUrl}
+            alt={`Screenshot ${index + 1}`}
+            className="w-full aspect-video object-cover rounded-md"
+          />
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p className="text-gray-600 lg:text-md">No Screenshot available</p>
+  )}
+</div>
+
+
                 <div>
   <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Brochure</p>
   {productDetails?.product?.brochures?.length > 0 ? (
@@ -656,14 +692,14 @@ const handleSubmitB = async (e) => {
       <p className="font-semibold mb-1 underline text-gray-700">Pricing Model</p>
       <p className="text-gray-600">{productDetails?.product?.pricing_model}</p>
     </div>
-    <div className="mb-5">
+    {/* <div className="mb-5">
       <p className="font-semibold mb-1 underline text-gray-700">Billing Dimension</p>
       <p className="text-gray-600">{productDetails?.product?.billing_dimension}</p>
-    </div>
-    <div className="mb-5">
+    </div> */}
+    {/* <div className="mb-5">
       <p className="font-semibold mb-1 underline text-gray-700">License Model</p>
       <p className="text-gray-600">{productDetails?.product?.license_model}</p>
-    </div>
+    </div> */}
     <div className="mb-5">
       <p className="font-semibold mb-1 underline text-gray-700">Free Trial Available</p>
       <p className="text-gray-600">{productDetails?.product?.free_trial_available ? "Yes" : "No"}</p>
@@ -674,7 +710,7 @@ const handleSubmitB = async (e) => {
     </div>
     </div>
     {/* --- SUPPORT INFO Section --- */}
-    <div className="border-b pl-2">
+    {/* <div className="border-b pl-2">
     <h3 className="font-semibold text-lg pb-2 mb-3 text-gray-700">SUPPORT INFORMATION</h3>
     <div className="mb-5">
       <p className="font-semibold mb-1 underline text-gray-700">Support Contact Person</p>
@@ -713,7 +749,7 @@ const handleSubmitB = async (e) => {
         <p className="text-gray-600">No SLA documents available</p>
       )}
     </div>
-    </div>
+    </div> */}
 
     {/* --- MEDIA Section --- */}
     <div className="border-b pb-4 pl-2">

@@ -74,12 +74,13 @@ export default function Page() {
                     </div>
                     {/* Hero Content */}
                     <div className="relative mx-auto md:my-35 lg:my-25 my-40 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
-                        <h1 className="text-white font-light font-['serif'] text-3xl sm:text-4xl md:text-5xl mb-4 leading-snug">
-                            Join The NeoZaar ISV<br />Market Place Today!
+                        <div className='lg:w-[600px]'>
+
+                        <h1 className="text-white font-light font-['serif'] text-3xl sm:text-4xl lg:text-[52px] mb-4  lg:leading-[60px]">
+                           Expand Your Reach. Accelerate Your Growth.
                         </h1>
                         <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3">
-                            Partner with NeoZaar to accelerate your software distribution and<br className="hidden sm:inline" />
-                            reach new markets through our comprehensive ISV program<br className="hidden sm:inline" />
+                            NeoZaar connects Independent Software Vendors (ISVs) and SaaS companies with enterprise buyers, cloud partners, and growth programs designed to help you scale faster across India and MEA.
 
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
@@ -96,55 +97,96 @@ export default function Page() {
                                 Learn More
                             </Link>
                         </div>
+                        </div>
                     </div>
                 </section>
 
+                     <div className="px-4 sm:px-6 md:px-8 lg:px-16 xl:px-20 py-16 md:py-20 lg:py-24 bg-black text-white">
+                    <div className="max-w-7xl mx-auto">
+                        {/* Title */}
+                       
 
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-center">
+                            {/* Left Side - Benefits List */}
+                            <div className="space-y-4 md:space-y-6 lg:space-y-6">
+                         
+                                 <h1 className="text-white text-center font-light  text-3xl sm:text-4xl lg:text-[52px] mb-4  lg:leading-[60px]">
+                           Why NeoZaar
+                        </h1>
+                        <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3 text-center">
+                    The cloud marketplace is evolving — and NeoZaar is where software innovation meets opportunity.
+
+                        </p>
+                        <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3 text-center">
+                  We help emerging ISVs move beyond discovery and listings to achieve measurable growth.
+                        </p>
+                            </div>
+
+                            {/* Right Side - Image and CTA */}
+                            <div className="flex flex-col items-center justify-start mt-6 lg:mt-0">
+                                {/* Image */}
+                                <div className="mb-3 md:mb-4 lg:mb-1 w-full flex justify-center">
+                                    <div className='relative  w-[400px] h-[400px] lg:w-[500px] lg:h-[500px]'>
+                                          <Image
+                                        src="/assests/isv-program/gain.png"
+                                        alt=""
+                                        fill
+                                        className=" md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
+                                    />
+                                    </div>
+                                  
+                                </div>
+
+                                {/* CTA Section */}
+                          
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Features Section */}
                 <section className="w-full pt-6 pb-12 sm:py-16 px-2 sm:px-10 lg:px-25 flex flex-col items-center">
                     <div className="max-w-5xl mx-auto text-center mb-12 md:mb-16">
-                        <h2 className="text-3xl md:text-4xl lg:text-5xl font-['inter'] mb-4 md:mb-6">
-                            CoSell Benefits
+                        <h2 className="text-3xl text-white md:text-4xl lg:text-5xl font-['inter'] mb-4 md:mb-6">
+                          Key Benefits
                         </h2>
 
                         <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto">
-                            Join thousands of software vendors who trust NeoZaar to expand their
-                            <br /> market reach and accelerate growth
-                        </p>
+                           Join thousands of software vendors who trust NeoZaar to expand their market reach and accelerate growth.
+                           </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[940px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0">
                         {[
                             {
                                 src: '/assests/isv-program/b1.png',
-                                title: 'Global Marketplace',
-                                text: 'Access millions of potential customers worldwide through our established marketplace platform',
+                                title: 'Regional Reach',
+                                text: 'Showcase your solution to enterprise and mid-market buyers across *India and MEA*',
                             },
                             {
                                 src: '/assests/isv-program/b2.png',
-                                title: 'Accelerated Growth',
-                                text: ' Leverage our marketing channels and partner network to accelerate your software adoption',
+                                title: 'Faster GTM',
+                                text: ' Tap into NeoZaar’s marketing engine and sales enablement programs to accelerate adoption.',
                             },
                             {
                                 src: '/assests/isv-program/b3.png',
-                                title: 'Strategic Partnerships',
-                                text: ' Build meaningful partnerships with other ISVs and enterprise customers in our ecosystem',
+                                title: 'Partnerships that Scale',
+                                text: ' Collaborate with hyperscalers, ISVs, and managed partners to reach new customer segments.',
                             },
                             {
                                 src: '/assests/isv-program/b4.png',
-                                title: 'Revenue Optimization',
-                                text: 'Maximize your revenue potential with our flexible pricing models and revenue sharing options',
+                                title: 'AI Enablement',
+                                text: 'Access frameworks and advisory to infuse AI into your products, processes, and positioning.',
                             },
                             {
                                 src: '/assests/isv-program/b5.png',
-                                title: 'Enterprise Security',
-                                text: 'Benefit from enterprise-grade security and compliance standards that customers trust',
+                                title: 'Cloud-Ready Operations',
+                                text: 'Utilize NeoZaar’s cloud management and optimization services to stay secure and cost-efficient.',
                             },
                             {
                                 src: '/assests/isv-program/b6.png',
-                                title: 'Dedicated Support',
-                                text: ' Get dedicated partner support and resources to help you succeed on our platform',
+                                title: 'End-to-End Support',
+                                text: 'From listing to lead generation, we guide you through every stage of your marketplace journey.',
                             },
                         ].map((item, idx) => (
                             <div
@@ -187,7 +229,7 @@ export default function Page() {
                     <div className="max-w-7xl mx-auto">
                         {/* Title */}
                         <div className="text-2xl md:text-3xl lg:text-4xl font-['Inter'] font-normal text-center mb-16 md:mb-20 lg:mb-24">
-                            Program Benefits
+                          What You Gain
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-start">
@@ -217,10 +259,10 @@ export default function Page() {
                                     {/* Content */}
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                            Co-Marketing Opportunities
+                                           Marketplace Listing
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                            Joint marketing campaigns, case studies, and promotional activities to boost your visibility
+                                            Get your product featured on NeoZaar and visible to enterprise buyers.
                                         </div>
                                     </div>
                                 </div>
@@ -247,43 +289,16 @@ export default function Page() {
 
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                            Technical Integration Support
+                                            Co-Sell Readiness
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                            Comprehensive API documentation, SDKs, and technical support for seamless integration
+                                            Prepare your solution for AWS, Azure, or GCP marketplace alignment. 
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Benefit 3 */}
-                                <div className="flex gap-4 items-start">
-                                    <div className="flex-shrink-0 mt-1">
-                                        <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
-                                            <svg
-                                                className="w-3 h-3 md:w-3 md:h-3 text-white"
-                                                fill="none"
-                                                stroke="currentColor"
-                                                viewBox="0 0 24 24"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    strokeWidth={3}
-                                                    d="M5 13l4 4L19 7"
-                                                />
-                                            </svg>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex-1">
-                                        <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                            Sales Enablement Tools
-                                        </div>
-                                        <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                            Access to sales tools, training materials, and lead generation resources
-                                        </div>
-                                    </div>
-                                </div>
+                             
 
                                 {/* Benefit 4 */}
                                 <div className="flex gap-4 items-start">
@@ -307,10 +322,94 @@ export default function Page() {
 
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                            Priority Listing
+                                          Marketing Acceleration
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                            Enhanced visibility in search results and featured placement opportunities
+                                            Run digital campaigns, webinars, and joint marketing activities. 
+                                        </div>
+                                    </div>
+                                </div>
+                                   <div className="flex gap-4 items-start">
+                                    <div className="flex-shrink-0 mt-1">
+                                        <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
+                                            <svg
+                                                className="w-3 h-3 md:w-3 md:h-3 text-white"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={3}
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
+                                        Cloud Management Services
+                                        </div>
+                                        <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
+                                            Access performance monitoring, optimization, and cost governance.
+                                        </div>
+                                    </div>
+                                </div>
+                                   <div className="flex gap-4 items-start">
+                                    <div className="flex-shrink-0 mt-1">
+                                        <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
+                                            <svg
+                                                className="w-3 h-3 md:w-3 md:h-3 text-white"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={3}
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
+                                           Private Offer Structuring
+                                        </div>
+                                        <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
+                                            Build EDP/MACC-aligned offers for enterprise customers.
+                                        </div>
+                                    </div>
+                                </div>
+                                   <div className="flex gap-4 items-start">
+                                    <div className="flex-shrink-0 mt-1">
+                                        <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
+                                            <svg
+                                                className="w-3 h-3 md:w-3 md:h-3 text-white"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={3}
+                                                    d="M5 13l4 4L19 7"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1">
+                                        <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
+                                         GTM Enablement
+                                        </div>
+                                        <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
+                                         Get strategic messaging, positioning, and content support.
                                         </div>
                                     </div>
                                 </div>
@@ -320,11 +419,15 @@ export default function Page() {
                             <div className="flex flex-col items-center justify-start mt-6 lg:mt-0">
                                 {/* Image */}
                                 <div className="mb-3 md:mb-4 lg:mb-1 w-full flex justify-center">
-                                    <img
+                                    <div className='relative  w-[400px] h-[400px] lg:w-[500px] lg:h-[500px]'>
+                                          <Image
                                         src="/assests/isv-program/gain.png"
                                         alt=""
-                                        className="w-[400px] h-[400px] md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
+                                        fill
+                                        className=" md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
                                     />
+                                    </div>
+                                  
                                 </div>
 
                                 {/* CTA Section */}
@@ -333,7 +436,7 @@ export default function Page() {
                                         Ready to Get Started?
                                     </div>
                                     <div className="text-gray-400 font-['Arial'] font-normal text-base leading-5 mb-5 px-3">
-                                        Join our ISV program and unlock new growth opportunities
+                                      Expand Your Reach. Accelerate Your Growth.
                                     </div>
                                     <button className="bg-gray-700 hover:bg-gray-600 text-white font-['Arial'] font-medium px-10 py-3 rounded-full text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                                         Apply Today
@@ -345,20 +448,20 @@ export default function Page() {
                 </div>
 
                 {/* Final Section */}
-                <section className="relative w-full flex flex-col items-center justify-start pt-6 px-4 sm:px-6 min-h-[300px] sm:min-h-[500px] mb-0">
+                <section className="relative w-full flex flex-col items-center justify-start pt-6 px-4 sm:px-6 min-h-[400px] sm:min-h-[300px] mb-0">
 
                     <div className="relative mx-auto w-full max-w-2xl text-center">
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-[#F79331] via-[#39C6FF] to-white  mb-4 font-['sans'] font-normal text-[40px] leading-[100%] tracking-normal text-center">
+                        <h2 className="text-2xl sm:text-3xl md:text-4xl bg-clip-text text-transparent bg-gradient-to-r from-[#F79331] via-[#39C6FF] to-white  mb-4 font-normal text-[40px] leading-[100%] tracking-normal text-center">
                             Ready to Transform Your Software Sales?
                         </h2>
                         <p className="text-gray-200 text-sm sm:text-base mb-3">
                             Join the NeoZaar ISV Program and unlock new opportunities for growth and partnership success.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-                            <button onClick={handleMarketplaceClick} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
+                            <button onClick={handleMarketplaceClick} className="inline-flex items-center justify-center bg-gray-200 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
                                 <span className="mr-2"> Start Your Application</span>
                             </button>
-                            <button onClick={handleMarketplaceClick} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
+                            <button onClick={handleMarketplaceClick} className="inline-flex items-center justify-center border border-1 border-white bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
                                 <span className="mr-2"> Explore CoSell360</span>
                                 <Image src="/image/kg.png" alt="" width={15} height={15} />
                             </button>

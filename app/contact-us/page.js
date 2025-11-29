@@ -30,7 +30,7 @@ export default function Page() {
     }
    if (!mobile) {
   errs.mobile = 'Phone number is required';
-} else if (!/^\d{10}$/.test(mobile)) {
+} else if (!/^\d{12}$/.test(mobile)) {
  errs.mobile = 'Please enter a valid phone number.';
 }
     if (!message) errs.message = 'Message required';

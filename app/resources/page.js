@@ -158,7 +158,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative w-full flex flex-col items-center justify-start pt-0 px-2 sm:px-6 pb-15 min-h-screen lg:min-h-screen 2xl:min-h-auto">
         {/* Background Video */}
-        <div className='w-full h-full absolute z-1 bg-black'></div>
+        <div className='w-full h-screen absolute z-1 bg-black'></div>
         <video
           className="absolute inset-0 w-full h-full object-cover z-0 "
           autoPlay
@@ -186,10 +186,10 @@ export default function Home() {
             <input
               type="search"
               placeholder="Search for articles, playbooks, and more..."
-              className="w-full h-14 pl-6 pr-16 rounded-full text-white bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#FFA348] placeholder:text-gray-400"
+              className="w-full h-14 pl-6 pr-16 rounded-full  bg-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#ffffff] placeholder:text-gray-400"
             />
-            <button className="absolute inset-y-0 right-0 flex items-center justify-center w-14 h-14 text-white bg-[#FFA348] rounded-full hover:bg-orange-500 transition">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+            <button className="absolute inset-y-0 right-0 flex items-center justify-center w-14 h-14 text-black bg-white rounded-full transition">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-6">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35m2.35-5.15a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z" />
               </svg>
             </button>
