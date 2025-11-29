@@ -98,7 +98,7 @@ export default function Home() {
           </h1>
           <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-5  ">
             {/* Discover enterprise-ready solutions across Security, AI, Modernization, and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis, Commvault, and Snowflake, and tailored for your AWS MACC or Azure EDP strategy. */}
-            Discover curated software bundles, enjoy risk-free trials, and transform your business with NeoZaar's customer-first approach.
+            Discover curated software bundles, enjoy risk-free trials, and transform your business with NeoZaar{"'"}s customer-first approach.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto mt-5">
             <Link href={"/auth/register"}
@@ -156,11 +156,16 @@ export default function Home() {
               >
                 {/* Icon */}
                 <div className="w-16 h-16 flex items-center justify-center bg-orange-200 rounded-full shadow-lg">
-                  <img
+                  <div className="relative w-6 h-6 ">
+
+
+                  <Image
+                  fill
                     src={step.img}
                     alt={step.title}
-                    className="w-6 h-6 object-contain"
+                    className="object-contain"
                   />
+                  </div>
                 </div>
 
                 {/* Text */}
@@ -184,7 +189,7 @@ export default function Home() {
             Why Choose <span className="text-[#8e4dff]">NeoZaar?</span>
           </h2>
           <p className="text-white/70 text-base sm:text-lg max-w-2xl leading-relaxed">
-            We're committed to making your software procurement journey as smooth and
+            We{"'"}re committed to making your software procurement journey as smooth and
             risk-free as possible.
           </p>
         </div>
@@ -229,11 +234,15 @@ export default function Home() {
             >
               {/* Icon Box */}
               <div className="w-20 h-20 rounded-lg border border-orange-200 flex items-center justify-center mb-2">
+              <div className="relative w-7 h-7">
+
                 <img
+                fill
                   src={item.icon}
                   alt={item.title}
-                  className="w-7 h-7 object-contain"
+                  className=" object-contain"
                 />
+              </div>
               </div>
 
               {/* Text Centered */}
@@ -424,11 +433,15 @@ export default function Home() {
             <div className="absolute inset-0 w-[550px] h-[420px] md:w-[600px] md:h-[460px] bg-gradient-to-r from-[#4db5ff40] via-[#ffa34830] to-[#4db5ff40] rounded-[40px] blur-[100px] animate-pulse-glow"></div>
 
             {/* Image */}
-            <img
+            <div className="relative w-full max-w-[550px]">
+
+            <Image
+              fill
               src="/assests/customer/private-deal.png" // your actual image
               alt="Private Deal Workflow"
-              className="relative z-10 w-full max-w-[550px] h-auto rounded-[30px] md:rounded-[40px] shadow-xl object-cover border border-[#1e1e1e]"
+              className="relative z-10 h-auto rounded-[30px] md:rounded-[40px] shadow-xl object-cover border border-[#1e1e1e]"
             />
+            </div>
           </div>
         </div>
       </section>
@@ -446,12 +459,12 @@ export default function Home() {
         </div>
 
         {/* Navigation Arrows (Desktop Only) */}
-        <div className="swiper-button-prev-custom hidden lg:flex absolute -left-14 top-[55%] -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-[#FFA348] flex items-center justify-center text-[#FFA348] hover:bg-[#FFA348] hover:text-black shadow-md transition cursor-pointer">
+        <div className="swiper-button-prev-custom hidden lg:flex absolute -left-14 top-[55%] -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-[#FFA348]  items-center justify-center text-[#FFA348] hover:bg-[#FFA348] hover:text-black shadow-md transition cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
           </svg>
         </div>
-        <div className="swiper-button-next-custom hidden lg:flex absolute -right-14 top-[55%] -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-[#FFA348] flex items-center justify-center text-[#FFA348] hover:bg-[#FFA348] hover:text-black shadow-md transition cursor-pointer">
+        <div className="swiper-button-next-custom hidden lg:flex absolute -right-14 top-[55%] -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-[#FFA348]  items-center justify-center text-[#FFA348] hover:bg-[#FFA348] hover:text-black shadow-md transition cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
           </svg>
