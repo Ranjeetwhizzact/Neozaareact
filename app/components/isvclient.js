@@ -270,43 +270,114 @@ mobile: {
 // }
 // ,
 
-  email: {
-    required: true,
-    validate: (value) => {
-      if (!value) return "Email is required.";
-      
-      const blockedDomains = [
-        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
-        "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
-      ];
-      const domain = value.split("@")[1]?.toLowerCase();
-      
-      if (!domain) return "Please enter a valid email address.";
-      if (blockedDomains.includes(domain)) {
-        return "Please provide an official (non-personal) email address.";
-      }
-      return null;
-    }
-  },
+email: {
+  required: true,
+  validate: (value) => {
+    if (!value) return "Email is required.";
 
-  support_desk_email: {
-    required: true,
-    validate: (value) => {
-      if (!value) return "Email is required.";
-      
-      const blockedDomains = [
-        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
-        "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
-      ];
-      const domain = value.split("@")[1]?.toLowerCase();
-      
-      if (!domain) return "Please enter a valid email address.";
-      if (blockedDomains.includes(domain)) {
-        return "Please provide an official (non-personal) email address.";
-      }
-      return null;
+    // Validate overall email format
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(value)) return "Please enter a valid email address.";
+
+    // Split email into parts
+    const [prefix, domainPart] = value.split("@");
+    
+    // Validate prefix (before @)
+    if (prefix.length < 3) {
+      return "The part before @ must be at least 3 characters.";
     }
-  },
+
+    // Check for allowed characters in prefix (letters or numbers)
+    const prefixRegex = /^[A-Za-z0-9]+$/;
+    if (!prefixRegex.test(prefix)) {
+      return "The part before @ can contain only letters or numbers.";
+    }
+
+    // Check if domain part exists
+    if (!domainPart) return "Please enter a valid email address.";
+    
+    // Split domain part to get the part before TLD
+    const domainParts = domainPart.split(".");
+    if (domainParts.length < 2) {
+      return "Please enter a valid email address.";
+    }
+    
+    // Get the part between @ and . (the main domain)
+    const domainName = domainParts[0]; // Part between @ and first dot
+    
+    // Check if there are at least 3 characters between @ and .
+    if (!domainName || domainName.length < 3) {
+      return "The domain name (part between @ and .) must be at least 3 characters.";
+    }
+
+    // Blocked personal domains
+    const blockedDomains = [
+      "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+      "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+    ];
+    
+    const fullDomain = domainPart.toLowerCase();
+    
+    if (blockedDomains.includes(fullDomain)) {
+      return "Please provide an official (non-personal) email address.";
+    }
+
+    return null;
+  }
+},
+
+support_desk_email: {
+  required: true,
+  validate: (value) => {
+    if (!value) return "Email is required.";
+
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(value)) return "Please enter a valid email address.";
+
+    // Split email into parts
+    const [prefix, domainPart] = value.split("@");
+    
+    if (prefix.length < 2) {
+      return "The part before @ must be at least 3 characters.";
+    }
+
+    const prefixRegex = /^[A-Za-z0-9]+$/;
+    if (!prefixRegex.test(prefix)) {
+      return "The part before @ can contain only letters or numbers.";
+    }
+
+    // Check if domain part exists
+    if (!domainPart) return "Please enter a valid email address.";
+    
+    // Split domain part to get the part before TLD
+    const domainParts = domainPart.split(".");
+    if (domainParts.length < 2) {
+      return "Please enter a valid email address.";
+    }
+    
+    // Get the part between @ and . (the main domain)
+    const domainName = domainParts[0];
+    
+    // Check if there are at least 3 characters between @ and .
+    if (!domainName || domainName.length < 2) {
+      return "The domain name (part between @ and .) must be at least 2 characters.";
+    }
+
+    const blockedDomains = [
+      "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+      "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+    ];
+    
+    const fullDomain = domainPart.toLowerCase();
+    
+    if (blockedDomains.includes(fullDomain)) {
+      return "Please provide an official (non-personal) email address.";
+    }
+
+    return null;
+  }
+}
+,
 
   neozaar_tc: {
     required: true,
@@ -1477,7 +1548,19 @@ const validateStep = (stepNumber) => {
                       <label
                         htmlFor='treamscondition' className='hidden justify-center items-center bg-black w-5 h-5 border border-black  peer-checked/terms:flex'><i className="ri-check-line text-white"></i></label>
                     </div>
-                    <label htmlFor='treamscondition' className='text-sm dark:text-black '>I agree to the <a href="/terms-and-conditions" className='font-semibold underline'>Terms & Conditions</a>  and consent to the collection and use of my data as outlined in the <a href="/privacy-policy" className='font-semibold underline'>Privacy Policy</a> . </label>
+                   <label htmlFor="termsCondition" className="text-sm dark:text-black">
+  I agree to the{" "}
+  <a href="/terms-and-conditions"     target="_blank"
+    rel="noopener noreferrer" className="font-semibold underline">
+    Terms & Conditions
+  </a>{" "}
+  and consent to the collection and use of my data as outlined in the{" "}
+  <a href="/privacy-policy"    target="_blank"
+    rel="noopener noreferrer" className="font-semibold underline">
+    Privacy Policy
+  </a>.
+</label>
+
                   </div>
                   {errors.neozaar_tc && <p className="text-red-500 text-sm mt-1">{errors.neozaar_tc}</p>}
                 </div>
