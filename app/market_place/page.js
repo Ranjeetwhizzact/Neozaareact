@@ -102,42 +102,77 @@ export default function Home() {
     checkAuth();
   }, []);
 
-  async function fetchMarketplace(page = 1, categori) {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+  // async function fetchMarketplace(page = 1, categori) {
+  //   const token = localStorage.getItem('token');
+  //   if (!token) return;
 
-    try {
+  //   try {
 
-      let query = `?page=${page}&limit=${paginations.limit}`;
+  //     let query = `?page=${page}&limit=${paginations.limit}`;
 
-      if (search) {
-        query += `&search=${encodeURIComponent(search)}`;
-      }
+  //     if (search) {
+  //       query += `&search=${encodeURIComponent(search)}`;
+  //     }
 
-      if (categori) {
-        query += `&category=${encodeURIComponent(categori)}`;
-      }
+  //     if (categori) {
+  //       query += `&category=${encodeURIComponent(categori)}`;
+  //     }
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products${query}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+  //     const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products${query}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      if (res.ok) {
-        setMarketplace(data.data);
-        setPagination(data.pagination)
+  //     if (res.ok) {
+  //       setMarketplace(data.data);
+  //       setPagination(data.pagination)
 
-      } else {
-        console.log('API error:', data.message);
-      }
-    } catch (err) {
-      console.error('Error loading products:', err);
+  //     } else {
+  //       console.log('API error:', data.message);
+  //     }
+  //   } catch (err) {
+  //     console.error('Error loading products:', err);
+  //   }
+  // }
+async function fetchMarketplace(page = 1, categori) {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  try {
+    let query = `?page=${page}&limit=${paginations.limit}`;
+
+    if (search) {
+      query += `&search=${encodeURIComponent(search)}`;
     }
-  }
 
+    if (categori) {
+      query += `&category=${encodeURIComponent(categori)}`;
+    }
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products${query}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      setMarketplace(data.data);
+      setPagination(data.pagination);
+      
+      // Scroll to results section when page changes
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      console.log('API error:', data.message);
+    }
+  } catch (err) {
+    console.error('Error loading products:', err);
+  }
+}2
   useEffect(() => {
     fetchMarketplace();
   }, [search, categoriesSelect]);
@@ -221,11 +256,11 @@ export default function Home() {
         </section>
 
         <section id="search-section">
-          {/* <div className="bg-white border-b border-zinc-200 flex flex-wrap items-center justify-start overflow-hidden"> */}
-          <div className="bg-white border-b border-zinc-200 flex flex-wrap items-center justify-start overflow-visible">
 
-            {/* Unsure AI Help Section */}
-            <div className="relative bg-white shrink-0 w-[90px] sm:w-[258px] h-[81px] overflow-hidden flex items-center justify-center">
+            <div className="w-full bg-white">
+      <div className="flex items-center gap-2 px-4 py-3 max-w-[1400px] mx-auto">
+        {/* AI Assistant Button */}
+          <div className="relative bg-white shrink-0 w-[140px] h-[68px] rounded-[20px] sm:w-[258px]22222222 overflow-hidden flex items-center justify-center">
               <Image
                 fill
                 alt="AI Background"
@@ -240,50 +275,60 @@ export default function Home() {
                   width={20}
                   height={40}
                 />
-                <div className="text-white text-sm font-bold hidden sm:block">
-                  Unsure? Let our AI help
-                </div>
+                
               </div>
             </div>
+        
 
-            {/* Search Section */}
-            <div className="flex items-center justify-start gap-2 flex-1 h-[81px] px-4 sm:px-9 relative">
-              <div className="w-6 h-6 relative">
-                <Image
-                  fill
-                  alt="Search Icon"
-                  src="/assests/search_icon.png"
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              <input
-                type="search"
+        {/* Search Input Container */}
+        <div className="flex-1 relative">
+          <div className="relative flex items-center h-[68px] px-6 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus-within:border-blue-500 transition-colors">
+            <input
+              type="search"
                 placeholder="Search Product"
-                className="hidden sm:block text-zinc-400 text-sm font-bold outline-none bg-transparent w-full"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-
-            {/* Categories Section */}
-            <div className="relative">
-              {/* Main Button */}
-              <div
-                className="bg-white border-x border-zinc-200 flex items-center gap-2 justify-start px-4 sm:px-9 h-[81px] w-[81px] sm:w-[195px] shrink-0 cursor-pointer"
-                onClick={() => setMenu((prev) => !prev)}
+              className="flex-1 text-gray-600 text-base placeholder:text-gray-400 outline-none bg-transparent"
+            />
+            
+            {/* Search Icon */}
+            <button className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-gray-600"
               >
-                <div className="w-6 h-6 relative">
-                  <Image
-                    fill
-                    alt="Menu Icon"
-                    src="/assests/menu_icon.png"
-                    className="w-full h-full object-contain"
-                  />
-                </div>
-                <div className="text-black text-sm font-bold hidden sm:block">
-                  Categories
-                </div>
-              </div>
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        
+            {/* Categories Button */}
+        <div className="relative">
+          <button
+            onClick={() => setMenu((prev) => !prev)}
+            className="flex items-center gap-3 h-[68px] px-8 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 hover:bg-gray-50 transition-all group"
+          >
+            {/* Hamburger Menu Icon */}
+            <div className="flex flex-col gap-[5px]">
+              <span className="w-5 h-[2px] bg-gray-800 rounded-full transition-all group-hover:w-6"></span>
+              <span className="w-5 h-[2px] bg-gray-800 rounded-full"></span>
+              <span className="w-5 h-[2px] bg-gray-800 rounded-full transition-all group-hover:w-6"></span>
+            </div>
+            
+            <span className="text-gray-800 text-base font-semibold whitespace-nowrap">
+              Categories
+            </span>
+          </button>
 
               {/* Dropdown Menu */}
               {menu && (
@@ -306,13 +351,14 @@ export default function Home() {
                   </ul>
                 </div>
               )}
-            </div>
-          </div>
+
+        </div>
+        </div></div>
+        
         </section>
 
 
-
-        {categoriesSelect.length === 0 && search.length === 0 && <section id="industry_specific_bundle_section">
+ {categoriesSelect.length === 0 && search.length === 0 && <section id="industry_specific_bundle_section">
 
           <div className="w-11/12 m-auto mt-20">
             <div className="max-w-[400px]">
@@ -691,6 +737,14 @@ export default function Home() {
             totalPages={paginations.pages}
             onPageChange={(page) => fetchMarketplace(page)}
           /> */}
+{marketplace.length > 0 && (
+  <Pagination
+    currentPage={paginations.page}
+    totalPages={paginations.pages}
+    onPageChange={(page) => fetchMarketplace(page, categoriesSelect)}
+  />
+)}
+
 
         </section>
 
