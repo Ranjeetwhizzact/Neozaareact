@@ -452,7 +452,7 @@ export default function CustomSlider() {
                   {/* Target Audience */}
                   {productDetails?.product?.target_audience?.length > 0 && (
                     <div className="mb-6">
-                      <h3 className="font-semibold mb-2 text-black text-black">Target Audience</h3>
+                      <h3 className="font-semibold mb-2 text-black">Target Audience</h3>
                       <ul className="list-disc pl-5 text-gray-600">
                         {productDetails.product.target_audience.map((item, i) => (
                           <li key={i}>{item}</li>
@@ -464,7 +464,7 @@ export default function CustomSlider() {
                   {/* Category */}
                   {productDetails?.product?.category_subcategory?.length > 0 && (
                     <div className="mb-6">
-                      <h3 className="font-semibold mb-2 text-black text-black">Category</h3>
+                      <h3 className="font-semibold mb-2 text-black">Category</h3>
                       <ul className="list-disc pl-5 text-gray-600">
                         {productDetails.product.category_subcategory.map((item, i) => (
                           <li key={i}>{item}</li>
@@ -476,7 +476,7 @@ export default function CustomSlider() {
                   {/* Cloud Provider Support */}
                   {productDetails?.product?.cloud_provider_support?.length > 0 && (
                     <div className="mb-6">
-                      <h3 className="font-semibold mb-2 text-black text-black">
+                      <h3 className="font-semibold mb-2 text-black">
                         Cloud Provider Support
                       </h3>
                       <ul className="list-disc pl-5 text-gray-600">
@@ -490,7 +490,7 @@ export default function CustomSlider() {
                   {/* Regions Supported */}
                   {productDetails?.product?.regions_supported?.length > 0 && (
                     <div className="mb-6">
-                      <h3 className="font-semibold mb-2 text-black text-black">Regions Supported</h3>
+                      <h3 className="font-semibold mb-2 text-black">Regions Supported</h3>
                       <ul className="list-disc pl-5 text-gray-600">
                         {productDetails.product.regions_supported.map((item, i) => (
                           <li key={i}>{item}</li>
@@ -510,9 +510,11 @@ export default function CustomSlider() {
                   
                   {productDetails?.product?.technical_prerequisites && (
                     <div className="mb-6">
-                      <h4 className="font-semibold mb-2 text-black text-black">Technical Prerequisites:</h4>
+                      <h4 className="font-semibold mb-2 text-black">Technical Prerequisites:</h4>
                       <p className="text-gray-700">
-                        {productDetails.product.technical_prerequisites}
+                         dangerouslySetInnerHTML={{
+                      __html: productDetails?.product?.technical_prerequisites?.replace(/&nbsp;/g, " ") || "",
+                    }}
                       </p>
                     </div>
                   )}
@@ -548,7 +550,7 @@ export default function CustomSlider() {
                     Pricing Information
                   </h3>
                   <p className="text-gray-600 leading-relaxed mb-8">
-                    Flexible pricing plans based on your business needs. Please contact us for custom pricing or use the "Get Private Price" button for detailed pricing information.
+                    Flexible pricing plans based on your business needs. Please contact us for custom pricing or use the &quot;Get Private Price&quot; button for detailed pricing information.
                   </p>
                 </SectionCard>
               )}
@@ -569,7 +571,7 @@ export default function CustomSlider() {
                     Starting From
                   </p>
                   <p className="text-4xl font-bold text-gray-900 mb-2">
-                    ${productDetails?.product?.starting_price || "Contact"}
+                    {/* ${productDetails?.product?.starting_price || "Contact"} */}
                   </p>
                   <p className="text-sm text-gray-500">
                     Custom pricing available based on requirements
@@ -623,13 +625,13 @@ export default function CustomSlider() {
                   </div>
                   <div className="p-4">
                     <p className="uppercase text-xs text-zinc-400 tracking-wider mb-2">
-                      {productDetails?.product.category || "Product"}
+                      {product.category || "Product"}
                     </p>
                     <p className="text-black text-left text-lg font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
-                      {productDetails?.product.short_description || product.name}
+                      {product.short_description || product.name}
                     </p>
                     <p className="text-blue-600 text-sm">
-                      {/* Starting From {product.starting_price || "Contact"} */}
+                      Starting From ${product.starting_price || "Contact"}
                     </p>
                   </div>
                 </div>
