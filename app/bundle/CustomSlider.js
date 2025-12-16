@@ -300,19 +300,18 @@ export default function CustomSlider() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="grid grid-cols-12">
             {/* Left: Logo and Title */}
-            <div className="flex flex-col md:flex-row items-start gap-6 col-span-12 lg:col-span-8">
-              <div className="w-40 h-40 m-auto  border-2 border-gray-200 rounded-3xl flex  items-center justify-center bg-white p-6">
+            <div className="grid grid-cols-12 items-start gap-6 col-span-12 lg:col-span-8">
+              <div className="w-40 h-40 relative m-auto col-span-12 lg:col-span-4  border-2 border-gray-200 rounded-3xl flex  items-center justify-center bg-white p-6">
                 {productDetails?.product?.product_logo && (
                   <Image
                     src={productDetails.product.product_logo}
                     alt={productDetails.product.name}
-                    width={600}
-                    height={400}
+                   fill
                     className="object-contain"
                   />
                 )}
               </div>
-              <div className="pt-4 mx-3">
+              <div className="pt-4 mx-3 col-span-12 lg:col-span-8 ">
                 <h1 className="text-xl lg:text-3xl text-center md:text-start font-bold text-gray-900 mb-2">
                   {productDetails?.product?.name || "Loading..."}
                 </h1>
@@ -376,7 +375,7 @@ export default function CustomSlider() {
                  Images
                   </h3>
                   {productDetails?.product?.screenshots?.length > 0 && (
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-2">
     {productDetails?.product?.screenshots
       .filter(src => typeof src === "string" && src.trim() !== "")
       .map((src, i) => (
