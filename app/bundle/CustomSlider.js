@@ -454,21 +454,101 @@ export default function CustomSlider() {
                   <h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
                     Key Features
                   </h3>
-                  <ul className="list-disc pl-5 text-gray-600 text-lg font-normal mb-6">
+                  <ul className="list-disc pl-5 text-gray-600 text-md font-normal mb-6">
                     {parseKeyFeatures(productDetails?.product?.key_features).map((item, i) => (
                       <li key={i}>{item}</li>
                     ))}
                   </ul>
 
                   <h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
-                    Primary Use Cases
-                  </h3>
-                  <div
-                    className="text-gray-600 text-lg font-normal mb-6"
-                    dangerouslySetInnerHTML={{
-                      __html: productDetails?.product?.primary_use_cases?.replace(/&nbsp;/g, " ") || "",
-                    }}
-                  />
+  Primary Use Cases
+</h3>
+
+<div className="text-gray-600 text-md font-normal mb-6">
+  {(() => {
+    const data = productDetails?.product?.primary_use_cases;
+    if (!data) return null;
+
+    // Check if it contains HTML tags
+    const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
+
+    // If HTML → render directly
+    if (isHtml) {
+      return (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: data.replace(/&nbsp;/g, " "),
+          }}
+        />
+      );
+    }
+
+    // Else → render numbered/plain text nicely
+    return data
+      .split(/\n\s*\n/)
+      .filter(Boolean)
+      .map((block, i) => {
+        const [title, ...desc] = block.split("\n");
+        return (
+          <div key={i} className="mb-4">
+            <h4 className="font-semibold text-gray-900 text-lg">
+              {title.replace(/^\d+\.\s*/, "")}
+            </h4>
+            <p className="text-gray-600 text-base mt-1">
+              {desc.join(" ").trim()}
+            </p>
+          </div>
+        );
+      });
+  })()}
+</div>
+<h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
+  Technical Prerequisites
+</h3>
+
+<div className="text-gray-600 text-md font-normal mb-6">
+  {(() => {
+    const data = productDetails?.product?.technical_prerequisites;
+    if (!data) return null;
+
+    // Check if it contains HTML tags
+    const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
+
+    // If HTML → render directly
+    if (isHtml) {
+      return (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: data.replace(/&nbsp;/g, " "),
+          }}
+        />
+      );
+    }
+
+    // Else → render structured plain text
+    return data
+      .split(/\n\s*\n/)
+      .filter(Boolean)
+      .map((block, i) => {
+        const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+
+        return (
+          <div key={i} className="mb-4">
+            <h4 className=" text-gray-600 text-base">
+              {lines[0]}
+            </h4>
+            {lines.slice(1).map((line, idx) => (
+              <p key={idx} className="text-gray-600 text-base mt-1">
+                {line}
+              </p>
+            ))}
+          </div>
+        );
+      });
+  })()}
+</div>
+
+
 
                   {/* Target Audience */}
                   {productDetails?.product?.target_audience?.length > 0 && (
@@ -648,7 +728,7 @@ export default function CustomSlider() {
                     <p className="uppercase text-xs text-zinc-400 tracking-wider mb-2">
                       {product.category || "Product"}
                     </p>
-                    <p className="text-black text-left text-lg font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
+                    <p className="text-black text-left text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
                       {product.short_description || product.name}
                     </p>
                     <p className="text-blue-600 text-sm">
