@@ -12,7 +12,9 @@ import "swiper/css/pagination";
 
 import Header from "../layouts/Header";
 import Footer from "../layouts/Footer";
-import PaginationForPages from "../layouts/PaginationForPages";
+// import PaginationForPages from "../layout/PaginationForPages";
+
+
 
 const faqs = [
   {
@@ -732,17 +734,18 @@ async function fetchMarketplace(page = 1, categori) {
 
           </div>
           {/* Pagination Component */}
-          {/* <PaginationForPages
-            currentPage={paginations.page}
-            totalPages={paginations.pages}
-            onPageChange={(page) => fetchMarketplace(page)}
-          /> */}
 {marketplace.length > 0 && (
-  <Pagination
-    currentPage={paginations.page}
-    totalPages={paginations.pages}
-    onPageChange={(page) => fetchMarketplace(page, categoriesSelect)}
-  />
+//      <PaginationForPages
+//   currentPage={paginations.page}
+//   totalPages={paginations.pages}
+//   onPageChange={(page) => fetchMarketplace(page)}
+// />
+  // <Pagination
+  //   currentPage={paginations.page}
+  //   totalPages={paginations.pages}
+  //   onPageChange={(page) => fetchMarketplace(page, categoriesSelect)}
+  // />
+  <></>
 )}
 
 

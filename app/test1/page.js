@@ -404,13 +404,13 @@ export default function CustomSlider() {
             <div className="flex-1 flex gap-6">
               {/* Content Card */}
               <div className="flex-1 bg-white rounded-2xl border border-gray-200 p-8">
-                <h2 className="text-3xl font-bold text-gray-900 mb-6 whitespace-pre-line">
+                {/* <h2 className="text-3xl font-bold text-gray-900 mb-6 whitespace-pre-line">
                   {tabContent[activeTab1].title}
                 </h2>
 
                 <p className="text-gray-600 leading-relaxed mb-8">
                   {tabContent[activeTab1].content}
-                </p>
+                </p> */}
 
                 {/* Action Buttons */}
                 <div className="flex gap-4">
