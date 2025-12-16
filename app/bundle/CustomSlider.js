@@ -39,7 +39,7 @@ export default function CustomSlider() {
   const menu = [
     { id: "overview", label: "Overview" },
     { id: "details", label: "Details" },
-    { id: "features", label: "Features" },
+    // { id: "features", label: "Features" },
     { id: "pricing", label: "Pricing" },
   ];
 
@@ -300,8 +300,8 @@ export default function CustomSlider() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="grid grid-cols-12">
             {/* Left: Logo and Title */}
-            <div className="flex items-start gap-6 col-span-8">
-              <div className="w-40 h-40 border-2 border-gray-200 rounded-3xl flex items-center justify-center bg-white p-6">
+            <div className="flex flex-col md:flex-row items-start gap-6 col-span-12 lg:col-span-8">
+              <div className="w-40 h-40 m-auto  border-2 border-gray-200 rounded-3xl flex  items-center justify-center bg-white p-6">
                 {productDetails?.product?.product_logo && (
                   <Image
                     src={productDetails.product.product_logo}
@@ -312,26 +312,26 @@ export default function CustomSlider() {
                   />
                 )}
               </div>
-              <div className="pt-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <div className="pt-4 mx-3">
+                <h1 className="text-xl lg:text-3xl text-center md:text-start font-bold text-gray-900 mb-2">
                   {productDetails?.product?.name || "Loading..."}
                 </h1>
-                <p className="text-sm text-gray-400 uppercase tracking-wider">
+                <p className="text-sm text-gray-400 text-center md:text-start uppercase tracking-wider">
                   {productDetails?.product?.category_subcategory?.join(", ") || ""}
                 </p>
               </div>
             </div>
 
             {/* Right: Action Buttons */}
-            <div className="flex flex-col gap-3 items-end col-span-4">
+            <div className="flex mt-3 flex-col gap-3 items-center md:items-end col-span-12 lg:col-span-4">
               <button
-                className="px-8 w-[200px] py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
+                className="px-8  w-[250px] py-3 bg-orange-400  hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
                 onClick={handleDemoClick}
               >
                 Request Demo
               </button>
               <button
-                className="px-8 w-[200px] py-3 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
+                className="px-8 w-[250px] py-3  bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
                 onClick={handlePrivatePriceClick}
               >
                 Get Private Price
@@ -343,10 +343,10 @@ export default function CustomSlider() {
 
       {/* Main Content Section */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex gap-8">
+        <div className="flex flex-col md:flex-row gap-8">
           {/* Left Sidebar */}
           <div className="w-64 flex-shrink-0">
-            <nav className="space-y-1">
+            <nav className="space-y-1 flex md:flex-col">
               {menu.map((item) => (
                 <button
                   key={item.id}
@@ -364,12 +364,33 @@ export default function CustomSlider() {
           </div>
 
           {/* Right Content Area */}
-          <div className="flex-1 flex gap-6">
+          <div className="flex-1 flex flex-col md:flex-row gap-6">
             {/* Main Section */}
             <div className="flex-1">
               {/* OVERVIEW */}
               {activeSection === "overview" && (
                 <SectionCard>
+                  <div className="my-3">
+
+                   <h3 className="text-gray-900 text-xl font-semibold">
+                 Images
+                  </h3>
+                  {productDetails?.product?.screenshots?.length > 0 && (
+  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    {productDetails?.product?.screenshots
+      .filter(src => typeof src === "string" && src.trim() !== "")
+      .map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt={`Screenshot ${i + 1}`}
+          className="w-full h-auto rounded-xl border shadow-sm object-cover"
+        />
+      ))}
+  </div>
+)}
+                  </div>
+
                   <h3 className="text-gray-900 text-xl font-semibold">
                     Short Description
                   </h3>

@@ -980,7 +980,7 @@ const validateStep = (stepNumber) => {
       }));
     }
   }}
-  placeholder="add legal entity type"
+  placeholder="Add Headquarter Country"
   className="bg-zinc-100 outline-1 p-1 dark:text-black"
 />
 
