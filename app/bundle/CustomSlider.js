@@ -1,5 +1,5 @@
 "use client";
-
+import { trackEvent } from "../lib/track";
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
 import { X, Download } from "lucide-react";
@@ -49,6 +49,7 @@ export default function CustomSlider() {
     if (productid) {
       setUserId(productid);
     }
+   
   }, [searchParams]);
 
   // Authentication check
@@ -92,6 +93,17 @@ export default function CustomSlider() {
           if (Array.isArray(data.data.recommendations)) {
             setProducts(data.data.recommendations);
           }
+            trackEvent({
+      eventType: "PRODUCT_VIEW",
+      entityType: "product",
+      entityId: data.data.product.id,
+      pageUrl:data.data.product.name,
+      utm: {
+        utm_source: searchParams.get("utm_source"),
+        utm_medium: searchParams.get("utm_medium"),
+        utm_campaign: searchParams.get("utm_campaign"),
+      },
+    });
         }
       } catch (err) {
         console.error('Failed to fetch product details:', err);
@@ -158,15 +170,9 @@ export default function CustomSlider() {
     setIsPriceModalOpen(true);
   };
 
-  const handleBrochureClick = (url) => {
-    window.open(url, "_blank");
-  };
 
-  const handleCaseStudyClick = (url) => {
-    if (url) {
-      window.open(url, "_blank");
-    }
-  };
+
+
 
   const handleDemoVideoClick = () => {
     if (productDetails?.product?.demo_video_link) {
@@ -411,7 +417,18 @@ export default function CustomSlider() {
                           <button
                             key={index}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
-                            onClick={() => handleBrochureClick(url)}
+                            onClick={() => {
+        trackEvent({
+          eventType: "BROCHURE_DOWNLOAD", // CASE_STUDY, DEMO_VIDEO_LINK
+          entityType: "product",
+          entityId:  productDetails?.product?.id,
+          utm: {
+            utm_source: "email",
+            utm_medium: "newsletter",
+            utm_campaign: "q4_launch",
+          },
+        });
+      }}
                           >
                             Brochure {index + 1} <Download size={18} />
                           </button>
@@ -426,7 +443,18 @@ export default function CustomSlider() {
                           <button
                             key={index}
                             className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors"
-                            onClick={() => handleCaseStudyClick(url)}
+                                       onClick={() => {
+        trackEvent({
+          eventType: "CASE_STUDY", // CASE_STUDY, DEMO_VIDEO_LINK
+          entityType: "product",
+          entityId: productDetails?.product?.id,
+          utm: {
+            utm_source: "email",
+            utm_medium: "newsletter",
+            utm_campaign: "q4_launch",
+          },
+        });
+      }}
                           >
                             Case Study {index + 1}
                           </button>
@@ -711,32 +739,48 @@ export default function CustomSlider() {
           }}
         >
           {products.map((product) => (
-            <SwiperSlide key={product.id}>
-              <Link href={`/bundle?productid=${product.id}`} passHref>
-                <div className="bg-zinc-50 border border-zinc-200 h-[400px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden">
-                  <div className="w-full h-[258px] relative">
-                    <Image
-                      src={product.product_logo || "/image/acronis.png"}
-                      alt={product.name || 'Product Image'}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    />
-                  </div>
-                  <div className="p-4">
-                    <p className="uppercase text-xs text-zinc-400 tracking-wider mb-2">
-                      {product.category || "Product"}
-                    </p>
-                    <p className="text-black text-left text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
-                      {product.short_description || product.name}
-                    </p>
-                    <p className="text-blue-600 text-sm">
-                      Starting From ${product.starting_price || "Contact"}
-                    </p>
-                  </div>
-                </div>
-              </Link>
-            </SwiperSlide>
+  
+
+<SwiperSlide key={product.id}>
+  <Link href={`/bundle?productid=${product.id}`} passHref>
+    <div
+      className="bg-zinc-50 border border-zinc-200 h-[400px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden"
+      onClick={() => {
+        trackEvent({
+          eventType: "PRODUCT_CLICK",
+          entityType: "product",
+          entityId: product.id,
+          pageUrl: window.location.pathname,
+        });
+      }}
+    >
+      <div className="w-full h-[258px] relative">
+        <Image
+          src={product.product_logo || "/image/acronis.png"}
+          alt={product.name || "Product Image"}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
+      </div>
+
+      <div className="p-4">
+        <p className="uppercase text-xs text-zinc-400 tracking-wider mb-2">
+          {product.category || "Product"}
+        </p>
+
+        <p className="text-black text-left text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
+          {product.short_description || product.name}
+        </p>
+
+        <p className="text-blue-600 text-sm">
+          Starting From ${product.starting_price || "Contact"}
+        </p>
+      </div>
+    </div>
+  </Link>
+</SwiperSlide>
+
           ))}
         </Swiper>
       </section>
