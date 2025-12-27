@@ -699,7 +699,7 @@ export default function CustomSlider() {
                     Starting From
                   </p>
                   <p className="text-4xl font-bold text-gray-900 mb-2">
-                    {/* ${productDetails?.product?.starting_price || "Contact"} */}
+                    &#x20b9;{productDetails?.product?.starting_price || "Contact"}
                   </p>
                   <p className="text-sm text-gray-500">
                     Custom pricing available based on requirements
@@ -744,7 +744,7 @@ export default function CustomSlider() {
 <SwiperSlide key={product.id}>
   <Link href={`/bundle?productid=${product.id}`} passHref>
     <div
-      className="bg-zinc-50 border border-zinc-200 h-[400px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden"
+      className="bg-zinc-50 border border-zinc-200 h-[415px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden"
       onClick={() => {
         trackEvent({
           eventType: "PRODUCT_CLICK",
@@ -765,16 +765,16 @@ export default function CustomSlider() {
       </div>
 
       <div className="p-4">
-        <p className="uppercase text-xs text-zinc-400 tracking-wider mb-2">
+        <p className="uppercase text-base text-black  tracking-wider mb-2">
           {product.category || "Product"}
         </p>
 
-        <p className="text-black text-left text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
+        <p className=" text-left text-zinc-400 text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
           {product.short_description || product.name}
         </p>
 
         <p className="text-blue-600 text-sm">
-          Starting From ${product.starting_price || "Contact"}
+          Starting From  &#x20b9;{product.starting_price || "Contact"}
         </p>
       </div>
     </div>
