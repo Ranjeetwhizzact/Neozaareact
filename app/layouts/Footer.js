@@ -2,7 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -70,7 +70,7 @@ export default function Footer() {
         setMessage(data.message || "🎉 You have subscribed successfully!");
         setEmail("");
         setIsSubscribed(true);
-        
+
         // Set cookies for 15 days
         setCookie("newsletter_subscribed", "true", 15);
         setCookie("subscriber_email", email, 15);
@@ -96,7 +96,7 @@ export default function Footer() {
   }, [status]);
 
   const NAV_LINKS = [
-    { href: "/isv-registration", label: "ISV Registration" },
+    { href: "/partner-registration", label: "ISV Registration" },
     { href: "/partner-with-us", label: "Our Solution Partners " },
     { href: "/contact-us", label: "Contact" },
   ];
@@ -212,7 +212,7 @@ export default function Footer() {
       {status !== "idle" && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex justify-end items-start overflow-hidden">
           <div className="relative bg-gray-900 rounded-xl shadow-lg p-6 w-80 m-6">
-            
+
             {/* Close Button Top-Right */}
             <button
               className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 font-bold"

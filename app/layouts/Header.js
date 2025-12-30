@@ -119,18 +119,17 @@ export default function Header() {
   };
 
   const NAV_LINKS = [
-    { href: '/isv-registration', label: 'Partner With Us' },
+    { href: '/partner-with-us', label: 'Partner With Us' },
     // { href: '/auth/register', label: 'ISV Registration' },
     // { href: '/auth/register', label: 'Customer Registration' },
-   
+
     { href: '/contact-us', label: 'Contact' },
   ];
 
   return (
     <header
-      className={`bg-black text-white border-b border-white/10 relative h-20 max-w-[1920px] m-auto ${
-        isHomePage ? 'bg-transparent' : 'bg-black'
-      }`}
+      className={`bg-black text-white border-b border-white/10 relative h-20 max-w-[1920px] m-auto ${isHomePage ? 'bg-transparent' : 'bg-black'
+        }`}
     >
       {/* XL Desktop */}
       <div className="hidden xl:flex items-center absolute z-3 w-full px-4 sm:px-6 lg:px-10 py-3 justify-between">
@@ -144,16 +143,15 @@ export default function Header() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`hover:text-white transition ${
-                  pathname === link.href ? 'text-white' : 'text-zinc-400'
-                }`}
+                className={`hover:text-white transition ${pathname === link.href ? 'text-white' : 'text-zinc-400'
+                  }`}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
         </div>
-        
+
         {isAuthenticated ? (
           // Show Profile + Marketplace when authenticated
           <div className="flex items-center gap-6 relative" ref={dropdownRef}>
@@ -224,16 +222,15 @@ export default function Header() {
               <Link
                 key={link.label}
                 href={link.href}
-                className={`hover:text-white transition ${
-                  pathname === link.href ? 'text-white' : 'text-zinc-400'
-                }`}
+                className={`hover:text-white transition ${pathname === link.href ? 'text-white' : 'text-zinc-400'
+                  }`}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
         </div>
-        
+
         {isAuthenticated ? (
           // Show Profile + Marketplace when authenticated
           <div className="flex items-center gap-6 relative" ref={dropdownRef}>
@@ -301,9 +298,8 @@ export default function Header() {
             width={168}
             height={40}
             priority
-            className={`transition-opacity duration-300 ${
-              isOpen ? 'opacity-0' : 'opacity-100'
-            }`}
+            className={`transition-opacity duration-300 ${isOpen ? 'opacity-0' : 'opacity-100'
+              }`}
           />
         </Link>
         <div className="flex items-center gap-4">
@@ -312,12 +308,12 @@ export default function Header() {
             <div className="relative" ref={dropdownRef}>
               <button onClick={() => setDropdownOpen((prev) => !prev)}>
                 <Image
-                src="/image/blank-profile.webp"
-                alt="User"
-                width={32}
-                height={32}
-                className="rounded-full cursor-pointer border border-gray-600"
-              />
+                  src="/image/blank-profile.webp"
+                  alt="User"
+                  width={32}
+                  height={32}
+                  className="rounded-full cursor-pointer border border-gray-600"
+                />
               </button>
 
               {dropdownOpen && (
@@ -369,9 +365,8 @@ export default function Header() {
         <div role="presentation" className="fixed inset-0 z-50 lg:hidden" onClick={() => setIsOpen(false)}>
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
           <div
-            className={`fixed right-0 top-0 h-full w-60 bg-black transform transition-transform duration-300 ${
-              isOpen ? 'translate-x-0' : 'translate-x-full'
-            }`}
+            className={`fixed right-0 top-0 h-full w-60 bg-black transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'
+              }`}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between p-4">
@@ -387,9 +382,8 @@ export default function Header() {
                 <Link
                   key={link.label}
                   href={link.href}
-                  className={`block text-lg transition ${
-                    pathname === link.href ? 'text-white' : 'text-zinc-400 hover:text-white'
-                  }`}
+                  className={`block text-lg transition ${pathname === link.href ? 'text-white' : 'text-zinc-400 hover:text-white'
+                    }`}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}

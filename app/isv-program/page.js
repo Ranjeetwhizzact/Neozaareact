@@ -38,7 +38,7 @@ export default function Page() {
     }, []);
 
     const NAV_LINKS = [
-        { href: '/isv-registration', label: 'ISV Registration' },
+        { href: '/partner-registration', label: 'ISV Registration' },
         { href: '/partner-with-us', label: 'Partner With Us' },
         { href: '/contact-us', label: 'Contact' },
     ];
@@ -76,50 +76,50 @@ export default function Page() {
                     <div className="relative mx-auto md:my-35 lg:my-25 my-40 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
                         <div className='lg:w-[600px]'>
 
-                        <h1 className="text-white font-light font-['serif'] text-3xl sm:text-4xl lg:text-[52px] mb-4  lg:leading-[60px]">
-                           Expand Your Reach. Accelerate Your Growth.
-                        </h1>
-                        <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3">
-                            NeoZaar connects Independent Software Vendors (ISVs) and SaaS companies with enterprise buyers, cloud partners, and growth programs designed to help you scale faster across India and MEA.
+                            <h1 className="text-white font-light font-['serif'] text-3xl sm:text-4xl lg:text-[52px] mb-4  lg:leading-[60px]">
+                                Expand Your Reach. Accelerate Your Growth.
+                            </h1>
+                            <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3">
+                                NeoZaar connects Independent Software Vendors (ISVs) and SaaS companies with enterprise buyers, cloud partners, and growth programs designed to help you scale faster across India and MEA.
 
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-                            <Link
-                                href="/auth/register"
-                                className="min-w-[180px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-semibold rounded-full hover:bg-white hover:text-black transition h-12 flex items-center justify-center"
-                            >
-                                <span className='text-base font-semibold'>Apply Now</span>
-                            </Link>
-                            <Link
-                                href="/auth/register"
-                                className="min-w-[200px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-semibold rounded-full hover:bg-white/40 hover:text-white transition flex items-center justify-center"
-                            >
-                                Learn More
-                            </Link>
-                        </div>
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
+                                <Link
+                                    href="/auth/register"
+                                    className="min-w-[180px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-semibold rounded-full hover:bg-white hover:text-black transition h-12 flex items-center justify-center"
+                                >
+                                    <span className='text-base font-semibold'>Apply Now</span>
+                                </Link>
+                                <Link
+                                    href="/auth/register"
+                                    className="min-w-[200px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-semibold rounded-full hover:bg-white/40 hover:text-white transition flex items-center justify-center"
+                                >
+                                    Learn More
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                     <div className="px-4 sm:px-6 md:px-8 lg:px-16 xl:px-20 py-16 md:py-20 lg:py-24 bg-black text-white">
+                <div className="px-4 sm:px-6 md:px-8 lg:px-16 xl:px-20 py-16 md:py-20 lg:py-24 bg-black text-white">
                     <div className="max-w-7xl mx-auto">
                         {/* Title */}
-                       
+
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-center">
                             {/* Left Side - Benefits List */}
                             <div className="space-y-4 md:space-y-6 lg:space-y-6">
-                         
-                                 <h1 className="text-white text-center font-light  text-3xl sm:text-4xl lg:text-[52px] mb-4  lg:leading-[60px]">
-                           Why NeoZaar
-                        </h1>
-                        <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3 text-center">
-                    The cloud marketplace is evolving — and NeoZaar is where software innovation meets opportunity.
 
-                        </p>
-                        <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3 text-center">
-                  We help emerging ISVs move beyond discovery and listings to achieve measurable growth.
-                        </p>
+                                <h1 className="text-white text-center font-light  text-3xl sm:text-4xl lg:text-[52px] mb-4  lg:leading-[60px]">
+                                    Why NeoZaar
+                                </h1>
+                                <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3 text-center">
+                                    The cloud marketplace is evolving — and NeoZaar is where software innovation meets opportunity.
+
+                                </p>
+                                <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3 text-center">
+                                    We help emerging ISVs move beyond discovery and listings to achieve measurable growth.
+                                </p>
                             </div>
 
                             {/* Right Side - Image and CTA */}
@@ -127,18 +127,18 @@ export default function Page() {
                                 {/* Image */}
                                 <div className="mb-3 md:mb-4 lg:mb-1 w-full flex justify-center">
                                     <div className='relative  w-[400px] h-[400px] lg:w-[500px] lg:h-[500px]'>
-                                          <Image
-                                        src="/assests/isv-program/gain.png"
-                                        alt=""
-                                        fill
-                                        className=" md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
-                                    />
+                                        <Image
+                                            src="/assests/isv-program/gain.png"
+                                            alt=""
+                                            fill
+                                            className=" md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
+                                        />
                                     </div>
-                                  
+
                                 </div>
 
                                 {/* CTA Section */}
-                          
+
                             </div>
                         </div>
                     </div>
@@ -148,12 +148,12 @@ export default function Page() {
                 <section className="w-full pt-6 pb-12 sm:py-16 px-2 sm:px-10 lg:px-25 flex flex-col items-center">
                     <div className="max-w-5xl mx-auto text-center mb-12 md:mb-16">
                         <h2 className="text-3xl text-white md:text-4xl lg:text-5xl font-['inter'] mb-4 md:mb-6">
-                          Key Benefits
+                            Key Benefits
                         </h2>
 
                         <p className="text-base md:text-lg text-gray-300 max-w-2xl mx-auto">
-                           Join thousands of software vendors who trust NeoZaar to expand their market reach and accelerate growth.
-                           </p>
+                            Join thousands of software vendors who trust NeoZaar to expand their market reach and accelerate growth.
+                        </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-[940px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0">
@@ -229,7 +229,7 @@ export default function Page() {
                     <div className="max-w-7xl mx-auto">
                         {/* Title */}
                         <div className="text-2xl md:text-3xl lg:text-4xl font-['Inter'] font-normal text-center mb-16 md:mb-20 lg:mb-24">
-                          What You Gain
+                            What You Gain
                         </div>
 
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 xl:gap-20 items-start">
@@ -259,7 +259,7 @@ export default function Page() {
                                     {/* Content */}
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                           Marketplace Listing
+                                            Marketplace Listing
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
                                             Get your product featured on NeoZaar and visible to enterprise buyers.
@@ -292,13 +292,13 @@ export default function Page() {
                                             Co-Sell Readiness
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                            Prepare your solution for AWS, Azure, or GCP marketplace alignment. 
+                                            Prepare your solution for AWS, Azure, or GCP marketplace alignment.
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Benefit 3 */}
-                             
+
 
                                 {/* Benefit 4 */}
                                 <div className="flex gap-4 items-start">
@@ -322,14 +322,14 @@ export default function Page() {
 
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                          Marketing Acceleration
+                                            Marketing Acceleration
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                            Run digital campaigns, webinars, and joint marketing activities. 
+                                            Run digital campaigns, webinars, and joint marketing activities.
                                         </div>
                                     </div>
                                 </div>
-                                   <div className="flex gap-4 items-start">
+                                <div className="flex gap-4 items-start">
                                     <div className="flex-shrink-0 mt-1">
                                         <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
                                             <svg
@@ -350,14 +350,14 @@ export default function Page() {
 
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                        Cloud Management Services
+                                            Cloud Management Services
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
                                             Access performance monitoring, optimization, and cost governance.
                                         </div>
                                     </div>
                                 </div>
-                                   <div className="flex gap-4 items-start">
+                                <div className="flex gap-4 items-start">
                                     <div className="flex-shrink-0 mt-1">
                                         <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
                                             <svg
@@ -378,14 +378,14 @@ export default function Page() {
 
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                           Private Offer Structuring
+                                            Private Offer Structuring
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
                                             Build EDP/MACC-aligned offers for enterprise customers.
                                         </div>
                                     </div>
                                 </div>
-                                   <div className="flex gap-4 items-start">
+                                <div className="flex gap-4 items-start">
                                     <div className="flex-shrink-0 mt-1">
                                         <div className="w-4 h-4 md:w-4 md:h-4 bg-orange-400 rounded-full flex items-center justify-center">
                                             <svg
@@ -406,10 +406,10 @@ export default function Page() {
 
                                     <div className="flex-1">
                                         <div className="font-['Arial'] font-normal text-lg leading-7 mb-2">
-                                         GTM Enablement
+                                            GTM Enablement
                                         </div>
                                         <div className="text-gray-400 font-['Arial'] font-normal text-base leading-6">
-                                         Get strategic messaging, positioning, and content support.
+                                            Get strategic messaging, positioning, and content support.
                                         </div>
                                     </div>
                                 </div>
@@ -420,14 +420,14 @@ export default function Page() {
                                 {/* Image */}
                                 <div className="mb-3 md:mb-4 lg:mb-1 w-full flex justify-center">
                                     <div className='relative  w-[400px] h-[400px] lg:w-[500px] lg:h-[500px]'>
-                                          <Image
-                                        src="/assests/isv-program/gain.png"
-                                        alt=""
-                                        fill
-                                        className=" md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
-                                    />
+                                        <Image
+                                            src="/assests/isv-program/gain.png"
+                                            alt=""
+                                            fill
+                                            className=" md:w-75 md:h-75 lg:w-85 lg:h-85 object-contain"
+                                        />
                                     </div>
-                                  
+
                                 </div>
 
                                 {/* CTA Section */}
@@ -436,7 +436,7 @@ export default function Page() {
                                         Ready to Get Started?
                                     </div>
                                     <div className="text-gray-400 font-['Arial'] font-normal text-base leading-5 mb-5 px-3">
-                                      Expand Your Reach. Accelerate Your Growth.
+                                        Expand Your Reach. Accelerate Your Growth.
                                     </div>
                                     <button className="bg-gray-700 hover:bg-gray-600 text-white font-['Arial'] font-medium px-10 py-3 rounded-full text-base transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
                                         Apply Today

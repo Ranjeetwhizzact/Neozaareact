@@ -124,7 +124,7 @@ export default function Page() {
     };
 
     const NAV_LINKS = [
-        { href: '/isv-registration', label: 'ISV Registration' },
+        { href: '/partner-registration', label: 'ISV Registration' },
         { href: '/partner-with-us', label: 'Partner With Us' },
         { href: '/contact-us', label: 'Contact' },
     ];
@@ -189,17 +189,17 @@ export default function Page() {
                         <div className="bg-zinc-900 rounded-2xl p-6 sm:p-8 lg:p-12 mb-16 border border-zinc-800">
                             <div className="flex flex-col lg:flex-row gap-8 items-start">
                                 {/* Profile Image */}
-                              <div className="flex-shrink-0 mx-auto lg:mx-0">
-    <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-lg overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600">
-        <Image
-            src="/assests/about/rajesh.png"
-            alt="Rajesh Thadhani"
-            className="w-full h-full object-cover"
-            width={256}
-            height={256}
-        />
-    </div>
-</div>
+                                <div className="flex-shrink-0 mx-auto lg:mx-0">
+                                    <div className="w-48 h-48 sm:w-56 sm:h-56 lg:w-64 lg:h-64 rounded-lg overflow-hidden bg-gradient-to-br from-orange-400 to-orange-600">
+                                        <Image
+                                            src="/assests/about/rajesh.png"
+                                            alt="Rajesh Thadhani"
+                                            className="w-full h-full object-cover"
+                                            width={256}
+                                            height={256}
+                                        />
+                                    </div>
+                                </div>
 
                                 {/* Content */}
                                 <div className="flex-1 text-center lg:text-left">
@@ -227,7 +227,7 @@ export default function Page() {
                                             className="text-gray-400 hover:text-blue-400 transition-colors"
                                             aria-label="LinkedIn"
                                         >
-                                            <Image src="/assests/about/linkedin.png" alt="LinkedIn" width={24} height={24}/>
+                                            <Image src="/assests/about/linkedin.png" alt="LinkedIn" width={24} height={24} />
                                         </a>
                                     </div>
                                 </div>
@@ -293,7 +293,7 @@ export default function Page() {
                             </div>
 
                             {/* Cards Container */}
-                          
+
 
                             <div className="overflow-hidden">
                                 <div
@@ -348,7 +348,7 @@ export default function Page() {
                                     ))}
                                 </div>
                             </div>
-                       
+
 
                             {/* Dots Indicator */}
                             <div className="flex justify-center gap-2 mt-8 sm:mt-12">
@@ -357,8 +357,8 @@ export default function Page() {
                                         key={index}
                                         onClick={() => goToSlide(index)}
                                         className={`transition-all duration-300 rounded-full ${currentSlide === index
-                                                ? 'w-8 h-2 bg-orange-500'
-                                                : 'w-2 h-2 bg-gray-600 hover:bg-gray-500'
+                                            ? 'w-8 h-2 bg-orange-500'
+                                            : 'w-2 h-2 bg-gray-600 hover:bg-gray-500'
                                             }`}
                                         aria-label={`Go to slide ${index + 1}`}
                                     />
@@ -394,15 +394,15 @@ export default function Page() {
                                             <div className={`relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full border-2 border-[#FFA348] flex items-center justify-center  transition-all duration-500 group-hover:shadow-lg`}>
                                                 <div className='w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex justify-center items-center'>
                                                     <div className='relative h-10 w-10' >
-                                                      <Image
-                                                    src={feature.image}
-                                                    alt={feature.title}
-                                                    className="object-contain h-10 w-10"
-                                                    fill
-                                                />
+                                                        <Image
+                                                            src={feature.image}
+                                                            alt={feature.title}
+                                                            className="object-contain h-10 w-10"
+                                                            fill
+                                                        />
                                                     </div>
 
-                                              
+
                                                 </div>
                                             </div>
                                         </div>

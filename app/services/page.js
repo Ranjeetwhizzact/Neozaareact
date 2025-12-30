@@ -77,7 +77,7 @@ export default function Page() {
   }, []);
 
   const NAV_LINKS = [
-    { href: '/isv-registration', label: 'ISV Registration' },
+    { href: '/partner-registration', label: 'ISV Registration' },
     { href: '/partner-with-us', label: 'Partner With Us' },
     { href: '/contact-us', label: 'Contact' },
   ];
@@ -286,128 +286,128 @@ export default function Page() {
           </div>
         </section>
 
-             {/* Request Form */}
+        {/* Request Form */}
 
-         <div className="flex items-center justify-center p-4">
-      <div className="w-full max-w-2xl bg-gray-900 text-white rounded-xl shadow-lg p-8 md:p-10">
-        <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2">
-          Request Deployment Support
-        </h2>
-        <p className="text-gray-400 text-center mb-8">
-          Get expert assistance for your next project. Our team is ready to help you succeed.
-        </p>
+        <div className="flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-gray-900 text-white rounded-xl shadow-lg p-8 md:p-10">
+            <h2 className="text-2xl md:text-3xl font-semibold text-center mb-2">
+              Request Deployment Support
+            </h2>
+            <p className="text-gray-400 text-center mb-8">
+              Get expert assistance for your next project. Our team is ready to help you succeed.
+            </p>
 
-        <form className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">First Name *</label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Last Name *</label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
-              />
-            </div>
+            <form className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">First Name *</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Last Name *</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">Email Address *</label>
+                  <input
+                    type="email"
+                    className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Company</label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Service Type *</label>
+                <select
+                  className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
+                >
+                  <option value="">Select a service</option>
+                  <option value="deployment">Deployment</option>
+                  <option value="integration">Integration</option>
+                  <option value="support">Support</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Project Details *</label>
+                <textarea
+                  rows="4"
+                  placeholder="Please describe your project requirements, timeline, and any specific technologies you'd like to use..."
+                  className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none resize-none"
+                ></textarea>
+              </div>
+
+              <div className="flex justify-center">
+                <button
+                  type="submit"
+                  className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-md shadow-md transition"
+                >
+                  Submit Application
+                </button>
+              </div>
+            </form>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Email Address *</label>
-              <input
-                type="email"
-                className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Company</label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
-              />
-            </div>
-          </div>
+        <div className="bg-black text-white py-16 px-6 md:px-10 lg:px-20 text-center">
+          {/* Title Section */}
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-blue-400">
+              See Our Work in Action
+            </span>
+          </h2>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Service Type *</label>
-            <select
-              className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none"
-            >
-              <option value="">Select a service</option>
-              <option value="deployment">Deployment</option>
-              <option value="integration">Integration</option>
-              <option value="support">Support</option>
-            </select>
-          </div>
+          <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-sm md:text-base">
+            Explore real-world case studies showcasing how we’ve helped businesses transform
+            their operations with cutting-edge technology solutions.
+          </p>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Project Details *</label>
-            <textarea
-              rows="4"
-              placeholder="Please describe your project requirements, timeline, and any specific technologies you'd like to use..."
-              className="w-full px-4 py-2 rounded-md bg-gray-800 text-gray-200 border border-gray-700 focus:border-blue-500 focus:ring focus:ring-blue-500/40 outline-none resize-none"
-            ></textarea>
-          </div>
-
-          <div className="flex justify-center">
-            <button
-              type="submit"
-              className="bg-gray-700 hover:bg-gray-600 text-white font-semibold px-6 py-2 rounded-md shadow-md transition"
-            >
-              Submit Application
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
+            <button className="bg-gray-700 hover:bg-gray-600 text-white font-medium px-6 py-2 rounded-full shadow-md transition">
+              View Case Studies
+            </button>
+            <button className="border border-gray-500 hover:border-white text-white font-medium px-6 py-2 rounded-full transition">
+              Schedule Consultation
             </button>
           </div>
-        </form>
-      </div>
-    </div>
 
-    <div className="bg-black text-white py-16 px-6 md:px-10 lg:px-20 text-center">
-      {/* Title Section */}
-      <h2 className="text-3xl md:text-4xl font-semibold mb-4">
-        <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-yellow-400 to-blue-400">
-          See Our Work in Action
-        </span>
-      </h2>
-
-      <p className="text-gray-400 max-w-2xl mx-auto mb-8 text-sm md:text-base">
-        Explore real-world case studies showcasing how we’ve helped businesses transform
-        their operations with cutting-edge technology solutions.
-      </p>
-
-      {/* Buttons */}
-      <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
-        <button className="bg-gray-700 hover:bg-gray-600 text-white font-medium px-6 py-2 rounded-full shadow-md transition">
-          View Case Studies
-        </button>
-        <button className="border border-gray-500 hover:border-white text-white font-medium px-6 py-2 rounded-full transition">
-          Schedule Consultation
-        </button>
-      </div>
-
-      {/* Stats Section */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center max-w-3xl mx-auto">
-        <div>
-          <h3 className="text-2xl md:text-3xl font-semibold text-blue-400">500+</h3>
-          <p className="text-gray-400 text-sm md:text-base">Projects Delivered</p>
+          {/* Stats Section */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center max-w-3xl mx-auto">
+            <div>
+              <h3 className="text-2xl md:text-3xl font-semibold text-blue-400">500+</h3>
+              <p className="text-gray-400 text-sm md:text-base">Projects Delivered</p>
+            </div>
+            <div>
+              <h3 className="text-2xl md:text-3xl font-semibold text-purple-400">99.9%</h3>
+              <p className="text-gray-400 text-sm md:text-base">Uptime Guarantee</p>
+            </div>
+            <div>
+              <h3 className="text-2xl md:text-3xl font-semibold text-green-400">24/7</h3>
+              <p className="text-gray-400 text-sm md:text-base">Support Available</p>
+            </div>
+            <div>
+              <h3 className="text-2xl md:text-3xl font-semibold text-orange-400">150+</h3>
+              <p className="text-gray-400 text-sm md:text-base">Happy Clients</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 className="text-2xl md:text-3xl font-semibold text-purple-400">99.9%</h3>
-          <p className="text-gray-400 text-sm md:text-base">Uptime Guarantee</p>
-        </div>
-        <div>
-          <h3 className="text-2xl md:text-3xl font-semibold text-green-400">24/7</h3>
-          <p className="text-gray-400 text-sm md:text-base">Support Available</p>
-        </div>
-        <div>
-          <h3 className="text-2xl md:text-3xl font-semibold text-orange-400">150+</h3>
-          <p className="text-gray-400 text-sm md:text-base">Happy Clients</p>
-        </div>
-      </div>
-    </div>
 
       </main>
 

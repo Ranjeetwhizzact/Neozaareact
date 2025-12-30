@@ -24,17 +24,17 @@ export const seoconfig = {
       canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.neozaar.com"}/`,
       keywords:
         "cloud marketplace, SaaS marketplace, cloud solutions, cloud bundles, AWS marketplace partner, Azure EDP accelerator, curated SaaS bundles, ISV enablement, cloud modernization, FinOps, AI for cloud buyers, NeoZaar marketplace, NeoZaar CoSell360, NeoZaar bundles",
-     siteName: "NeoZaar",
-     icons: {
-    icon: "/assests/Favicon _Neozaar.ico",
-  },
-     robots: {
-    index: true,
-    follow: true,
-     type: "website",
-    locale: "en_US",
-  },
+      siteName: "NeoZaar",
+      icons: {
+        icon: "/assests/Favicon _Neozaar.ico",
       },
+      robots: {
+        index: true,
+        follow: true,
+        type: "website",
+        locale: "en_US",
+      },
+    },
 
     marketplace: {
       title: "Marketplace | Explore Cloud Solutions | NeoZaar",
@@ -49,7 +49,7 @@ export const seoconfig = {
       title: "ISV Registration | List Your SaaS on NeoZaar Marketplace",
       description:
         "Register as an ISV and list your SaaS, AI, or cloud solution on NeoZaar. Unlock co-sell growth and marketplace visibility.",
-      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.neozaar.com"}/isv-registration/`,
+      canonical: `${process.env.NEXT_PUBLIC_SITE_URL || "https://www.neozaar.com"}/partner-registration/`,
       keywords:
         "ISV registration, SaaS listing, cloud marketplace onboarding, ISV partner program, AWS ISV onboarding, Azure marketplace partner, co-sell enablement, private offers, NeoZaar ISV registration, NeoZaar CoSell360, NeoZaar partner program",
     },

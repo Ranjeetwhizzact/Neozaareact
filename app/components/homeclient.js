@@ -14,13 +14,13 @@ import Footer from "../layouts/Footer";
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
 // import { useEffect } from 'react'
-import { useState} from 'react';
+import { useState } from 'react';
 import { useEffect } from 'react';
 
 
 
-export default function Page(){
- const [isOpen, setIsOpen] = useState(false);
+export default function Page() {
+  const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
@@ -38,8 +38,8 @@ export default function Page(){
   }, []);
 
   const NAV_LINKS = [
-    { href: '/isv-registration', label: 'ISV Registration' },
-    { href: '/partner-with-us', label: 'Partner With Us' },
+    { href: '/partner-registration', label: 'Partner Registration' },
+    { href: '/partner-with-us', label: 'Partner With Us' },
     { href: '/contact-us', label: 'Contact' },
   ];
 
@@ -51,12 +51,12 @@ export default function Page(){
       router.push("/auth/login");
     }
   };
-    return (
-<>
- <main className="bg-black min-h-screen w-full mx-auto max-w-[1920px]">
+  return (
+    <>
+      <main className="bg-black min-h-screen w-full mx-auto max-w-[1920px]">
         {/* Hero Section */}
-    
-         <section className="relative w-full flex flex-col items-center justify-start pt-8 px-2 sm:px-6 pb-15 min-h-screen lg:min-h-screen 2xl:min-h-auto">
+
+        <section className="relative w-full flex flex-col items-center justify-start pt-8 px-2 sm:px-6 pb-15 min-h-screen lg:min-h-screen 2xl:min-h-auto">
           {/* Background Video */}
           <div className='w-full h-full absolute z-1 bg-black'></div>
           <video
@@ -80,16 +80,16 @@ export default function Page(){
             </h1>
             <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3">
               {/* Discover enterprise-ready solutions across Security, AI, Modernization, and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis, Commvault, and Snowflake, and tailored for your AWS MACC or Azure EDP strategy. */}
-              Discover enterprise-ready solutions across Security, AI, Modernization, <br className="hidden sm:inline" />and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis,<br className="hidden sm:inline" /> Commvault, and Snowflake, and tailored for 
+              Discover enterprise-ready solutions across Security, AI, Modernization, <br className="hidden sm:inline" />and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis,<br className="hidden sm:inline" /> Commvault, and Snowflake, and tailored for
               <br className="hidden sm:inline" />your AWS MACC or Azure EDP strategy.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
               <Link href={"/auth/register"}
-              className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full py-3">
+                className="min-w-[220px] cursor-pointer font-['Inter',_sans-serif] sm:w-auto px-6 bg-white/20 text-white font-600 rounded-4xl hover:bg-white hover:text-black transition h-12 rounded-full py-3">
                 <span className='text-6 font-600'>Explore Now</span> <span className="pl-12 inline text-8 font-extrabold">↗</span>
               </Link>
               <Link href={"/auth/register"}
-               className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
+                className="min-w-[290px] cursor-pointer font-['Inter',_sans-serif] py-3 border border-white text-white font-600 rounded-4xl hover:bg-white/40 hover:text-white transition rounded-full">
                 <Image src="/assests/sparkle_png.png" width={24} height={24} alt="sparkle icon" className="hover:text-black w-6 h-6 inline-block mr-4" />Let AI Find Your Solution
               </Link>
             </div>
@@ -97,9 +97,9 @@ export default function Page(){
         </section>
         {/* Brand Logos Carousel */}
         <section className="w-full px-2 sm:px-8  ">
-           <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 py-5 text-center  xl:leading-[60px] flex justify-center items-center mb-20">
-            
-          OUR SUPPORTING PARTNERS
+          <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 py-5 text-center  xl:leading-[60px] flex justify-center items-center mb-20">
+
+            OUR SUPPORTING PARTNERS
           </h2>
           <Swiper
             className="w-full !p-0 [&>.swiper-wrapper]:!m-0 !mt-4 lg:h-60 h-30 "
@@ -134,7 +134,7 @@ export default function Page(){
               '/brand-log/Veeam_logo.png',
               '/brand-log/wiz-logo-png_seeklogo-455765.png',
               '/brand-log/Zscaler_logo.png',
-             
+
             ].map((src, idx) => (
               <SwiperSlide key={idx} className="flex items-center justify-center">
                 <div className='flex items-center justify-center'>
@@ -155,8 +155,8 @@ export default function Page(){
         {/* Features Section */}
         <section className="w-full pt-6 pb-12 sm:py-16 px-2 sm:px-10 lg:px-25 flex flex-col items-center">
           <h2 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-3xl md:text-4xl xl:text-5xl font-normal mt-6 mb-10 text-center  max-w-[600px] xl:leading-[60px]">
-            
-          The Marketplace Built Around   Your Cloud Goals.
+
+            The Marketplace Built Around   Your Cloud Goals.
           </h2>
           <div className="xl:h-[427px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 max-w-[1240px] mx-auto px-2 sm:px-6 lg:px-8 xl:px-0" >
             {[
@@ -189,7 +189,7 @@ export default function Page(){
                   backgroundImage: "url('/assests/bacground.png')",
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
-                
+
                 }}
               >
                 <div className="flex items-center justify-center my-15 h-52 ">
@@ -202,7 +202,7 @@ export default function Page(){
                       width: '100px',
                       height: 'auto',
                       borderRadius: '20px',
-                    
+
                     }}
                   />
                 </div>
@@ -233,21 +233,21 @@ export default function Page(){
                 img: "/brand-log/individual_products.png",
                 title: "Individual Products",
                 desc: "Explore verified SaaS, cloud, AI, and security solutions. Our catalog features best-in-class tools from global Independent Software Vendors (ISVs).",
-                 point1:'Feature-wise comparison',
-                point2:'Transparent pricing',
-                point3:'Private offer support',
-                point4:'Integrated trial or demo flows',
+                point1: 'Feature-wise comparison',
+                point2: 'Transparent pricing',
+                point3: 'Private offer support',
+                point4: 'Integrated trial or demo flows',
                 btn: "Explore Products",
               },
-               
+
               {
                 img: "/brand-log/curated_bundles.png",
                 title: "Curated Bundles",
                 desc: "Accelerate your outcomes with solution-focused bundles. NeoZaar FastTrack FlexBundles combine top products, cloud infrastructure, and deployment support — aligned to your goals",
-                  point1:'Security, AI, Modernization, FinOps kits',
-                point2:'Pre-configured and deployable in days',
-                point3:'AWS/Azure credit-aligned (MACC/EDP support)',
-                point4:'Add-on services available from certified partners',
+                point1: 'Security, AI, Modernization, FinOps kits',
+                point2: 'Pre-configured and deployable in days',
+                point3: 'AWS/Azure credit-aligned (MACC/EDP support)',
+                point4: 'Add-on services available from certified partners',
                 btn: "Discover Bundles",
 
               },
@@ -255,11 +255,11 @@ export default function Page(){
                 img: "/brand-log/expert_services.png",
                 title: "Expert Services",
                 desc: "Certified MSPs & cloud consultants at your fingertips.Whether you’re migrating, modernizing, or scaling, our service partners are here to deliver success — on time and on budget.",
-                 point1:'Cloud migration & DevOps',
-                point2:'Security implementation',
-                point3:'Managed services & compliance',
-                point4:'Optional white-label delivery',
-              
+                point1: 'Cloud migration & DevOps',
+                point2: 'Security implementation',
+                point3: 'Managed services & compliance',
+                point4: 'Optional white-label delivery',
+
                 btn: "Find a Partner",
               },
             ].map((card, idx) => (
@@ -282,23 +282,23 @@ export default function Page(){
                 <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                   {card.desc}
                 </p>
-                 <ul className='ps-5 text-gray-200'>
-           <li className='list-disc'>
-            {card.point1}
-            </li>
-           <li className='list-disc'>
-            {card.point2}
-            </li>
-           <li className='list-disc'>
-            {card.point3}
-            </li>
-           <li className='list-disc'>
-            {card.point4}
-            </li>
-                      </ul>
+                <ul className='ps-5 text-gray-200'>
+                  <li className='list-disc'>
+                    {card.point1}
+                  </li>
+                  <li className='list-disc'>
+                    {card.point2}
+                  </li>
+                  <li className='list-disc'>
+                    {card.point3}
+                  </li>
+                  <li className='list-disc'>
+                    {card.point4}
+                  </li>
+                </ul>
                 <div className="mt-auto pl-2 w-full">
                   <button onClick={handleMarketplaceClick}
-                  className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+                    className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                     {card.btn}
                   </button>
                 </div>
@@ -313,20 +313,20 @@ export default function Page(){
                 img: "/brand-log/individual_products.png",
                 title: "Individual Products",
                 desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
-                        point1:'Feature-wise comparison',
-                point2:'Transparent pricing',
-                point3:'Private offer support',
-                point4:'Integrated trial or demo flows',
+                point1: 'Feature-wise comparison',
+                point2: 'Transparent pricing',
+                point3: 'Private offer support',
+                point4: 'Integrated trial or demo flows',
                 btn: "Explore Products",
               },
               {
                 img: "/brand-log/curated_bundles.png",
                 title: "Curated Bundles",
                 desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
-                  point1:'Security, AI, Modernization, FinOps kits',
-                point2:'Pre-configured and deployable in days',
-                point3:'AWS/Azure credit-aligned (MACC/EDP support)',
-                point4:'Add-on services available from certified partners',
+                point1: 'Security, AI, Modernization, FinOps kits',
+                point2: 'Pre-configured and deployable in days',
+                point3: 'AWS/Azure credit-aligned (MACC/EDP support)',
+                point4: 'Add-on services available from certified partners',
                 btn: "Discover Bundles",
                 btn: "Discover Bundles",
               },
@@ -334,10 +334,10 @@ export default function Page(){
                 img: "/brand-log/expert_services.png",
                 title: "Expert Services",
                 desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
-                 point1:'Cloud migration & DevOps',
-                point2:'Security implementation',
-                point3:'Managed services & compliance',
-                point4:'Optional white-label delivery',
+                point1: 'Cloud migration & DevOps',
+                point2: 'Security implementation',
+                point3: 'Managed services & compliance',
+                point4: 'Optional white-label delivery',
                 btn: "Find a Partner",
               },
             ].map((card, idx) => (
@@ -363,25 +363,25 @@ export default function Page(){
                   <p className=" text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                     {card.desc}
                   </p>
-                   <ul className='ps-4 text-gray-200'>
+                  <ul className='ps-4 text-gray-200'>
                     <li className='list-disc'>
                       {card.point1}
-                      </li>
+                    </li>
                     <li className='list-disc'>
                       {card.point2}
-                      </li>
+                    </li>
                     <li className='list-disc'>
                       {card.point3}
-                      </li>
+                    </li>
                     <li className='list-disc'>
                       {card.point4}
-                      </li>
-             
-              
-                      </ul>
+                    </li>
+
+
+                  </ul>
                   <div className="mt-auto pl-2 w-full">
                     <button onClick={handleMarketplaceClick}
-                    className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+                      className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                       {card.btn}
                     </button>
                   </div>
@@ -391,91 +391,91 @@ export default function Page(){
           </div>
 
           {/* Mobile View */}
-        <div className="grid md:hidden grid-cols-1 w-full border-image-horizontal">
-  {[
-    {
-      img: "/brand-log/individual_products.png",
-      title: "Individual Products",
-      desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
-       point1:'Cloud migration & DevOps',
-                point2:'Security implementation',
-                point3:'Managed services & compliance',
-                point4:'Optional white-label delivery',
-      btn: "Explore Products",
+          <div className="grid md:hidden grid-cols-1 w-full border-image-horizontal">
+            {[
+              {
+                img: "/brand-log/individual_products.png",
+                title: "Individual Products",
+                desc: "Choose from a wide catalog of 1–3rd-party cloud products. Find the best solution for storage, compute, networking, and more. Includes leading Independent Software Vendors (ISVs).",
+                point1: 'Cloud migration & DevOps',
+                point2: 'Security implementation',
+                point3: 'Managed services & compliance',
+                point4: 'Optional white-label delivery',
+                btn: "Explore Products",
 
-    },
-    {
-      img: "/brand-log/curated_bundles.png",
-      title: "Curated Bundles",
-      desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
-        point1:'Security, AI, Modernization, FinOps kits',
-                point2:'Pre-configured and deployable in days',
-                point3:'AWS/Azure credit-aligned (MACC/EDP support)',
-                point4:'Add-on services available from certified partners',
+              },
+              {
+                img: "/brand-log/curated_bundles.png",
+                title: "Curated Bundles",
+                desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+                point1: 'Security, AI, Modernization, FinOps kits',
+                point2: 'Pre-configured and deployable in days',
+                point3: 'AWS/Azure credit-aligned (MACC/EDP support)',
+                point4: 'Add-on services available from certified partners',
                 btn: "Discover Bundles",
-      btn: "Discover Bundles",
-    },
-    {
-      img: "/brand-log/expert_services.png",
-      title: "Expert Services",
-      desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
-              point1:'Feature-wise comparison',
-                point2:'Transparent pricing',
-                point3:'Private offer support',
-                point4:'Integrated trial or demo flows',
-      btn: "Find a Partner",
-    },
-  ].map((card, idx) => (
-    <div
-      key={idx}
-      className="bg-black/80 p-6 flex flex-col items-start text-left h-full"
-      style={{
-        backgroundRepeat: "no-repeat",
-        backgroundImage: "url('/assests/bacground.png')",
-        backgroundSize: "contain",
-        backgroundPosition: "center",
-        // ✅ should be decimal (40% opacity), not 40
-      }}
-    >
-      <Image
-        src={card.img}
-        alt={card.title}
-        width={320}
-        height={160}
-        className="mb-4 w-full rounded-[20px]"
-        style={{ height: "232px", objectFit: "cover" }}
-      />
-      <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
-        {card.title}
-      </h3>
-      <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
-        {card.desc}
-      </p>
-        <ul className='ps-4 text-gray-200'>
-           <li className='list-disc'>
-            {card.point1}
-            </li>
-           <li className='list-disc'>
-            {card.point2}
-            </li>
-           <li className='list-disc'>
-            {card.point3}
-            </li>
-           <li className='list-disc'>
-            {card.point4}
-            </li>
-             
-              
-                      </ul>
-      <div className="mt-auto pl-2 w-full">
-        <button onClick={handleMarketplaceClick}
-        className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
-          {card.btn}
-        </button>
-      </div>
-    </div>
-  ))}
-</div>
+                btn: "Discover Bundles",
+              },
+              {
+                img: "/brand-log/expert_services.png",
+                title: "Expert Services",
+                desc: "Access integrated, knowledgeable support from certified professionals. Take advantage of consulting, migration, optimization, and ongoing support.",
+                point1: 'Feature-wise comparison',
+                point2: 'Transparent pricing',
+                point3: 'Private offer support',
+                point4: 'Integrated trial or demo flows',
+                btn: "Find a Partner",
+              },
+            ].map((card, idx) => (
+              <div
+                key={idx}
+                className="bg-black/80 p-6 flex flex-col items-start text-left h-full"
+                style={{
+                  backgroundRepeat: "no-repeat",
+                  backgroundImage: "url('/assests/bacground.png')",
+                  backgroundSize: "contain",
+                  backgroundPosition: "center",
+                  // ✅ should be decimal (40% opacity), not 40
+                }}
+              >
+                <Image
+                  src={card.img}
+                  alt={card.title}
+                  width={320}
+                  height={160}
+                  className="mb-4 w-full rounded-[20px]"
+                  style={{ height: "232px", objectFit: "cover" }}
+                />
+                <h3 className="text-white font-['CreatoDisplay-Light',_sans-serif] text-[22px] md:text-[25px] h-15 overflow-hidden line-clamp-2 font-normal mb-2 pl-2 mt-2">
+                  {card.title}
+                </h3>
+                <p className="text-[#71717A] text-sm mb-6 pl-2 font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
+                  {card.desc}
+                </p>
+                <ul className='ps-4 text-gray-200'>
+                  <li className='list-disc'>
+                    {card.point1}
+                  </li>
+                  <li className='list-disc'>
+                    {card.point2}
+                  </li>
+                  <li className='list-disc'>
+                    {card.point3}
+                  </li>
+                  <li className='list-disc'>
+                    {card.point4}
+                  </li>
+
+
+                </ul>
+                <div className="mt-auto pl-2 w-full">
+                  <button onClick={handleMarketplaceClick}
+                    className="px-5 py-2 cursor-pointer bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+                    {card.btn}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
 
 
           {/* Discover & Connect + Build & Manage */}
@@ -492,7 +492,7 @@ export default function Page(){
               <h4 className="text-2xl font-normal mb-4 font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Discover & Connect</h4>
               <p className="text-[#71717A] mb-4 text-sm sm:text-base font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                 Explore our marketplace of cloud-native products and expert services — all in one place.
-NeoZaar connects you with verified ISVs and solution partners who handle demos, onboarding, support, and everything in between.
+                NeoZaar connects you with verified ISVs and solution partners who handle demos, onboarding, support, and everything in between.
               </p>
               <div className="flex flex-row gap-4 sm:gap-8 mb-8">
                 <div>
@@ -505,7 +505,7 @@ NeoZaar connects you with verified ISVs and solution partners who handle demos, 
                 </div>
               </div>
               <button onClick={handleMarketplaceClick}
-              className="font-['Inter'] cursor-pointer self-start px-5 py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
+                className="font-['Inter'] cursor-pointer self-start px-5 py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto">
                 Explore the Marketplace
               </button>
             </div>
@@ -514,12 +514,12 @@ NeoZaar connects you with verified ISVs and solution partners who handle demos, 
               <p className="text-[#71717A] mb-4 text-sm sm:text-base font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
                 Choose NeoZaar’s pre-packaged bundles for a fully managed experience — from day one to day 100 and beyond.
               </p>
-            <ul className='text-[#71717A] ps-4'>
-              {/* <li className='list-decimal'>One Point of Contact
+              <ul className='text-[#71717A] ps-4'>
+                {/* <li className='list-decimal'>One Point of Contact
 </li>
               <li className='list-decimal'> Unified Billing & Support
 Simplify procurement with one contract, one invoice, one support channel.</li> */}
-            </ul>
+              </ul>
               <div className="flex flex-row gap-4 sm:gap-8 mt-5 mb-8">
                 <div>
                   <h5 className="font-semibold mb-1 text-[14px] sm:text-[16px] underline font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">One Point of Contact</h5>
@@ -531,7 +531,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                 </div>
               </div>
               <button onClick={handleMarketplaceClick}
-              className="px-5 font-['Inter'] cursor-pointer py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto self-start">
+                className="px-5 font-['Inter'] cursor-pointer py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto self-start">
                 View Our Bundles
               </button>
             </div>
@@ -662,8 +662,8 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
           <div className="bg-black rounded-lg p-4">
             <h3 className="text-base font-['Inter'] text-white mb-2 line-clamp-2"> Curated, Not Crowded</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-             We prioritize clarity over choice overload.
-            Each product, bundle, and partner is handpicked for quality, reliability, and business impact — so you can focus on outcomes, not options.
+              We prioritize clarity over choice overload.
+              Each product, bundle, and partner is handpicked for quality, reliability, and business impact — so you can focus on outcomes, not options.
             </p>
           </div>
           <div className="bg-black rounded-lg p-4">
@@ -676,14 +676,14 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
           <div className="bg-black rounded-lg p-4">
             <h3 className="text-base font-['Inter'] mb-2 line-clamp-5 text-white">Vendor-Neutral by Design</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-            No lock-in. No bias.
-            Whether you select a standalone ISV, a bundled offer, or a managed solution — we recommend what fits your stack, not ours.
+              No lock-in. No bias.
+              Whether you select a standalone ISV, a bundled offer, or a managed solution — we recommend what fits your stack, not ours.
             </p>
           </div>
           <div className="bg-black rounded-lg p-4">
             <h3 className="text-base font-['Inter'] mb-2 line-clamp-2 text-white">One-Stop Discovery</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
-             No more jumping across tabs or vendor sites.
+              No more jumping across tabs or vendor sites.
               NeoZaar brings verified SaaS products, services, and bundles together in a single, user-friendly marketplace experience.
             </p>
           </div>
@@ -692,7 +692,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
         {/* Testimonials Section */}
         <section className="mb-16 max-w-[1240px] mx-auto  bg-black text-white">
           <h2 className="text-4xl sm:text-5xl text-center font-['CreatoDisplay-Light',_sans-serif] text-[25px] md:text-[40px] lg:text-[40px] mb-10">
-         
+
             Designed Around <br /> What Customers Actually Need
           </h2>
           <div className='relative h-[1400px] md:h-[850px] shadow-2xl overflow-hidden'>
@@ -706,7 +706,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                      Buyers want an easier way to select, compare, and procure software that actually solves their business problems — without wasting time on sales calls or deciphering hyperscaler portals.
+                        Buyers want an easier way to select, compare, and procure software that actually solves their business problems — without wasting time on sales calls or deciphering hyperscaler portals.
                       </p>
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
@@ -720,7 +720,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           Fast-track to bundled, proven solutions
                         </li>
                         <li className='list-disc'>
-                         Built-in support for cloud credits (AWS MACC / Azure EDP)
+                          Built-in support for cloud credits (AWS MACC / Azure EDP)
                         </li>
                       </ul>
 
@@ -743,23 +743,23 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                   {/* Card 4 */}
                   <div className="bg-gradient-to-b from-[#1a1a1a] to-black border border-gray-800 rounded-2xl shadow-lg overflow-hidden p-6 relative min-h-[300px]">
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
-                     <div className="relative z-10 flex flex-col h-full">
+                    <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                     Most buyers don’t want to build their stack from scratch — they want ready-made solutions that solve real business problems with minimal integration effort.
+                        Most buyers don’t want to build their stack from scratch — they want ready-made solutions that solve real business problems with minimal integration effort.
                       </p>
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
                         <li className='list-disc'>
-                         Pre-configured FastTrack FlexBundles for common use cases
+                          Pre-configured FastTrack FlexBundles for common use cases
                         </li>
                         <li className='list-disc'>
-                         Bundles aligned to industry challenges (Security, FinOps, AI)
+                          Bundles aligned to industry challenges (Security, FinOps, AI)
                         </li>
                         <li className='list-disc'>
-                         Integrated deployment and support
+                          Integrated deployment and support
                         </li>
                         <li className='list-disc'>
-                        Immediate value with credit-aligned pricing
+                          Immediate value with credit-aligned pricing
                         </li>
                       </ul>
 
@@ -787,21 +787,21 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-100% rounded-2xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                    Buyers want proof that the platform and products are credible — especially in compliance-sensitive or cloud-integrated environments.
+                        Buyers want proof that the platform and products are credible — especially in compliance-sensitive or cloud-integrated environments.
                       </p>
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
                         <li className='list-disc'>
-                       Globally recognized ISV listings (Zscaler, Commvault, Snowflake, etc.)
+                          Globally recognized ISV listings (Zscaler, Commvault, Snowflake, etc.)
                         </li>
                         <li className='list-disc'>
-                       Marketplace partner alignment (AWS CPPO, Azure MCPP)
+                          Marketplace partner alignment (AWS CPPO, Azure MCPP)
                         </li>
                         <li className='list-disc'>
-                       DPDP, GDPR, and SOC2-compliant offerings
+                          DPDP, GDPR, and SOC2-compliant offerings
                         </li>
                         <li className='list-disc'>
-                       Transparent display of trust scores, certifications, and partner tiers
+                          Transparent display of trust scores, certifications, and partner tiers
                         </li>
                       </ul>
 
@@ -824,23 +824,23 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                   {/* Card 5 */}
                   <div className="bg-gradient-to-b from-[#1a1a1a] to-black border border-gray-800 rounded-2xl shadow-lg overflow-hidden p-6 relative">
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
-                   <div className="relative z-10 flex flex-col h-full">
+                    <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                    Buyers want deployment support — but don’t want to Google and vet 5 different MSPs.
+                        Buyers want deployment support — but don’t want to Google and vet 5 different MSPs.
                       </p>
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
                         <li className='list-disc'>
-                        Certified expert services alongside every product
+                          Certified expert services alongside every product
                         </li>
                         <li className='list-disc'>
-                         Service partner matchmaking engine
+                          Service partner matchmaking engine
                         </li>
                         <li className='list-disc'>
-                        Option for fully managed delivery (white-labeled or direct)
+                          Option for fully managed delivery (white-labeled or direct)
                         </li>
                         <li className='list-disc'>
-                       One point of contact via NeoZaar
+                          One point of contact via NeoZaar
 
                         </li>
                       </ul>
@@ -867,23 +867,23 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                   {/* Card 3 */}
                   <div className="bg-gradient-to-b from-[#1a1a1a] to-black border border-gray-800 rounded-2xl shadow-lg overflow-hidden p-6 relative">
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
-                   <div className="relative z-10 flex flex-col h-full">
+                    <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                    Buyers want to see impact, not just features. They care about outcomes, cost savings, and time-to-value — even if they’re early in the buying cycle.
+                        Buyers want to see impact, not just features. They care about outcomes, cost savings, and time-to-value — even if they’re early in the buying cycle.
                       </p>
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
                         <li className='list-disc'>
-                       30–50% savings vs standalone procurement or hyperscaler rates
+                          30–50% savings vs standalone procurement or hyperscaler rates
                         </li>
                         <li className='list-disc'>
-                       Deployments in under 10 days for most bundles
+                          Deployments in under 10 days for most bundles
                         </li>
                         <li className='list-disc'>
-                        100+ curated ISV offerings, all transactable
+                          100+ curated ISV offerings, all transactable
                         </li>
                         <li className='list-disc'>
-                       70% of users use Nova to get a recommendation before buying
+                          70% of users use Nova to get a recommendation before buying
                         </li>
                       </ul>
 
@@ -908,21 +908,21 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                     <div className="absolute inset-0 bg-[url('/image/card.png')] bg-cover bg-center opacity-10 rounded-2xl" />
                     <div className="relative z-10 flex flex-col h-full">
                       <p className="text-sm text-gray-200 leading-relaxed font-['Inter'] mb-6">
-                    New platforms without testimonials still need to build buyer trust through positioning and messaging — without faking quotes.
+                        New platforms without testimonials still need to build buyer trust through positioning and messaging — without faking quotes.
                       </p>
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
                         <li className='list-disc'>
-                        “Why Buyers Choose NeoZaar” section to highlight benefits
+                          “Why Buyers Choose NeoZaar” section to highlight benefits
                         </li>
                         <li className='list-disc'>
-                        Bundle highlights and real-world use cases instead of quotes
+                          Bundle highlights and real-world use cases instead of quotes
                         </li>
                         <li className='list-disc'>
-                       Display of global ISV partners and compliance badges
+                          Display of global ISV partners and compliance badges
                         </li>
                         <li className='list-disc'>
-                       Results-driven messaging supported by Nova insights and delivery 
+                          Results-driven messaging supported by Nova insights and delivery
                         </li>
                       </ul>
 
@@ -972,12 +972,12 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
           <div className="relative mx-auto w-full max-w-2xl text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-[#F79331] via-[#39C6FF] to-white font-['CreatoDisplay-Light',_sans-serif] text-[20px] font-300 mb-4">
               Start Your Smart Cloud<br />  Journey with NeoZaar
-             
+
             </h2>
             <p className="text-gray-200 text-sm sm:text-base mb-4">
-              Whether you’re buying a SaaS tool or launching a bundled solution, 
+              Whether you’re buying a SaaS tool or launching a bundled solution,
 
-            <br className="hidden sm:inline" /> we’re built to guide you every step of the way.
+              <br className="hidden sm:inline" /> we’re built to guide you every step of the way.
             </p>
             <button onClick={handleMarketplaceClick} className="inline-flex items-center justify-center bg-gray-700 bg-opacity-20 hover:bg-opacity-30 text-white rounded-full cursor-pointer px-6 py-2 sm:py-3 text-sm sm:text-base">
               <span className="mr-2">Let’s Get Started</span>
@@ -988,9 +988,9 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
       </main>
       <div className='w-1/3 m-auto'>
 
-         <CookieConsent />
+        <CookieConsent />
       </div>
       <Footer />
-</>
-    );
+    </>
+  );
 }
