@@ -787,131 +787,121 @@ export default function CustomSlider() {
 
       {/* Request Demo Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
-            >
-              <X className="w-6 h-6" />
-            </button>
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div className="bg-black text-zinc-300 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
+    
+    {/* Close Button */}
+    <button
+      onClick={() => setIsModalOpen(false)}
+      className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
+    >
+      <X className="w-6 h-6" />
+    </button>
 
-            <h2 className="text-xl font-semibold mb-4 text-white">Request Demo</h2>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                placeholder="Your Role (e.g. CTO)"
-                className={`w-full border bg-zinc-800 p-3 mb-4 placeholder:text-zinc-600 text-white rounded-lg ${
-                  errors.roleTitle ? "border-red-500" : "border-zinc-700"
-                }`}
-                value={roleTitle}
-                onChange={(e) => {
-                  setRoleTitle(e.target.value);
-                  if (errors.roleTitle) setErrors({...errors, roleTitle: ""});
-                }}
-              />
-              {errors.roleTitle && (
-                <p className="text-red-500 text-sm mb-2">{errors.roleTitle}</p>
-              )}
+    {/* Title */}
+    <h2 className="text-xl font-semibold mb-4 text-white">
+      Request Demo
+    </h2>
 
-              <input
-                type="text"
-                placeholder="Use Case (e.g. Evaluate new system)"
-                className={`w-full border bg-zinc-800 p-3 mb-4 placeholder:text-zinc-600 text-white rounded-lg ${
-                  errors.useCase ? "border-red-500" : "border-zinc-700"
-                }`}
-                value={useCase}
-                onChange={(e) => {
-                  setUseCase(e.target.value);
-                  if (errors.useCase) setErrors({...errors, useCase: ""});
-                }}
-              />
-              {errors.useCase && (
-                <p className="text-red-500 text-sm mb-2">{errors.useCase}</p>
-              )}
+    {/* Product Info */}
+    <div className="mb-6 space-y-3">
+      <p className="text-white font-semibold text-lg">
+       <span className="text-orange-400">{productDetails.product.name}</span>
+      </p>
 
-              <textarea
-                rows={4}
-                placeholder="Comments"
-                className={`w-full border bg-zinc-800 p-3 mb-4 placeholder:text-zinc-600 text-white rounded-lg ${
-                  errors.message ? "border-red-500" : "border-zinc-700"
-                }`}
-                value={message}
-                onChange={(e) => {
-                  setMessage(e.target.value);
-                  if (errors.message) setErrors({...errors, message: ""});
-                }}
-              />
-              {errors.message && (
-                <p className="text-red-500 text-sm mb-2">{errors.message}</p>
-              )}
+      <p className="text-zinc-400 text-sm">
+       {productDetails.product.short_description}
+      </p>
 
-              <button
-                type="submit"
-                className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
-              >
-                Submit Request
-              </button>
-            </form>
-          </div>
-        </div>
+      <p className="text-zinc-500 text-sm italic">
+        Your request will be sent to our team. We’ll contact you shortly.
+      </p>
+    </div>
+
+    {/* Submit Form */}
+    <form onSubmit={handleSubmit}>
+      <button
+        type="submit"
+        className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
+      >
+        Submit Request
+      </button>
+    </form>
+  </div>
+</div>
+
+
       )}
 
       {/* Price Enquiry Modal */}
-      {isPriceModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
-            <button
-              onClick={() => setIsPriceModalOpen(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
-            >
-              <X className="w-6 h-6" />
-            </button>
+ {isPriceModalOpen && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
 
-            <h2 className="text-xl font-semibold mb-4 text-white">Price Enquiry</h2>
-            <form onSubmit={handleSubmitB}>
-              <input
-                type="text"
-                placeholder="AWS Account ID (12 digits)"
-                className={`w-full border bg-zinc-800 p-3 mb-4 placeholder:text-zinc-600 text-white rounded-lg ${
-                  errors.AWSID ? "border-red-500" : "border-zinc-700"
-                }`}
-                value={AWSID}
-                onChange={(e) => {
-                  setAWSID(e.target.value);
-                  if (errors.AWSID) setErrors({...errors, AWSID: ""});
-                }}
-              />
-              {errors.AWSID && (
-                <p className="text-red-500 text-sm mb-2">{errors.AWSID}</p>
-              )}
+      {/* Close */}
+      <button
+        onClick={() => setIsPriceModalOpen(false)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
+      >
+        <X className="w-6 h-6" />
+      </button>
 
-              <textarea
-                rows={4}
-                placeholder="Comments"
-                className={`w-full border bg-zinc-800 p-3 mb-4 placeholder:text-zinc-600 text-white rounded-lg ${
-                  errors.messageB ? "border-red-500" : "border-zinc-700"
-                }`}
-                value={messageB}
-                onChange={(e) => {
-                  setMessageB(e.target.value);
-                  if (errors.messageB) setErrors({...errors, messageB: ""});
-                }}
-              />
-              {errors.messageB && (
-                <p className="text-red-500 text-sm mb-2">{errors.messageB}</p>
-              )}
+      <h2 className="text-xl font-semibold mb-4 text-white">
+        Price Enquiry
+      </h2>
 
-              <button
-                type="submit"
-                className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
-              >
-                Submit Enquiry
-              </button>
-            </form>
-          </div>
+      <form onSubmit={handleSubmitB}>
+        
+        {/* Hidden default values */}
+        <input
+          type="hidden"
+          name="requestType"
+          value="Demo Request"
+        />
+
+        <input
+          type="hidden"
+          name="product"
+          value="Your Product Name"
+        />
+
+        <input
+          type="hidden"
+          name="AWSID"
+          value={AWSID || "N/A"}
+        />
+
+        <textarea
+          className="hidden"
+          name="message"
+          value={messageB || "User requested pricing information"}
+          readOnly
+        />
+
+        {/* Display info only */}
+        <div className="mb-6 space-y-2 text-zinc-300">
+          <p>
+            <span className="text-white font-semibold">Product:</span>{" "}
+            Your Product Name
+          </p>
+          <p className="text-sm text-zinc-400">
+            This enquiry is for pricing and demo information. Our team will
+            contact you shortly.
+          </p>
         </div>
-      )}
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
+        >
+          Submit Enquiry
+        </button>
+      </form>
+    </div>
+  </div>
+)}
+
 
       {/* Success Modal */}
       {showSuccessModal && (

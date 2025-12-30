@@ -396,24 +396,107 @@ export default function Home() {
                   1600: { slidesPerView: 4 },
                 }}
               >
-                <SwiperSlide>
-                  <div className="bg-white border border-zinc-200 h-[127px] w-full max-w-[400px] relative overflow-hidden flex">
-                    <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
-                      <Image
-                        src="/assests/HealthcareDataPatientManagementKit.webp"
-                        alt="Kit Icon"
-                        width={35}
-                        height={35}
-                        className="relative z-10"
-                      />
-                    </div>
-                    <div className="flex items-center p-6">
-                      <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                        Healthcare Data & Patient Management Kit
-                      </div>
+             <SwiperSlide>
+                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+
+                  <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
+                    <Image
+                      src="/assests/HealthcareDataPatientManagementKit.webp"
+                      alt="Kit Icon"
+                      width={35}
+                      height={35}
+                      className="relative  z-10"
+                    />
+                  </div>
+
+                  <div className=" flex items-center p-6">
+                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                      Healthcare Data & Patient Management Kit
                     </div>
                   </div>
-                </SwiperSlide>
+                </div>
+              </SwiperSlide>
+              <SwiperSlide>
+                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+
+                  <div className="bg-zinc-100 flex items-center justify-center aspect-square w-[127px] h-[127px] relative">
+                    <Image
+                      src="/assests/SmartFactoryModernizationAccelerator.webp"
+                      alt="Kit Icon"
+                      width={35}
+                      height={35}
+                      className="relative  z-10"
+                    />
+                  </div>
+
+                  <div className=" flex items-center p-6">
+                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                      Smart Factory & Modernization Accelerator
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+              <SwiperSlide>
+                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+
+                  <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
+                    <Image
+                      src="/assests/RegulatoryComplianceAuditReadinessToolkit.webp"
+                      alt="Kit Icon"
+                      width={35}
+                      height={35}
+                      className="relative  z-10"
+                    />
+                  </div>
+
+
+                  <div className=" flex items-center p-6">
+                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                      Regulatory Compliance & Audit Readiness Toolkit
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+
+              <SwiperSlide>
+                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                  <div className="bg-zinc-100 flex  items-center justify-center aspect-square w-[127px] h-[127px] relative">
+                    <Image
+                      src="/assests/hybridlearning.webp"
+                      alt="Kit Icon"
+                      width={35}
+                      height={35}
+                      className="relative  z-10"
+                    />
+                  </div>
+
+                  <div className=" flex items-center p-6">
+                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                      Hybrid Learning Stack
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+              <SwiperSlide>
+                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                  <div className="bg-zinc-100 flex items-center  aspect-square justify-center w-[127px] h-[127px] relative">
+                    <Image
+                      src="/assests/EmployeeLifecycleComplianceKitVisitorCheck.inZohoPeoplePOSHcompliance.webp"
+                      alt="Kit Icon"
+                      width={35}
+                      height={35}
+                      className="relative  z-10"
+                    />
+                  </div>
+
+                  <div className=" flex items-center p-6">
+                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                      Employee Lifecycle + Compliance Kit
+                    </div>
+                  </div>
+                </div>
+              </SwiperSlide>
+
                 
                 {/* ... other SwiperSlides ... */}
               </Swiper>
@@ -477,7 +560,7 @@ export default function Home() {
                         </div>
                         <div className="" />
                         <div className="relative z-10 p-4 text-white  flex flex-col justify-end">
-                          <div className="text-lg text-black font-semibold mb-2">
+                          <div className="text-lg text-black font-semibold mb-2 line-clamp-2">
                             {item.title}
                           </div>
                           <div className="text-sm text-gray-500 line-clamp-3">
@@ -524,10 +607,10 @@ export default function Home() {
                     />
                   </div>
                   <div className="p-4">
-                    <p className="uppercase text-lg text-black tracking-wider mb-2">
+                    <p className="uppercase text-lg text-black tracking-wider mb-2 line-clamp-2">
                       {product.title}
                     </p>
-                    <p className="text-gray-500 leading-snug h-12 overflow-hidden line-clamp-2 mb-3">
+                    <p className="text-gray-500 leading-snug h-12 overflow-hidden line-clamp-2 mb-3 ">
                       {product.description}
                     </p>
                     <p className="text-blue-600 text-sm font-semibold">

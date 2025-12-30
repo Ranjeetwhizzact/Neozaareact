@@ -119,7 +119,9 @@ export default function Header() {
   };
 
   const NAV_LINKS = [
-    { href: '/isv-registration', label: 'ISV Registration' },
+    { href: '/isv-registration', label: 'Partner With Us' },
+    // { href: '/auth/register', label: 'ISV Registration' },
+    // { href: '/auth/register', label: 'Customer Registration' },
    
     { href: '/contact-us', label: 'Contact' },
   ];
