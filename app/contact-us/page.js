@@ -35,7 +35,7 @@ export default function Page() {
 }
     if (!message) errs.message = 'Message required';
     if (!inquiryType) errs.inquiryType = 'Please select a category';
-    if (!consent) errs.consent = 'You must agree to the terms and conditions';
+    if (!consent) errs.consent = 'You must agree to the terms of use';
 
     setErrors(errs);
     return Object.keys(errs).length === 0;

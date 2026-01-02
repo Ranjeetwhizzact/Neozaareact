@@ -381,7 +381,7 @@ support_desk_email: {
 
   neozaar_tc: {
     required: true,
-    message: "Please agree to the Terms & Conditions"
+    message: "Please agree to the Terms Of Use"
   },
 
   data_privacy: {
@@ -760,7 +760,7 @@ const validateStep = (stepNumber) => {
     }
 
   } else {
-    toast.error("Please agree to the Terms & Conditions and Privacy Policy");
+    toast.error("Please agree to the Terms Of Use and Privacy Policy");
   }
   };
 
@@ -1550,9 +1550,9 @@ const validateStep = (stepNumber) => {
                     </div>
                    <label htmlFor="termsCondition" className="text-sm dark:text-black">
   I agree to the{" "}
-  <a href="/terms-and-conditions"     target="_blank"
+  <a href="/terms-of-use"     target="_blank"
     rel="noopener noreferrer" className="font-semibold underline">
-    Terms & Conditions
+    Terms of Use
   </a>{" "}
   and consent to the collection and use of my data as outlined in the{" "}
   <a href="/privacy-policy"    target="_blank"
