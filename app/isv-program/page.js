@@ -351,7 +351,7 @@ export default function Page() {
 
                 return (
                   <Link
-                    href="/partner-registration"
+                    href="/isv-registration"
                     key={idx}
                     className={`group relative flex flex-col p-8 bg-white/[0.02] backdrop-blur-sm border border-white/5 rounded-[32px] transition-all duration-500 hover:-translate-y-2 ${theme.border} ${theme.shadow}`}
                   >

@@ -27,6 +27,8 @@ export default function CustomSlider() {
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState({});
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Form states
   const [roleTitle, setRoleTitle] = useState("");
@@ -297,6 +299,44 @@ export default function CustomSlider() {
     }
   };
 
+  // Add keyboard navigation
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (!isGalleryOpen) return;
+    
+    if (e.key === 'Escape') {
+      setIsGalleryOpen(false);
+    } else if (e.key === 'ArrowLeft') {
+      setCurrentImageIndex(prev => {
+        const newIndex = prev === 0 ? productDetails?.product?.screenshots?.length - 1 : prev - 1;
+        // Track keyboard navigation
+        trackEvent({
+          eventType: "IMAGEVIEW",
+          entityType: "product",
+          entityId: productDetails?.product?.id,
+          pageUrl: `Keyboard Left - Image ${newIndex}`,
+        });
+        return newIndex;
+      });
+    } else if (e.key === 'ArrowRight') {
+      setCurrentImageIndex(prev => {
+        const newIndex = prev === productDetails?.product?.screenshots?.length - 1 ? 0 : prev + 1;
+        // Track keyboard navigation
+        trackEvent({
+          eventType: "GALLERY_KEYBOARD_NAVIGATION",
+          entityType: "product",
+          entityId: productDetails?.product?.id,
+          pageUrl: `Keyboard Right - Image ${newIndex}`,
+        });
+        return newIndex;
+      });
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [isGalleryOpen, productDetails?.product?.screenshots?.length]);
+
   return (
     <>
       <Header />
@@ -396,7 +436,32 @@ export default function CustomSlider() {
             border
             shadow-sm
             bg-gray-100
+            cursor-pointer
           "
+          onClick={() => {
+            // Track the image click event
+            trackEvent({
+              eventType: "PRODUCT_VIEW",
+              entityType: "product",
+              entityId: productDetails?.product?.id,
+              pageUrl: productDetails?.product?.name,
+              utm: {
+                utm_source: typeof window !== "undefined" 
+                  ? new URLSearchParams(window.location.search).get("utm_source")
+                  : null,
+                utm_medium: typeof window !== "undefined" 
+                  ? new URLSearchParams(window.location.search).get("utm_medium")
+                  : null,
+                utm_campaign: typeof window !== "undefined" 
+                  ? new URLSearchParams(window.location.search).get("utm_campaign")
+                  : null,
+              },
+            });
+            
+            // Set the initial image index when clicking
+            setCurrentImageIndex(i);
+            setIsGalleryOpen(true);
+          }}
         >
           <img
             src={src}
@@ -409,11 +474,122 @@ export default function CustomSlider() {
               duration-500
               ease-[cubic-bezier(0.16,1,0.3,1)]
               hover:scale-110
-              cursor-pointer
             "
           />
         </div>
       ))}
+    
+    {/* Gallery Modal */}
+    {isGalleryOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div className="relative w-full max-w-6xl max-h-[90vh] mx-4">
+          {/* Close Button */}
+          <button
+            onClick={() => setIsGalleryOpen(false)}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Navigation Arrows - Only show if more than 1 image */}
+          {productDetails.product.screenshots.length > 1 && (
+            <>
+              <button
+                onClick={() => {
+                  setCurrentImageIndex(prev => 
+                    prev === 0 ? productDetails.product.screenshots.length - 1 : prev - 1
+                  );
+                  // Track navigation to previous image
+                  trackEvent({
+                    eventType: "GALLERY_NAVIGATION",
+                    entityType: "product",
+                    entityId: productDetails?.product?.id,
+                    pageUrl: `Gallery Previous - Image ${currentImageIndex}`,
+                  });
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setCurrentImageIndex(prev => 
+                    prev === productDetails.product.screenshots.length - 1 ? 0 : prev + 1
+                  );
+                  // Track navigation to next image
+                  trackEvent({
+                    eventType: "GALLERY_NAVIGATION",
+                    entityType: "product",
+                    entityId: productDetails?.product?.id,
+                    pageUrl: `Gallery Next - Image ${currentImageIndex}`,
+                  });
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+          
+          {/* Current Image */}
+          <div className="relative w-full h-[70vh] rounded-xl overflow-hidden">
+            <Image
+              src={productDetails.product.screenshots[currentImageIndex]}
+              alt={`Screenshot ${currentImageIndex + 1}`}
+              fill
+              className="object-contain"
+              sizes="(max-width: 1200px) 100vw, 1200px"
+            />
+          </div>
+          
+          {/* Image Counter */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/50 text-white text-sm">
+            {currentImageIndex + 1} / {productDetails.product.screenshots.length}
+          </div>
+          
+          {/* Thumbnail Strip */}
+          {productDetails.product.screenshots.length > 1 && (
+            <div className="flex justify-center gap-2 mt-4 overflow-x-auto py-2">
+              {productDetails.product.screenshots.map((src, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setCurrentImageIndex(i);
+                    // Track thumbnail click
+                    trackEvent({
+                      eventType: "GALLERY_THUMBNAIL_CLICK",
+                      entityType: "product",
+                      entityId: productDetails?.product?.id,
+                      pageUrl: `Thumbnail Click - Image ${i + 1}`,
+                    });
+                  }}
+                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                    currentImageIndex === i 
+                      ? 'border-blue-500 scale-105' 
+                      : 'border-transparent hover:border-gray-400'
+                  }`}
+                >
+                  <Image
+                    src={src}
+                    alt={`Thumbnail ${i + 1}`}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    )}
   </div>
 )}
 
