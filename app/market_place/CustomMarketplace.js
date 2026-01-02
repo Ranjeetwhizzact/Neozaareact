@@ -609,7 +609,7 @@ export default function Home() {
                 <div className="max-w-[400px]">
                   <div>
                     <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal">
-                      Solution
+                      Solutions
                     </div>
                     <p className="dark:text-black mb-2">
                       Curated bundles built to achieve real outcomes
@@ -680,8 +680,8 @@ export default function Home() {
             <div className="w-11/12 m-auto flex flex-wrap lg:flex-nowrap justify-between">
               <div className="max-w-[400px]">
                 <div>
-                  <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal">
-                    Service
+                  <div className="text-black font-semibold text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] ">
+                    Services
                   </div>
                   <p className="dark:text-black mb-2">
                     Certified experts to design, deploy, and manage.
@@ -753,7 +753,7 @@ export default function Home() {
               <div>
                 <div className="max-w-[400px]">
                   <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal">
-                    Popular & Trending {ACTION_TYPE_LABELS[activeTab]}
+                    Popular & Trending Products
                   </div>
                   <div className="text-neutral-500 text-left text-sm sm:text-base">
                     Enterprise-grade SaaS, ready to deploy.
