@@ -119,7 +119,7 @@ export default function Header() {
   };
 
   const NAV_LINKS = [
-    { href: '/isv-registration', label: 'Partner With Us' },
+    { href: '/isv-program', label: 'Partner With Us' },
     // { href: '/auth/register', label: 'ISV Registration' },
     // { href: '/auth/register', label: 'Customer Registration' },
    
@@ -203,11 +203,11 @@ export default function Header() {
         ) : (
           // Show only Login button when not authenticated
           <div className="flex items-center gap-4">
-            {/* <Link href="/auth/login">
+            <Link href="/auth/login">
               <button className="bg-orange-600 cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-orange-700 transition">
                 Login
               </button>
-            </Link> */}
+            </Link>
           </div>
         )}
       </div>

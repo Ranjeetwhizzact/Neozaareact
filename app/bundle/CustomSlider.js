@@ -190,9 +190,9 @@ export default function CustomSlider() {
     e.preventDefault();
 
     let newErrors = {};
-    if (!roleTitle.trim()) newErrors.roleTitle = "Role Title is required";
-    if (!useCase.trim()) newErrors.useCase = "Use Case is required";
-    if (!message.trim()) newErrors.message = "Message cannot be empty";
+    // if (!roleTitle.trim()) newErrors.roleTitle = "Role Title is required";
+    // if (!useCase.trim()) newErrors.useCase = "Use Case is required";
+    // if (!message.trim()) newErrors.message = "Message cannot be empty";
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -229,7 +229,7 @@ export default function CustomSlider() {
         setErrors({});
         setTimeout(() => {
           setShowSuccessModal(false);
-        }, 5000);
+        }, 9000);
       } else {
         alert("Failed to submit enquiry.");
       }
@@ -243,19 +243,19 @@ export default function CustomSlider() {
     e.preventDefault();
 
     let newErrors = {};
-    if (!AWSID.trim()) {
-      newErrors.AWSID = "AWS Account ID is required";
-    } else if (!/^\d{12}$/.test(AWSID.trim())) {
-      newErrors.AWSID = "Invalid AWS Account ID format";
-    }
-    if (!messageB.trim()) {
-      newErrors.messageB = "Message cannot be empty";
-    }
+    // if (!AWSID.trim()) {
+    //   newErrors.AWSID = "AWS Account ID is required";
+    // } else if (!/^\d{12}$/.test(AWSID.trim())) {
+    //   newErrors.AWSID = "Invalid AWS Account ID format";
+    // }
+    // if (!messageB.trim()) {
+    //   newErrors.messageB = "Message cannot be empty";
+    // }
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    // if (Object.keys(newErrors).length > 0) {
+    //   setErrors(newErrors);
+    //   return;
+    // }
 
     try {
       const token = localStorage.getItem("token");
@@ -339,7 +339,7 @@ export default function CustomSlider() {
                 className="px-8 w-[250px] py-3  bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
                 onClick={handlePrivatePriceClick}
               >
-                Get Private Price
+                Get Private Offer
               </button>
             </div>
           </div>
@@ -380,20 +380,45 @@ export default function CustomSlider() {
                    <h3 className="text-gray-900 text-xl font-semibold">
                  Images
                   </h3>
-                  {productDetails?.product?.screenshots?.length > 0 && (
-  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 my-2">
-    {productDetails?.product?.screenshots
+{productDetails?.product?.screenshots?.length > 0 && (
+  <div className="grid md:grid-cols-2 gap-4 my-2">
+    {productDetails.product.screenshots
       .filter(src => typeof src === "string" && src.trim() !== "")
       .map((src, i) => (
-        <img
+        <div
           key={i}
-          src={src}
-          alt={`Screenshot ${i + 1}`}
-          className="w-full h-auto rounded-xl border shadow-sm object-cover"
-        />
+          className="
+            relative
+            w-full
+            h-52
+            overflow-hidden
+            rounded-xl
+            border
+            shadow-sm
+            bg-gray-100
+          "
+        >
+          <img
+            src={src}
+            alt={`Screenshot ${i + 1}`}
+            className="
+              w-full
+              h-full
+              object-cover
+              transition-transform
+              duration-500
+              ease-[cubic-bezier(0.16,1,0.3,1)]
+              hover:scale-110
+              cursor-pointer
+            "
+          />
+        </div>
       ))}
   </div>
 )}
+
+
+
                   </div>
 
                   <h3 className="text-gray-900 text-xl font-semibold">
@@ -664,7 +689,7 @@ export default function CustomSlider() {
                         rel="noopener noreferrer"
                         className="text-blue-600 underline hover:text-blue-800"
                       >
-                        View Terms & Conditions
+                        View Terms Of Use
                       </a>
                     </div>
                   )}
@@ -678,7 +703,7 @@ export default function CustomSlider() {
                     Pricing Information
                   </h3>
                   <p className="text-gray-600 leading-relaxed mb-8">
-                    Flexible pricing plans based on your business needs. Please contact us for custom pricing or use the &quot;Get Private Price&quot; button for detailed pricing information.
+                    Flexible pricing plans based on your business needs. Please contact us for custom pricing or use the &quot;Get Private Offer&quot; button for detailed pricing information.
                   </p>
                 </SectionCard>
               )}
@@ -814,19 +839,41 @@ export default function CustomSlider() {
       </p>
 
       <p className="text-zinc-500 text-sm italic">
-        Your request will be sent to our team. We’ll contact you shortly.
+       
       </p>
     </div>
 
     {/* Submit Form */}
-    <form onSubmit={handleSubmit}>
-      <button
-        type="submit"
-        className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
-      >
-        Submit Request
-      </button>
-    </form>
+  <form onSubmit={handleSubmit}>
+  {/* Authorization Checkbox */}
+  <div className="flex items-start gap-3 mb-4">
+    <input
+      type="checkbox"
+      id="authorization"
+      required
+      className="mt-1 w-7 h-7 accent-orange-500"
+    />
+    <label
+      htmlFor="authorization"
+      className="text-sm text-zinc-400 leading-snug"
+    >
+      I authorize <span className="text-orange-400">NeoZaar</span> to share my
+      information with relevant solution experts for follow-up on this inquiry.
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
+  >
+    Submit Request
+  </button>
+  <p className="text-xs text-gray-500 pl-3 mt-3">
+
+  NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
+  </p>
+</form>
+
   </div>
 </div>
 
@@ -847,7 +894,7 @@ export default function CustomSlider() {
       </button>
 
       <h2 className="text-xl font-semibold mb-4 text-white">
-        Price Enquiry
+      Get Private Offer
       </h2>
 
       <form onSubmit={handleSubmitB}>
@@ -882,14 +929,27 @@ export default function CustomSlider() {
         <div className="mb-6 space-y-2 text-zinc-300">
           <p>
             <span className="text-white font-semibold">Product:</span>{" "}
-            Your Product Name
+            {productDetails.product.name}
           </p>
           <p className="text-sm text-zinc-400">
-            This enquiry is for pricing and demo information. Our team will
-            contact you shortly.
+         { productDetails.product.short_description}
           </p>
         </div>
-
+        <div className="flex items-start gap-3 mb-4">
+    <input
+      type="checkbox"
+      id="authorization"
+      required
+      className="mt-1 w-7 h-7 accent-orange-500"
+    />
+    <label
+      htmlFor="authorization"
+      className="text-sm text-zinc-400 leading-snug"
+    >
+      I authorize <span className="text-orange-400">NeoZaar</span> to share my
+      information with relevant solution experts for follow-up on this inquiry.
+    </label>
+  </div>
         {/* Submit */}
         <button
           type="submit"
@@ -897,6 +957,10 @@ export default function CustomSlider() {
         >
           Submit Enquiry
         </button>
+         <p className="text-xs text-gray-500 pl-3 mt-3">
+
+  NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
+  </p>
       </form>
     </div>
   </div>
@@ -907,13 +971,14 @@ export default function CustomSlider() {
       {showSuccessModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
           <div className="bg-white shadow-lg p-6 w-96 text-center rounded-lg">
-            <h2 className="text-xl font-bold text-green-600 mb-2">Success!</h2>
+            <h2 className="text-xl font-bold text-orange-500 mb-2">Success!</h2>
             <p className="text-gray-600">
-              Thank you for reaching out to us. Our team has received your request and will contact you shortly.
+              Thank you for your request. Our team has received it and will reach out shortly to understand your requirements and schedule a demo.
             </p>
           </div>
         </div>
       )}
+      
 
       <Footer />
     </>

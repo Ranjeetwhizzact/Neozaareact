@@ -686,6 +686,8 @@ export default function TermsPage() {
            <ul className="list-disc pl-6 mb-6 space-y-2  text-black">
             <li>Immediately if delivered via email (provided there is proof of transmission); or</li>
             <li>Three (3) business days after dispatch if sent by registered post or courier.</li>
+            <li>Customer data is hosted in India.
+Access may occur from other regions strictly for support, operations, or security — all access is logged and controlled.</li>
            </ul>
 
           <h5 className="text-base font-semibold mt-6 mb-3 text-black">14.7. Survival:</h5>

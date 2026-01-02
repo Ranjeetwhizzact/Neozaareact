@@ -199,6 +199,7 @@ const validate = () => {
                 errors[key] ? 'border-red-500 bg-red-400/15' : 'border-zinc-800 bg-zinc-900'
               }`}
             />
+           
           )}
           {errors[key] && <p className="text-red-400 text-xs mt-2">{errors[key]}</p>}
         </div>
@@ -224,15 +225,21 @@ const validate = () => {
             }}
           />
         </div>
+    
       </div>
       {errors.mobile && <p className="text-red-500 text-xs mt-2">{errors.mobile}</p>}
-
+      <div>
+            <div>
+          <input type="checkbox" name='accept' id="accept" width={30} className='px-3' />&nbsp;<label htmlFor="accept" className='text-md' >I have read and agree to the <Link href={'/terms-of-use/'} className='font-semibold'>Terms-of-use</Link>  and  <Link  href={'/privacy-policy'} className='font-semibold'>Privacy Policy</Link>.</label>
+ {errors.accept && <p className="text-red-500 text-xs mt-2">please accepts our tearms and conditions</p>}
+        </div>
+      </div>
       <button
         type="submit"
         disabled={loading}
         className="w-full py-3 bg-gradient-to-r from-orange-400 to-orange-700 text-white font-medium"
       >
-        {loading ? 'Registering...' : 'REGISTER'}
+        {loading ? 'sigin...' : ' SIGIN UP'}
       </button>
     </form>
 
@@ -248,7 +255,7 @@ const validate = () => {
         <div className="w-full md:w-1/2 h-[400px] md:h-auto">
           <div className="h-full w-full bg-cover bg-center relative bg-[url('/assests/loginbg.png')]">
             <div className="flex items-center justify-center h-full px-6 py-10 md:py-0">
-              <p className="text-white font-light text-[26px] md:text-[35px] leading-snug text-center md:text-left font-['CreatoDisplay-Light',_sans-serif] max-w-[90%] md:max-w-[366px]">
+              <p className="text-white dark:text-white font-light text-[26px] md:text-[35px] leading-snug text-center md:text-left font-['CreatoDisplay-Light',_sans-serif] max-w-[90%] md:max-w-[366px]">
                 Access your<br />
                 personalized <br />
                 cloud solutions<br />

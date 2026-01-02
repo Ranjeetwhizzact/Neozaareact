@@ -1,64 +1,33 @@
 "use client";
 import { trackEvent } from "../lib/track";
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation"; // ✅ App Router
+import { useRouter } from "next/navigation";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import Image from "next/image";
-import axios from "axios";
-
-// import { useState } from 'react';
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-
 import Header from "../layouts/Header";
 import Footer from "../layouts/Footer";
-import usePageTracking from "../lib/usePageTracking";
+import Link from "next/link";
+// import { BrowserRouter } from "react-router-dom";
 
-// import PaginationForPages from "../layout/PaginationForPages";
+const ACTION_TYPES = {
+  PRODUCT: 'product',
+  SERVICE: 'service',
+  SOLUTION: 'solutions'
+};
 
-const faqs = [
-  {
-    question: "What is NeoZaar?",
-    answer: "NeoZaar is a cloud-aligned marketplace that helps businesses discover, evaluate, and deploy SaaS products, solution bundles, and managed services — all aligned to AWS MACC or Azure EDP credits.",
-  },
-  {
-    question: "What are Solution Bundles?",
-    answer: "Bundles are curated packages that combine SaaS tools, cloud services, and certified deployment support — tailored for specific outcomes like security, cost optimization, or AI enablement.",
-  },
-  {
-    question: "Can I use my AWS MACC or Azure EDP credits on NeoZaar?",
-    answer: "Yes. Most bundles on NeoZaar are private offer–aligned, which means they can be applied toward your existing AWS MACC or Azure EDP enterprise commitments.",
-  },
-  {
-    question: "How do I request a private offer or custom quote?",
-    answer: "Every bundle includes an option to Request a Custom Offer. You'll be contacted by our team or partner to finalize the pricing and cloud alignment.",
-  },
-  {
-    question: "Who delivers the services in the bundle?",
-    answer: "All services are fulfilled by certified solution partners — including managed service providers (MSPs), security experts, cloud consultants, or NeoZaar's delivery team.",
-  },
-  {
-    question: "How is billing handled?",
-    answer: "NeoZaar offers unified billing for software + services. You'll receive one invoice, and we'll handle all coordination behind the scenes.",
-  },
-  {
-    question: "Is there a free trial or POC option available?",
-    answer: "Some bundles include trial-ready versions or \"Proof of Concept\" (POC) options. Look for \"Try & Deploy\" tags on applicable bundles.",
-  },
-  {
-    question: "What if I need post-deployment support?",
-    answer: "We've got you covered. You can choose add-on managed services or opt for a fully managed bundle with 24x7 support.",
-  },
-  {
-    question: "How do I get started?",
-    answer: "Click \"Explore Bundles\" or \"Request a Recommendation\" — and we'll guide you from selection to deployment.",
-  },
-];
+const ACTION_TYPE_LABELS = {
+  [ACTION_TYPES.PRODUCT]: 'Products',
+  [ACTION_TYPES.SERVICE]: 'Services',
+  [ACTION_TYPES.SOLUTION]: 'Solutions'
+};
 
 export default function Home() {
   const [search, setSearch] = useState('');
+  const [activeTab, setActiveTab] = useState(ACTION_TYPES.PRODUCT);
   const [marketplace, setMarketplace] = useState([]);
   const [openIndex, setOpenIndex] = useState(null);
   const sliderRef = useRef(null);
@@ -72,17 +41,24 @@ export default function Home() {
     pages: 0,
     total: 0,
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState({
+    products: true,
+    services: true,
+    solutions: true,
+    bundles: true,
+    solutionsSlider: true
+  });
   const [bundles, setBundles] = useState([]);
+  const [solutions, setSolutions] = useState([]);
 
-  // Fetch bundles function
+  // Fetch bundles function (for Services section)
   const fetchBundles = async () => {
     try {
       const token = localStorage.getItem('token');
       if (!token) return;
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=customer&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=solutions&action_for=customer&limit=10`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -97,40 +73,60 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching bundles:', error);
     } finally {
-      setLoading(false);
+      setLoading(prev => ({ ...prev, bundles: false }));
+    }
+  };
+
+  // Fetch solutions for the Solutions slider
+  const fetchSolutions = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=customer&limit=8`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+      if (res.ok && data.data) {
+        setSolutions(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching solutions:', error);
+    } finally {
+      setLoading(prev => ({ ...prev, solutionsSlider: false }));
     }
   };
 
   useEffect(() => {
     const checkAuth = () => {
-      // Check if we're in browser environment
       if (typeof window === "undefined") return;
       
-      console.log("🔐 Checking authentication from localStorage...");
       const token = localStorage.getItem("token");
 
       if (!token || token.trim() === "") {
-        console.warn("🚫 No valid token in localStorage. Redirecting to login.");
         router.push('/auth/login');
         return;
       }
-
-      console.log("✅ Token found in localStorage");
     };
 
     checkAuth();
   }, [router]);
 
-  // Fetch marketplace function
-  const fetchMarketplace = async (page = 1, category = categoriesSelect) => {
-    // Check if we're in browser environment
+  // Fetch marketplace function - updated for all three types
+  const fetchMarketplace = async (page = 1, category = categoriesSelect, type = activeTab) => {
     if (typeof window === "undefined") return;
     
     const token = localStorage.getItem('token');
     if (!token) return;
 
     try {
-      let query = `?action_type=product&action_for=customer&page=${page}&limit=${paginations.limit}`;
+      let query = `?action_type=${type}&action_for=customer&page=${page}&limit=${paginations.limit}`;
 
       if (search) {
         query += `&search=${encodeURIComponent(search)}`;
@@ -155,7 +151,6 @@ export default function Home() {
         setMarketplace(data.data || []);
         setPagination(data.pagination || paginations);
         
-        // Scroll to results section when page changes
         if (typeof window !== "undefined") {
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
@@ -164,6 +159,8 @@ export default function Home() {
       }
     } catch (err) {
       console.error('Error loading products:', err);
+    } finally {
+      setLoading(prev => ({ ...prev, [type]: false }));
     }
   };
 
@@ -193,10 +190,22 @@ export default function Home() {
     }
   };
 
+  // Initial data fetch
   useEffect(() => {
-    fetchMarketplace();
-    fetchBundles();
-  }, [search, categoriesSelect]);
+    if (typeof window !== "undefined" && localStorage.getItem("token")) {
+      fetchMarketplace(1, '', activeTab);
+      fetchBundles();
+      fetchSolutions();
+      fetchCategories();
+    }
+  }, []);
+
+  // Fetch data when search, category, or active tab changes
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("token")) {
+      fetchMarketplace(1, categoriesSelect, activeTab);
+    }
+  }, [search, categoriesSelect, activeTab]);
 
   useEffect(() => {
     // Auto-scrolling slider effect
@@ -225,11 +234,9 @@ export default function Home() {
   const handleCategoryClick = (categoryName) => {
     setMenu(false);
     setCategoriesSelect(categoryName);
-    fetchMarketplace(1, categoryName);
   };
 
   const handleProductClick = (product) => {
-    // Track event
     trackEvent({
       eventType: "PRODUCT_CLICK",
       entityType: "product",
@@ -237,14 +244,47 @@ export default function Home() {
       pageUrl: typeof window !== "undefined" ? window.location.pathname : "/",
     });
 
-    // Navigate
     router.push(`/bundle?productid=${product.id}`);
+  };
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
+  const handlePageChange = (newPage) => {
+    fetchMarketplace(newPage, categoriesSelect, activeTab);
+  };
+
+  // Check if we should show the special sections
+  // UPDATED: Show special sections only when on Products tab AND no search AND no category filter
+  const showSpecialSections = activeTab === ACTION_TYPES.PRODUCT && 
+                              categoriesSelect.length === 0 && 
+                              search.length === 0;
+
+  // RESET ALL FILTERS FUNCTION
+  const handleResetFilters = () => {
+    setSearch('');
+    setCategoriesSelect('');
+    setMenu(false);
+    // Reset to first page when clearing filters
+    fetchMarketplace(1, '', activeTab);
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+  };
+
+  // Handle search submission
+  const handleSearchSubmit = () => {
+    fetchMarketplace(1, categoriesSelect, activeTab);
   };
 
   return (
     <>
       <Header />
       <div className="max-w-[1920px] m-auto">
+        {/* Hero Section */}
         <section id="hero-section">
           <div className="relative bg-black overflow-hidden w-full min-h-[400px] md:h-[553px]">
             <Image
@@ -254,20 +294,19 @@ export default function Home() {
               className="absolute inset-0 w-full h-full object-cover"
               priority
             />
-
             <div className="absolute text-white font-['CreatoDisplay-LightItalic',_sans-serif] italic font-light text-lg sm:text-2xl md:text-4xl lg:text-[50px] md:leading-[50px] top-12 sm:top-[118px] left-4 sm:left-[104px] max-w-[90%] sm:max-w-none">
               Curated Cloud <br />
               Bundles to Accelerate
               <br />
               Transformation & Maximize ROI
             </div>
-
             <div className="absolute text-neutral-400 font-text-sm-regular-font-family font-text-sm-regular-font-weight text-xs sm:text-sm md:text-base lg:text-[16px] mt-4 top-[180px] sm:top-[309px] left-4 sm:left-[100px] w-[90%] sm:w-[440px]">
               Combine trusted cloud infrastructure from AWS, Azure, and Google Cloud with ready-to-deploy solutions from global ISVs like Zscaler, Acronis, Databricks, and Rubrik — all in one seamless experience.
             </div>
           </div>
         </section>
 
+        {/* Search Section */}
         <section id="search-section">
           <div className="w-full bg-white">
             <div className="flex items-center gap-2 px-4 py-3 max-w-[1400px] mx-auto">
@@ -295,14 +334,17 @@ export default function Home() {
                 <div className="relative flex items-center h-[68px] px-6 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus-within:border-blue-500 transition-colors">
                   <input
                     type="search"
-                    placeholder="Search Product"
+                    placeholder="Search across Products, Services & Solutions"
                     value={search}
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={handleSearchChange}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
                     className="flex-1 text-gray-600 text-base placeholder:text-gray-400 outline-none bg-transparent"
                   />
                   
-                  {/* Search Icon */}
-                  <button className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors">
+                  <button 
+                    onClick={handleSearchSubmit}
+                    className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                  >
                     <svg
                       width="22"
                       height="22"
@@ -325,18 +367,28 @@ export default function Home() {
               <div className="relative">
                 <button
                   onClick={() => setMenu(!menu)}
-                  className="flex items-center gap-3 h-[68px] px-8 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 hover:bg-gray-50 transition-all group"
+                  className="flex items-center gap-3 h-[68px] text-black px-8 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 hover:bg-gray-50 transition-all group"
                 >
-                  {/* Hamburger Menu Icon */}
                   <div className="flex flex-col gap-[5px]">
                     <span className="w-5 h-[2px] bg-gray-800 rounded-full transition-all group-hover:w-6"></span>
                     <span className="w-5 h-[2px] bg-gray-800 rounded-full"></span>
                     <span className="w-5 h-[2px] bg-gray-800 rounded-full transition-all group-hover:w-6"></span>
                   </div>
-                  
-                  <span className="text-gray-800 text-base font-semibold whitespace-nowrap">
-                    Categories
+
+                  <span className={`text-base font-semibold whitespace-nowrap transition-colors text-black`}>
+                    {categoriesSelect || "Categories"}
                   </span>
+                  
+                  {categoriesSelect && (
+                    <svg 
+                      className="w-4 h-4 text-black" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
                 </button>
 
                 {/* Dropdown Menu */}
@@ -356,12 +408,70 @@ export default function Home() {
                   </div>
                 )}
               </div>
+
+              {/* RESET FILTERS BUTTON - NEW */}
+              {(search || categoriesSelect) && (
+                <button
+                  onClick={handleResetFilters}
+                  className="flex items-center gap-2 h-[68px] px-6 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 hover:bg-gray-50 transition-all text-gray-600 font-medium whitespace-nowrap"
+                >
+                  <svg 
+                    width="18" 
+                    height="18" 
+                    viewBox="0 0 24 24" 
+                    fill="none" 
+                    stroke="currentColor" 
+                    strokeWidth="2"
+                    className="text-gray-500"
+                  >
+                    <path d="M3 6h18M7 12h10M10 18h4" />
+                    <circle cx="18" cy="6" r="2" />
+                    <circle cx="6" cy="12" r="2" />
+                    <circle cx="14" cy="18" r="2" />
+                  </svg>
+                  Reset Filters
+                </button>
+              )}
             </div>
+
+            {/* Search info text */}
+            {search && (
+              <div className="max-w-[1400px] mx-auto px-4 mt-2">
+                <p className="text-sm text-gray-500">
+                  Searching for <span className="font-medium text-gray-700">{search}</span> across all {Object.values(ACTION_TYPE_LABELS).join(', ')}
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Industry Specific Bundle Section - Only show when no search/filter */}
-        {categoriesSelect.length === 0 && search.length === 0 && (
+        {/* Tabs Section */}
+        <section id="tabs-section" className="w-11/12 mx-auto mt-8">
+          <div className="flex border-b border-gray-200">
+            {Object.entries(ACTION_TYPE_LABELS).map(([key, label]) => (
+              <button
+                key={key}
+                onClick={() => handleTabClick(key)}
+                className={`px-8 py-3 font-medium text-sm sm:text-base ${
+                  activeTab === key
+                    ? 'border-b-2 border-blue-600 text-blue-600'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {label}
+                {/* Show count if there's a search */}
+                {search && marketplace.length > 0 && (
+                  <span className="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">
+                    {marketplace.length}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {/* Industry Specific Bundle Section - Only show when on Products tab AND no search/filter */}
+        {showSpecialSections && (
           <section id="industry_specific_bundle_section">
             <div className="w-11/12 m-auto mt-20">
               <div className="max-w-[400px]">
@@ -396,135 +506,125 @@ export default function Home() {
                   1600: { slidesPerView: 4 },
                 }}
               >
-             <SwiperSlide>
-                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
-
-                  <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
-                    <Image
-                      src="/assests/HealthcareDataPatientManagementKit.webp"
-                      alt="Kit Icon"
-                      width={35}
-                      height={35}
-                      className="relative  z-10"
-                    />
-                  </div>
-
-                  <div className=" flex items-center p-6">
-                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Healthcare Data & Patient Management Kit
+                <SwiperSlide>
+                  <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                    <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
+                      <Image
+                        src="/assests/HealthcareDataPatientManagementKit.webp"
+                        alt="Kit Icon"
+                        width={35}
+                        height={35}
+                        className="relative z-10"
+                      />
+                    </div>
+                    <div className="flex items-center p-6">
+                      <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                        Healthcare Data & Patient Management Kit
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
-
-                  <div className="bg-zinc-100 flex items-center justify-center aspect-square w-[127px] h-[127px] relative">
-                    <Image
-                      src="/assests/SmartFactoryModernizationAccelerator.webp"
-                      alt="Kit Icon"
-                      width={35}
-                      height={35}
-                      className="relative  z-10"
-                    />
-                  </div>
-
-                  <div className=" flex items-center p-6">
-                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Smart Factory & Modernization Accelerator
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                    <div className="bg-zinc-100 flex items-center justify-center aspect-square w-[127px] h-[127px] relative">
+                      <Image
+                        src="/assests/SmartFactoryModernizationAccelerator.webp"
+                        alt="Kit Icon"
+                        width={35}
+                        height={35}
+                        className="relative z-10"
+                      />
+                    </div>
+                    <div className="flex items-center p-6">
+                      <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                        Smart Factory & Modernization Accelerator
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
-
-                  <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
-                    <Image
-                      src="/assests/RegulatoryComplianceAuditReadinessToolkit.webp"
-                      alt="Kit Icon"
-                      width={35}
-                      height={35}
-                      className="relative  z-10"
-                    />
-                  </div>
-
-
-                  <div className=" flex items-center p-6">
-                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Regulatory Compliance & Audit Readiness Toolkit
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                    <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
+                      <Image
+                        src="/assests/RegulatoryComplianceAuditReadinessToolkit.webp"
+                        alt="Kit Icon"
+                        width={35}
+                        height={35}
+                        className="relative z-10"
+                      />
+                    </div>
+                    <div className="flex items-center p-6">
+                      <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                        Regulatory Compliance & Audit Readiness Toolkit
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-
-              <SwiperSlide>
-                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
-                  <div className="bg-zinc-100 flex  items-center justify-center aspect-square w-[127px] h-[127px] relative">
-                    <Image
-                      src="/assests/hybridlearning.webp"
-                      alt="Kit Icon"
-                      width={35}
-                      height={35}
-                      className="relative  z-10"
-                    />
-                  </div>
-
-                  <div className=" flex items-center p-6">
-                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Hybrid Learning Stack
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                    <div className="bg-zinc-100 flex items-center justify-center aspect-square w-[127px] h-[127px] relative">
+                      <Image
+                        src="/assests/hybridlearning.webp"
+                        alt="Kit Icon"
+                        width={35}
+                        height={35}
+                        className="relative z-10"
+                      />
+                    </div>
+                    <div className="flex items-center p-6">
+                      <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                        Hybrid Learning Stack
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-              <SwiperSlide>
-                <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
-                  <div className="bg-zinc-100 flex items-center  aspect-square justify-center w-[127px] h-[127px] relative">
-                    <Image
-                      src="/assests/EmployeeLifecycleComplianceKitVisitorCheck.inZohoPeoplePOSHcompliance.webp"
-                      alt="Kit Icon"
-                      width={35}
-                      height={35}
-                      className="relative  z-10"
-                    />
-                  </div>
-
-                  <div className=" flex items-center p-6">
-                    <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
-                      Employee Lifecycle + Compliance Kit
+                </SwiperSlide>
+                <SwiperSlide>
+                  <div className="bg-white border border-zinc-200 h-[127px] w-[400px] relative overflow-hidden flex">
+                    <div className="bg-zinc-100 flex items-center aspect-square justify-center w-[127px] h-[127px] relative">
+                      <Image
+                        src="/assests/EmployeeLifecycleComplianceKitVisitorCheck.inZohoPeoplePOSHcompliance.webp"
+                        alt="Kit Icon"
+                        width={35}
+                        height={35}
+                        className="relative z-10"
+                      />
+                    </div>
+                    <div className="flex items-center p-6">
+                      <div className="text-black text-[20px] sm:text-[22px] md:text-[25px] font-normal">
+                        Employee Lifecycle + Compliance Kit
+                      </div>
                     </div>
                   </div>
-                </div>
-              </SwiperSlide>
-
-                
-                {/* ... other SwiperSlides ... */}
+                </SwiperSlide>
               </Swiper>
             </div>
           </section>
         )}
 
-        {/* Goal Oriented Bundle Section - Only show when no search/filter */}
-        {categoriesSelect.length === 0 && search.length === 0 && (
+        {/* Goal Oriented Bundle Section (Solutions) - Only show when on Products tab AND no search/filter */}
+        {showSpecialSections && (
           <section id="goal_oriented_bundle_section">
-            <div className="w-11/12 m-auto mt-18">
-              <div className="max-w-[400px]">
-                <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal">
-                  Goal-Oriented Bundles
+            <div className="w-11/12 m-auto mt-20 flex flex-wrap lg:flex-nowrap justify-between">
+              <div className="flex w-full flex-wrap lg:flex-nowrap justify-between"> 
+                <div className="max-w-[400px]">
+                  <div>
+                    <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal">
+                      Solution
+                    </div>
+                    <p className="dark:text-black mb-2">
+                      Curated bundles built to achieve real outcomes
+                    </p>
+                  </div>
                 </div>
-                <p className="dark:text-black mb-2">
-                  Focused on outcomes — not industries.
-                </p>
-                <div className="text-neutral-500 text-sm sm:text-base">
-                  These bundles solve cross-industry challenges like cost optimization,
-                  AI enablement, security hardening, and faster go-to-market.
+                <div>
+                  <Link href="/solution-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
                 </div>
               </div>
             </div>
 
             <div className="w-11/12 m-auto">
-              {loading ? (
-                <div className="text-center py-10">Loading bundles...</div>
+              {loading.bundles ? (
+                <div className="text-center py-10">Loading solutions...</div>
               ) : (
                 <Swiper
                   modules={[Autoplay]}
@@ -546,20 +646,18 @@ export default function Home() {
                   {bundles.map((item, index) => (
                     <SwiperSlide key={index}>
                       <div 
-                        className=" bg-zinc-50 border border-zinc-200  h-[400px] overflow-hidden cursor-pointer w-full max-w-[295px]"
+                        className="bg-zinc-50 border border-zinc-200 h-[400px] overflow-hidden cursor-pointer w-full max-w-[295px]"
                         onClick={() => handleProductClick(item)}
                       >
                         <div className="h-64 relative w-full">
-
-                        <Image
-                          src={item.image_url || "/image/acronis.png"}
-                          alt={item.title || "Bundle"}
-                          fill
-                          className="object-cover"
-                        />
+                          <Image
+                            src={item.image_url || "/brand-log/neozaardefault.jpg"}
+                            alt={item.title || "Service"}
+                            fill
+                            className="object-cover"
+                          />
                         </div>
-                        <div className="" />
-                        <div className="relative z-10 p-4 text-white  flex flex-col justify-end">
+                        <div className="relative z-10 p-4 text-white flex flex-col justify-end">
                           <div className="text-lg text-black font-semibold mb-2 line-clamp-2">
                             {item.title}
                           </div>
@@ -576,59 +674,192 @@ export default function Home() {
           </section>
         )}
 
-        {/* Trending Bundle Section */}
-        <section id="trending_bundle_section" className={`${search.length > 0 || categoriesSelect.length > 0 ? "my-30" : ""}`}>
-          {categoriesSelect.length === 0 && search.length === 0 && (
-            <div className="w-11/12 m-auto mt-20">
+        {/* Services Section - Only show when on Products tab AND no search/filter */}
+        {showSpecialSections && (
+          <section id="solutions_section" className="mt-20">
+            <div className="w-11/12 m-auto flex flex-wrap lg:flex-nowrap justify-between">
               <div className="max-w-[400px]">
-                <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal">
-                  Popular & Trending Bundles
+                <div>
+                  <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal">
+                    Service
+                  </div>
+                  <p className="dark:text-black mb-2">
+                    Certified experts to design, deploy, and manage.
+                  </p>
                 </div>
-                <div className="text-neutral-500 text-left text-sm sm:text-base">
-                  Ready-to-deploy stacks built with leading ISVs — fully private offer aligned to your AWS MACC or Azure EDP commitments.
+              </div>
+              <div>
+                <Link href="/service-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
+              </div>
+            </div>
+
+            <div className="w-11/12 m-auto">
+              {loading.solutionsSlider ? (
+                <div className="text-center py-10">Loading services...</div>
+              ) : (
+                <Swiper
+                  modules={[Autoplay]}
+                  spaceBetween={20}
+                  loop={true}
+                  grabCursor={true}
+                  speed={5000}
+                  autoplay={{
+                    delay: 0,
+                    disableOnInteraction: false,
+                  }}
+                  breakpoints={{
+                    0: { slidesPerView: 1 },
+                    740: { slidesPerView: 2 },
+                    968: { slidesPerView: 3 },
+                    1024: { slidesPerView: 4 },
+                  }}
+                >
+                  {solutions.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <div 
+                        className="bg-zinc-50 border border-zinc-200 h-[400px] overflow-hidden cursor-pointer w-full max-w-[295px]"
+                        onClick={() => handleProductClick(item)}
+                      >
+                        <div className="h-64 relative w-full">
+                          <Image
+                            src={item.image_url || "/brand-log/neozaardefault.jpg"}
+                            alt={item.title || "Service"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="relative z-10 p-4 text-white flex flex-col justify-end">
+                          <div className="text-lg text-black font-semibold mb-2 line-clamp-2">
+                            {item.title}
+                          </div>
+                          <div className="text-sm text-gray-500 line-clamp-3">
+                            {item.description}
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
+            </div>
+          </section>
+        )}
+
+        {/* Main Results Section - Shows Products/Services/Solutions based on active tab */}
+        <section id="trending_bundle_section" className={`${search.length > 0 || categoriesSelect.length > 0 ? "my-30" : ""}`}>
+          {/* Show different headers based on whether we're showing special sections or filtered results */}
+          {showSpecialSections ? (
+            <div className="w-11/12 m-auto mt-20 flex flex-wrap lg:flex-nowrap justify-between">
+              <div>
+                <div className="max-w-[400px]">
+                  <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal">
+                    Popular & Trending {ACTION_TYPE_LABELS[activeTab]}
+                  </div>
+                  <div className="text-neutral-500 text-left text-sm sm:text-base">
+                    Enterprise-grade SaaS, ready to deploy.
+                  </div>
                 </div>
+              </div>
+              <div>
+                <Link href="/product-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
+              </div>
+            </div>
+          ) : (
+            // Show search results header when filtering or on non-Products tabs
+            <div className="w-11/12 m-auto mt-20">
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    {search ? `Search Results for "${search}"` : `All ${ACTION_TYPE_LABELS[activeTab]}`}
+                    {categoriesSelect && ` in "${categoriesSelect}"`}
+                  </h2>
+                  <p className="text-gray-600 mt-2">
+                    Showing {marketplace.length} {ACTION_TYPE_LABELS[activeTab].toLowerCase()}
+                  </p>
+                </div>
+                
+                {/* Reset button in results section too */}
+                {(search || categoriesSelect) && (
+                  <button
+                    onClick={handleResetFilters}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 6h18M7 12h10M10 18h4" />
+                      <circle cx="18" cy="6" r="2" />
+                      <circle cx="6" cy="12" r="2" />
+                      <circle cx="14" cy="18" r="2" />
+                    </svg>
+                    Clear Filters
+                  </button>
+                )}
               </div>
             </div>
           )}
 
           <div className="w-11/12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto xl:grid-cols-4 gap-5 mt-5">
-            {Array.isArray(marketplace) && marketplace.map((product, index) => (
-              <div
-                key={index}
-                onClick={() => handleProductClick(product)}
-              >
-                <div className="bg-zinc-50 border border-zinc-200 m-auto h-[400px] cursor-pointer w-full max-w-[295px]">
-                  <div className="w-full h-[250px] relative">
-                    <Image
-                      fill
-                      alt={product.title || "Product Image"}
-                      className="w-full h-[256px] object-cover rounded-t"
-                      src={product.image_url || "/image/acronis.png"}
-                    />
-                  </div>
-                  <div className="p-4">
-                    <p className="uppercase text-lg text-black tracking-wider mb-2 line-clamp-2">
-                      {product.title}
-                    </p>
-                    <p className="text-gray-500 leading-snug h-12 overflow-hidden line-clamp-2 mb-3 ">
-                      {product.description}
-                    </p>
-                    <p className="text-blue-600 text-sm font-semibold">
-                      Starting From {product.starting_price}
-                    </p>
+            {Array.isArray(marketplace) && marketplace.length > 0 ? (
+              marketplace.map((product, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleProductClick(product)}
+                >
+                  <div className="bg-zinc-50 border border-zinc-200 m-auto h-[420px] cursor-pointer w-full max-w-[295px]">
+                    <div className="w-full h-[250px] relative">
+                      <Image
+                        fill
+                        alt={product.title || `${ACTION_TYPE_LABELS[activeTab]} Image`}
+                        className="w-full h-[256px] object-cover rounded-t"
+                        src={product.image_url || "/brand-log/neozaardefault.jpg"}
+                      />
+                    </div>
+                    <div className="p-4">
+                      <p className="uppercase text-lg text-black tracking-wider mb-2 line-clamp-2">
+                        {product.title}
+                      </p>
+                      <p className="text-gray-500 leading-snug h-12 overflow-hidden line-clamp-2 mb-3">
+                        {product.description}
+                      </p>
+                      <p className="text-blue-600 text-sm font-semibold">
+                        Starting From &#x20b9;{product.starting_price}
+                      </p>
+                    </div>
                   </div>
                 </div>
+              ))
+            ) : (
+              <div className="col-span-full text-center py-16">
+                <div className="text-gray-400 mb-4">
+                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-semibold text-gray-600 mb-2">No {ACTION_TYPE_LABELS[activeTab]} Found</h3>
+                <p className="text-gray-500 mb-6">
+                  {search 
+                    ? `We couldn't find any ${ACTION_TYPE_LABELS[activeTab].toLowerCase()} matching "${search}"`
+                    : `No ${ACTION_TYPE_LABELS[activeTab].toLowerCase()} available${categoriesSelect ? ` in "${categoriesSelect}"` : ''}`
+                  }
+                </p>
+                {(search || categoriesSelect) && (
+                  <button
+                    onClick={handleResetFilters}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Reset Filters
+                  </button>
+                )}
               </div>
-            ))}
+            )}
           </div>
 
           {/* Pagination Component */}
           {marketplace.length > 0 && (
             <div className="flex justify-center mt-10">
               <button
-                onClick={() => fetchMarketplace(paginations.page - 1)}
+                onClick={() => handlePageChange(paginations.page - 1)}
                 disabled={paginations.page <= 1}
-                className="px-4 py-2 mx-2 border rounded disabled:opacity-50"
+                className="px-4 py-2 mx-2 border rounded disabled:opacity-50 hover:bg-gray-50"
               >
                 Previous
               </button>
@@ -636,9 +867,9 @@ export default function Home() {
                 Page {paginations.page} of {paginations.pages}
               </span>
               <button
-                onClick={() => fetchMarketplace(paginations.page + 1)}
+                onClick={() => handlePageChange(paginations.page + 1)}
                 disabled={paginations.page >= paginations.pages}
-                className="px-4 py-2 mx-2 border rounded disabled:opacity-50"
+                className="px-4 py-2 mx-2 border rounded disabled:opacity-50 hover:bg-gray-50"
               >
                 Next
               </button>
@@ -646,8 +877,8 @@ export default function Home() {
           )}
         </section>
 
-        {/* AI Assistant Section - Only show when no search/filter */}
-        {categoriesSelect.length === 0 && search.length === 0 && (
+        {/* AI Assistant Section - Only show when on Products tab AND no search/filter */}
+        {showSpecialSections && (
           <section className="w-11/12 m-auto bg-cover bg-center rounded-2xl overflow-hidden mt-10 h-[242px] relative">
             <Image
               src="/assests/ask_ai_bg.png"
@@ -684,8 +915,8 @@ export default function Home() {
           </section>
         )}
 
-        {/* Streamline Project Section - Only show when no search/filter */}
-        {categoriesSelect.length === 0 && search.length === 0 && (
+        {/* Streamline Project Section - Only show when on Products tab AND no search/filter */}
+        {showSpecialSections && (
           <section id="streamline_project_section" className="w-11/12 m-auto mt-20">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
               <div className="lg:col-span-4 flex flex-col gap-8">
@@ -735,43 +966,8 @@ export default function Home() {
           </section>
         )}
 
-        {/* FAQ Section - Only show when no search/filter */}
-        {categoriesSelect.length === 0 && search.length === 0 && (
-          <section id="faq_section" className="px-4 sm:px-6 lg:px-20 my-28">
-            <div className="flex flex-col items-center gap-4">
-              <div className="text-gray-900 font-['CreatoDisplay-Medium',_sans-serif] text-2xl sm:text-3xl md:text-4xl font-medium leading-snug tracking-tight">
-                Frequently asked questions
-              </div>
-              <div className="text-gray-500 text-center text-sm sm:text-base md:text-lg leading-relaxed max-w-xl">
-                Not sure what fits best? Share your goals — our team and AI assistant will guide you to the ideal solution.
-              </div>
-              <div className="mt-8 w-full max-w-full sm:max-w-lg md:max-w-2xl">
-                {faqs.map((faq, index) => (
-                  <div key={index} className="border-b-2 border-gray-200">
-                    <div
-                      className="text-gray-900 font-semibold flex justify-between items-center py-6 text-sm sm:text-base md:text-lg cursor-pointer"
-                      onClick={() => toggle(index)}
-                    >
-                      {faq.question}
-                      <Image
-                        src={openIndex === index ? "/assests/minus-icon.png" : "/assests/plus-icon.png"}
-                        alt="Toggle Icon"
-                        width={24}
-                        height={24}
-                        className="w-6 h-6 transition-transform duration-300"
-                      />
-                    </div>
-                    {openIndex === index && (
-                      <div className="text-gray-600 text-sm sm:text-base pb-6">
-                        {faq.answer}
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        {/* FAQ Section - Only show when on Products tab AND no search/filter */}
+  
       </div>
       <Footer />
     </>
