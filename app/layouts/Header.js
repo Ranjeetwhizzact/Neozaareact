@@ -13,12 +13,22 @@ export default function Header() {
   const [isHomePage, setIsHomePage] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userRole, setUserRole] = useState(null);
+  const [userId, setUserId] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Check token from localStorage
   useEffect(() => {
     const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token && token.trim() !== "");
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const role = user?.role_type;
+    const id = user?.id;
+
+    // Check authentication and role
+    const isAuth = !!token && token.trim() !== "";
+    
+    setIsAuthenticated(isAuth);
+    setUserRole(role);
+    setUserId(id);
   }, []);
 
   useEffect(() => {
@@ -62,8 +72,10 @@ export default function Header() {
 
       if (event.data?.type === "LOGOUT") {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setIsAuthenticated(false);
-        // window.location.href = "/auth/login";
+        setUserRole(null);
+        setUserId(null);
       }
     };
 
@@ -75,7 +87,10 @@ export default function Header() {
     const syncLogout = (event) => {
       if (event.key === "logout-event") {
         localStorage.removeItem("token");
+        localStorage.removeItem("user");
         setIsAuthenticated(false);
+        setUserRole(null);
+        setUserId(null);
         router.push("/auth/login");
       }
     };
@@ -97,7 +112,10 @@ export default function Header() {
       });
 
       localStorage.removeItem("token");
+      localStorage.removeItem("user");
       setIsAuthenticated(false);
+      setUserRole(null);
+      setUserId(null);
 
       // broadcast logout
       localStorage.setItem("logout-event", Date.now());
@@ -120,12 +138,12 @@ export default function Header() {
 
   const NAV_LINKS = [
     { href: '/isv-program', label: 'Partner With Us' },
-    // { href: '/auth/register', label: 'ISV Registration' },
-    // { href: '/auth/register', label: 'Customer Registration' },
-   
     { href: '/contact-us', label: 'Contact' },
   ];
 
+  // Check if user is ISV and authenticated
+  const isISVUser = isAuthenticated && userRole === "ISV";
+  
   return (
     <header
       className={`bg-black text-white border-b border-white/10 relative h-20 max-w-[1920px] m-auto ${
@@ -155,15 +173,21 @@ export default function Header() {
         </div>
         
         {isAuthenticated ? (
-          // Show Profile + Marketplace when authenticated
+          // Show Profile + Dashboard + Marketplace (if not ISV) when authenticated
           <div className="flex items-center gap-6 relative" ref={dropdownRef}>
-            <Link href="/market_place">
-              <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
-                Go to marketplace
-              </button>
-            </Link>
-            <div className="h-[40px] w-px bg-white/10" />
-            <button onClick={() => setDropdownOpen((prev) => !prev)}>
+            {/* Show marketplace button only if user is NOT ISV */}
+            {!isISVUser && (
+              <>
+                <Link href="/market_place">
+                  <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
+                    Go to marketplace
+                  </button>
+                </Link>
+                <div className="h-[40px] w-px bg-white/10" />
+              </>
+            )}
+            
+            <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-2">
               <Image
                 src="/image/blank-profile.webp"
                 alt="User"
@@ -171,20 +195,37 @@ export default function Header() {
                 height={32}
                 className="rounded-full cursor-pointer border border-gray-600"
               />
+              <span className="text-sm text-gray-300">ID: {userId}</span>
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-14 w-44 rounded-md bg-gray-800 shadow-lg z-50">
+              <div className="absolute right-0 top-14 w-48 rounded-md bg-gray-800 shadow-lg z-50">
+                <div className="px-4 py-3 border-b border-gray-700">
+                  <div className="text-sm text-gray-300">User ID: {userId}</div>
+                  <div className="text-xs text-gray-400">Role: {userRole}</div>
+                </div>
                 <ul className="py-2 text-base text-white">
                   <li>
                     <Link
-                      href="/profile"
+                      href={`/app/profile/view/${userId}`}
                       className="block px-4 py-3 hover:bg-gray-700 transition"
                       onMouseDown={() => setDropdownOpen(false)}
                     >
                       Profile
                     </Link>
                   </li>
+                  {/* Show Dashboard only for ISV users */}
+                  {isISVUser && (
+                    <li>
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-3 hover:bg-gray-700 transition"
+                        onMouseDown={() => setDropdownOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                    </li>
+                  )}
                   <li>
                     <button
                       onMouseDown={() => {
@@ -235,15 +276,21 @@ export default function Header() {
         </div>
         
         {isAuthenticated ? (
-          // Show Profile + Marketplace when authenticated
+          // Show Profile + Dashboard + Marketplace (if not ISV) when authenticated
           <div className="flex items-center gap-6 relative" ref={dropdownRef}>
-            <Link href="/market_place">
-              <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
-                Go to marketplace
-              </button>
-            </Link>
-            <div className="h-[40px] w-px bg-white/10" />
-            <button onClick={() => setDropdownOpen((prev) => !prev)}>
+            {/* Show marketplace button only if user is NOT ISV */}
+            {!isISVUser && (
+              <>
+                <Link href="/market_place">
+                  <button className="bg-[#F79331] cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition">
+                    Go to marketplace
+                  </button>
+                </Link>
+                <div className="h-[40px] w-px bg-white/10" />
+              </>
+            )}
+            
+            <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-2">
               <Image
                 src="/image/blank-profile.webp"
                 alt="User"
@@ -251,20 +298,37 @@ export default function Header() {
                 height={32}
                 className="rounded-full cursor-pointer border border-gray-600"
               />
+              <span className="text-sm text-gray-300">ID: {userId}</span>
             </button>
 
             {dropdownOpen && (
-              <div className="absolute right-0 top-14 w-44 rounded-md bg-gray-800 shadow-lg z-50">
+              <div className="absolute right-0 top-14 w-48 rounded-md bg-gray-800 shadow-lg z-50">
+                <div className="px-4 py-3 border-b border-gray-700">
+                  <div className="text-sm text-gray-300">User ID: {userId}</div>
+                  <div className="text-xs text-gray-400">Role: {userRole}</div>
+                </div>
                 <ul className="py-2 text-base text-white">
                   <li>
                     <Link
-                      href="/profile"
+                      href={`/app/profile/view/${userId}`}
                       className="block px-4 py-3 hover:bg-gray-700 transition"
                       onMouseDown={() => setDropdownOpen(false)}
                     >
-                      Profile
+                      Profile 
                     </Link>
                   </li>
+                  {/* Show Dashboard only for ISV users */}
+                  {isISVUser && (
+                    <li>
+                      <Link
+                        href="/profile"
+                        className="block px-4 py-3 hover:bg-gray-700 transition"
+                        onMouseDown={() => setDropdownOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                    </li>
+                  )}
                   <li>
                     <button
                       onMouseDown={() => {
@@ -283,11 +347,11 @@ export default function Header() {
         ) : (
           // Show only Login button when not authenticated
           <div className="flex items-center gap-4">
-            {/* <Link href="/auth/login">
+            <Link href="/auth/login">
               <button className="bg-orange-600 cursor-pointer text-sm px-6 py-2 rounded-full hover:bg-orange-700 transition">
                 Login
               </button>
-            </Link> */}
+            </Link>
           </div>
         )}
       </div>
@@ -308,30 +372,47 @@ export default function Header() {
         </Link>
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            // Show user icon when authenticated
+            // Show user info when authenticated
             <div className="relative" ref={dropdownRef}>
-              <button onClick={() => setDropdownOpen((prev) => !prev)}>
+              <button onClick={() => setDropdownOpen((prev) => !prev)} className="flex items-center gap-2">
                 <Image
-                src="/image/blank-profile.webp"
-                alt="User"
-                width={32}
-                height={32}
-                className="rounded-full cursor-pointer border border-gray-600"
-              />
+                  src="/image/blank-profile.webp"
+                  alt="User"
+                  width={32}
+                  height={32}
+                  className="rounded-full cursor-pointer border border-gray-600"
+                />
+                <span className="text-sm text-gray-300">ID: {userId}</span>
               </button>
 
               {dropdownOpen && (
-                <div className="absolute right-0 top-14 w-44 rounded-md bg-gray-800 shadow-lg z-50">
+                <div className="absolute right-0 top-14 w-48 rounded-md bg-gray-800 shadow-lg z-50">
+                  <div className="px-4 py-3 border-b border-gray-700">
+                    <div className="text-sm text-gray-300">User ID: {userId}</div>
+                    <div className="text-xs text-gray-400">Role: {userRole}</div>
+                  </div>
                   <ul className="py-2 text-base text-white">
                     <li>
-                      <Link
-                        href="/profile"
-                        className="block px-4 py-3 hover:bg-gray-700 transition"
-                        onClick={() => setDropdownOpen(false)}
-                      >
-                        Profile
-                      </Link>
+                                        <Link
+                      href={`/app/profile/view/${userId}`}
+                      className="block px-4 py-3 hover:bg-gray-700 transition"
+                      onClick={() => setDropdownOpen(false)}
+                    >
+                      Profile
+                    </Link>
                     </li>
+                    {/* Show Dashboard only for ISV users */}
+                    {isISVUser && (
+                      <li>
+                        <Link
+                          href="/profile"
+                          className="block px-4 py-3 hover:bg-gray-700 transition"
+                          onClick={() => setDropdownOpen(false)}
+                        >
+                          Dashboard
+                        </Link>
+                      </li>
+                    )}
                     <li>
                       <button
                         onClick={() => {
@@ -348,13 +429,11 @@ export default function Header() {
               )}
             </div>
           ) : (
-            <></>
-            // Show login button when not authenticated
-            // <Link href="/auth/login">
-            //   <button className="bg-orange-600 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-orange-700 transition">
-            //     Login
-            //   </button>
-            // </Link>
+            <Link href="/auth/login">
+              <button className="bg-orange-600 cursor-pointer text-sm px-4 py-2 rounded-full hover:bg-orange-700 transition">
+                Login
+              </button>
+            </Link>
           )}
           <button onClick={() => setIsOpen(true)} className="text-white focus:outline-none">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -382,6 +461,12 @@ export default function Header() {
                 </svg>
               </button>
             </div>
+            {isAuthenticated && (
+              <div className="px-6 py-4 border-b border-gray-700">
+                {/* <div className="text-sm text-gray-300">User ID: {userId}</div> */}
+                <div className="text-xs text-gray-400">Role: {userRole}</div>
+              </div>
+            )}
             <nav className="px-6 py-6 space-y-6">
               {NAV_LINKS.map((link) => (
                 <Link
@@ -398,21 +483,23 @@ export default function Header() {
             </nav>
             <div className="px-6 py-4">
               {!isAuthenticated ? (
-                // Show only Login button when not authenticated
+                // Show Login button when not authenticated
                 <div className="mb-3">
-                  {/* <Link href="/auth/login">
+                  <Link href="/auth/login">
                     <button className="bg-orange-600 text-sm px-6 py-2 rounded-full hover:bg-orange-700 transition w-full">
                       Login
                     </button>
-                  </Link> */}
+                  </Link>
                 </div>
               ) : (
-                // Show Marketplace when authenticated
-                <Link href="/market_place">
-                  <button className="bg-[#F79331] text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition w-full mb-3">
-                    Go to marketplace
-                  </button>
-                </Link>
+                // Show Marketplace only if user is NOT ISV
+                !isISVUser && (
+                  <Link href="/market_place">
+                    <button className="bg-[#F79331] text-sm px-6 py-2 rounded-full hover:bg-zinc-700 transition w-full mb-3">
+                      Go to marketplace
+                    </button>
+                  </Link>
+                )
               )}
             </div>
           </div>
