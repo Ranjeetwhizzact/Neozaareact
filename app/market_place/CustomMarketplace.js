@@ -108,10 +108,14 @@ export default function Home() {
       if (typeof window === "undefined") return;
       
       const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user"));
+const userRole = user?.role_type;
 
       if (!token || token.trim() === "") {
         router.push('/auth/login');
         return;
+      }else if(userRole === "ISV"){
+        router.push('/');
       }
     };
 
@@ -261,7 +265,6 @@ export default function Home() {
                               categoriesSelect.length === 0 && 
                               search.length === 0;
 
-  // RESET ALL FILTERS FUNCTION
   const handleResetFilters = () => {
     setSearch('');
     setCategoriesSelect('');
