@@ -85,7 +85,7 @@ export default function Home() {
         return false;
       }
 
-      // Case 4: Check user role - ISV should not access marketplace
+
       const userRole = user?.role_type;
       if (userRole === "ISV") {
         console.log("ISV role not allowed");
@@ -454,16 +454,45 @@ export default function Home() {
                               search.length === 0;
 
   // Show loading state while checking authentication
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Verifying authentication...</p>
+// Show loading state while checking authentication
+if (!isAuthenticated) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="text-center">
+        <div className="mb-6">
+          <div className="relative mx-auto w-24 h-24 flex items-center justify-center">
+            {/* Animated loader image */}
+            <Image
+              src="/assests/loaderlogo-neozaar.gif" 
+              alt="Loading..." 
+              width={80}
+              height={80}
+              className="animate-pulse"
+            />
+            {/* Optional spinner overlay */}
+            {/* <div className="absolute inset-0 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div> */}
+          </div>
         </div>
+        
+        <h3 className="text-xl font-semibold text-gray-800 mb-2">
+          Welcome to NeoZaar Marketplace
+        </h3>
+        <p className="text-gray-600 max-w-md mx-auto">
+          Please wait while we verify your authentication...
+        </p>
+        
+        {/* Optional progress bar */}
+        <div className="mt-6 w-64 mx-auto bg-gray-200 rounded-full h-2">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full animate-pulse"></div>
+        </div>
+        
+        <p className="mt-4 text-sm text-gray-500">
+          Securely connecting you to the marketplace
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
 if(isAuthenticated){
 
@@ -788,6 +817,259 @@ if(isAuthenticated){
           </section>
         )}
 
+              <section id="trending_bundle_section" className={`${search.length > 0 || categoriesSelect.length > 0 ? "my-30" : ""}`}>
+          {/* Show different headers based on whether we're showing special sections or filtered results */}
+          {showSpecialSections ? (
+            <div className="w-11/12 m-auto mt-20 flex flex-wrap lg:flex-nowrap justify-between">
+              <div>
+                <div className="max-w-[400px]">
+                  <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal">
+                    Popular & Trending Products
+                  </div>
+                  <div className="text-neutral-500 text-left text-sm sm:text-base">
+                    Enterprise-grade SaaS, ready to deploy.
+                  </div>
+                </div>
+              </div>
+              <div>
+                <Link href="/product-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
+              </div>
+            </div>
+          ) : (
+            // Show search results header when filtering or on non-Products tabs
+            <div className="w-11/12 m-auto mt-20">
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-800">
+                    {search ? `Search Results for "${search}"` : `All ${ACTION_TYPE_LABELS[activeTab]}`}
+                    {categoriesSelect && ` in "${categoriesSelect}"`}
+                  </h2>
+                  <p className="text-gray-600 mt-2">
+                    Showing {marketplace.length} {ACTION_TYPE_LABELS[activeTab].toLowerCase()}
+                  </p>
+                </div>
+                
+                {/* Reset button in results section too */}
+                {(search || categoriesSelect) && (
+                  <button
+                    onClick={handleResetFilters}
+                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M3 6h18M7 12h10M10 18h4" />
+                      <circle cx="18" cy="6" r="2" />
+                      <circle cx="6" cy="12" r="2" />
+                      <circle cx="14" cy="18" r="2" />
+                    </svg>
+                    Clear Filters
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+<div className="w-11/12 m-auto mt-5">
+  {Array.isArray(marketplace) && marketplace.length > 0 ? (
+    <Swiper
+      modules={[ Autoplay]} // Removed Navigation module
+      spaceBetween={20}
+      slidesPerView={1}
+      speed={800}
+      pagination={{
+        clickable: false,
+        dynamicBullets: false,
+      }}
+      autoplay={{
+        delay: 3000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+      }}
+      loop={marketplace.length > 4}
+      grabCursor={true}
+      breakpoints={{
+        320: { 
+          slidesPerView: 1,
+          spaceBetween: 15 
+        },
+        640: { 
+          slidesPerView: 2,
+          spaceBetween: 15 
+        },
+        768: { 
+          slidesPerView: 2,
+          spaceBetween: 18 
+        },
+        1024: { 
+          slidesPerView: 3,
+          spaceBetween: 20 
+        },
+        1280: { 
+          slidesPerView: 4,
+          spaceBetween: 20 
+        },
+        1536: { 
+          slidesPerView: 4,
+          spaceBetween: 24 
+        },
+      }}
+      className="relative"
+    >
+      {marketplace.map((product, index) => (
+        <SwiperSlide key={index}>
+          <div
+            onClick={() => handleProductClick(product)}
+            className="h-full"
+          >
+            <div className="bg-zinc-50 border border-zinc-200 h-[420px] cursor-pointer w-full max-w-[295px] mx-auto hover:shadow-xl transition-all duration-500 hover:scale-[1.02]">
+              <div className="w-full h-[250px] relative overflow-hidden">
+                <Image
+                  fill
+                  alt={product.title || `${ACTION_TYPE_LABELS[activeTab]} Image`}
+                  className="w-full h-[256px] object-cover rounded-t hover:scale-110 transition-transform duration-700"
+                  src={product.image_url || "/brand-log/neozaardefault.jpg"}
+                />
+              </div>
+              <div className="p-4">
+                <p className="uppercase text-lg text-black tracking-wider mb-2 line-clamp-2 font-semibold">
+                  {product.title}
+                </p>
+                <p className="text-gray-500 leading-snug h-12 overflow-hidden line-clamp-2 mb-3 text-sm">
+                  {product.description}
+                </p>
+                <p className="text-blue-600 text-sm font-semibold">
+                  Starting From &#x20b9;{product.starting_price}
+                </p>
+              </div>
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+      
+      {/* Removed navigation buttons */}
+      
+      {/* Pagination dots with smooth animation */}
+      {/* <div className="swiper-pagination !relative !mt-8 !bottom-0"></div> */}
+    </Swiper>
+  ) : (
+    <div className="text-center py-16">
+      <div className="text-gray-400 mb-4">
+        <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h3 className="text-xl font-semibold text-gray-600 mb-2">No {ACTION_TYPE_LABELS[activeTab]} Found</h3>
+      <p className="text-gray-500 mb-6">
+        {search 
+          ? `We couldn't find any ${ACTION_TYPE_LABELS[activeTab].toLowerCase()} matching "${search}"`
+          : `No ${ACTION_TYPE_LABELS[activeTab].toLowerCase()} available${categoriesSelect ? ` in "${categoriesSelect}"` : ''}`
+        }
+      </p>
+      {(search || categoriesSelect) && (
+        <button
+          onClick={handleResetFilters}
+          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          Reset Filters
+        </button>
+      )}
+    </div>
+  )}
+</div>
+
+          {/* Pagination Component */}
+          {/* {marketplace.length > 0 && (
+            <div className="flex justify-center mt-10">
+              <button
+                onClick={() => handlePageChange(paginations.page - 1)}
+                disabled={paginations.page <= 1}
+                className="px-4 py-2 mx-2 border rounded disabled:opacity-50 hover:bg-gray-50"
+              >
+                Previous
+              </button>
+              <span className="px-4 py-2">
+                Page {paginations.page} of {paginations.pages}
+              </span>
+              <button
+                onClick={() => handlePageChange(paginations.page + 1)}
+                disabled={paginations.page >= paginations.pages}
+                className="px-4 py-2 mx-2 border rounded disabled:opacity-50 hover:bg-gray-50"
+              >
+                Next
+              </button>
+            </div>
+          )} */}
+        </section>
+
+               {/* Services Section - Only show when on Products tab AND no search/filter */}
+        {showSpecialSections && (
+          <section id="solutions_section" className="mt-20">
+            <div className="w-11/12 m-auto flex flex-wrap lg:flex-nowrap justify-between">
+              <div className="max-w-[400px]">
+                <div>
+                  <div className="text-black font-semibold text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] ">
+                    Services
+                  </div>
+                  <p className="dark:text-black mb-2">
+                    Certified experts to design, deploy, and manage.
+                  </p>
+                </div>
+              </div>
+              <div>
+                <Link href="/service-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
+              </div>
+            </div>
+
+            <div className="w-11/12 m-auto">
+              {loading.solutionsSlider ? (
+                <div className="text-center py-10">Loading services...</div>
+              ) : (
+                <Swiper
+                  modules={[Autoplay]}
+                  spaceBetween={20}
+                  loop={true}
+                  grabCursor={true}
+                  speed={5000}
+                  autoplay={{
+                    delay: 0,
+                    disableOnInteraction: false,
+                  }}
+                  breakpoints={{
+                    0: { slidesPerView: 1 },
+                    740: { slidesPerView: 2 },
+                    968: { slidesPerView: 3 },
+                    1024: { slidesPerView: 4 },
+                  }}
+                >
+                  {solutions.map((item, index) => (
+                    <SwiperSlide key={index}>
+                      <div 
+                        className="bg-zinc-50 border border-zinc-200 h-[400px] overflow-hidden cursor-pointer w-full max-w-[295px]"
+                        onClick={() => handleProductClick(item)}
+                      >
+                        <div className="h-64 relative w-full">
+                          <Image
+                            src={item.image_url || "/brand-log/neozaardefault.jpg"}
+                            alt={item.title || "Service"}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="relative z-10 p-4 text-white flex flex-col justify-end">
+                          <div className="text-lg text-black font-semibold mb-2 line-clamp-2">
+                            {item.title}
+                          </div>
+                          <div className="text-sm text-gray-500 line-clamp-3">
+                            {item.description}
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              )}
+            </div>
+          </section>
+        )}
+
         {/* Goal Oriented Bundle Section (Solutions) - Only show when on Products tab AND no search/filter */}
         {showSpecialSections && (
           <section id="goal_oriented_bundle_section">
@@ -861,208 +1143,9 @@ if(isAuthenticated){
           </section>
         )}
 
-        {/* Services Section - Only show when on Products tab AND no search/filter */}
-        {showSpecialSections && (
-          <section id="solutions_section" className="mt-20">
-            <div className="w-11/12 m-auto flex flex-wrap lg:flex-nowrap justify-between">
-              <div className="max-w-[400px]">
-                <div>
-                  <div className="text-black font-semibold text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] ">
-                    Services
-                  </div>
-                  <p className="dark:text-black mb-2">
-                    Certified experts to design, deploy, and manage.
-                  </p>
-                </div>
-              </div>
-              <div>
-                <Link href="/service-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
-              </div>
-            </div>
-
-            <div className="w-11/12 m-auto">
-              {loading.solutionsSlider ? (
-                <div className="text-center py-10">Loading services...</div>
-              ) : (
-                <Swiper
-                  modules={[Autoplay]}
-                  spaceBetween={20}
-                  loop={true}
-                  grabCursor={true}
-                  speed={5000}
-                  autoplay={{
-                    delay: 0,
-                    disableOnInteraction: false,
-                  }}
-                  breakpoints={{
-                    0: { slidesPerView: 1 },
-                    740: { slidesPerView: 2 },
-                    968: { slidesPerView: 3 },
-                    1024: { slidesPerView: 4 },
-                  }}
-                >
-                  {solutions.map((item, index) => (
-                    <SwiperSlide key={index}>
-                      <div 
-                        className="bg-zinc-50 border border-zinc-200 h-[400px] overflow-hidden cursor-pointer w-full max-w-[295px]"
-                        onClick={() => handleProductClick(item)}
-                      >
-                        <div className="h-64 relative w-full">
-                          <Image
-                            src={item.image_url || "/brand-log/neozaardefault.jpg"}
-                            alt={item.title || "Service"}
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                        <div className="relative z-10 p-4 text-white flex flex-col justify-end">
-                          <div className="text-lg text-black font-semibold mb-2 line-clamp-2">
-                            {item.title}
-                          </div>
-                          <div className="text-sm text-gray-500 line-clamp-3">
-                            {item.description}
-                          </div>
-                        </div>
-                      </div>
-                    </SwiperSlide>
-                  ))}
-                </Swiper>
-              )}
-            </div>
-          </section>
-        )}
-
+     
         {/* Main Results Section - Shows Products/Services/Solutions based on active tab */}
-        <section id="trending_bundle_section" className={`${search.length > 0 || categoriesSelect.length > 0 ? "my-30" : ""}`}>
-          {/* Show different headers based on whether we're showing special sections or filtered results */}
-          {showSpecialSections ? (
-            <div className="w-11/12 m-auto mt-20 flex flex-wrap lg:flex-nowrap justify-between">
-              <div>
-                <div className="max-w-[400px]">
-                  <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal">
-                    Popular & Trending Products
-                  </div>
-                  <div className="text-neutral-500 text-left text-sm sm:text-base">
-                    Enterprise-grade SaaS, ready to deploy.
-                  </div>
-                </div>
-              </div>
-              <div>
-                <Link href="/product-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2  font-bold text-white shadow rounded-full">See more..</Link>
-              </div>
-            </div>
-          ) : (
-            // Show search results header when filtering or on non-Products tabs
-            <div className="w-11/12 m-auto mt-20">
-              <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800">
-                    {search ? `Search Results for "${search}"` : `All ${ACTION_TYPE_LABELS[activeTab]}`}
-                    {categoriesSelect && ` in "${categoriesSelect}"`}
-                  </h2>
-                  <p className="text-gray-600 mt-2">
-                    Showing {marketplace.length} {ACTION_TYPE_LABELS[activeTab].toLowerCase()}
-                  </p>
-                </div>
-                
-                {/* Reset button in results section too */}
-                {(search || categoriesSelect) && (
-                  <button
-                    onClick={handleResetFilters}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-gray-700"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M3 6h18M7 12h10M10 18h4" />
-                      <circle cx="18" cy="6" r="2" />
-                      <circle cx="6" cy="12" r="2" />
-                      <circle cx="14" cy="18" r="2" />
-                    </svg>
-                    Clear Filters
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-
-          <div className="w-11/12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 m-auto xl:grid-cols-4 gap-5 mt-5">
-            {Array.isArray(marketplace) && marketplace.length > 0 ? (
-              marketplace.map((product, index) => (
-                <div
-                  key={index}
-                  onClick={() => handleProductClick(product)}
-                >
-                  <div className="bg-zinc-50 border border-zinc-200 m-auto h-[420px] cursor-pointer w-full max-w-[295px]">
-                    <div className="w-full h-[250px] relative">
-                      <Image
-                        fill
-                        alt={product.title || `${ACTION_TYPE_LABELS[activeTab]} Image`}
-                        className="w-full h-[256px] object-cover rounded-t"
-                        src={product.image_url || "/brand-log/neozaardefault.jpg"}
-                      />
-                    </div>
-                    <div className="p-4">
-                      <p className="uppercase text-lg text-black tracking-wider mb-2 line-clamp-2">
-                        {product.title}
-                      </p>
-                      <p className="text-gray-500 leading-snug h-12 overflow-hidden line-clamp-2 mb-3">
-                        {product.description}
-                      </p>
-                      <p className="text-blue-600 text-sm font-semibold">
-                        Starting From &#x20b9;{product.starting_price}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="col-span-full text-center py-16">
-                <div className="text-gray-400 mb-4">
-                  <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-gray-600 mb-2">No {ACTION_TYPE_LABELS[activeTab]} Found</h3>
-                <p className="text-gray-500 mb-6">
-                  {search 
-                    ? `We couldn't find any ${ACTION_TYPE_LABELS[activeTab].toLowerCase()} matching "${search}"`
-                    : `No ${ACTION_TYPE_LABELS[activeTab].toLowerCase()} available${categoriesSelect ? ` in "${categoriesSelect}"` : ''}`
-                  }
-                </p>
-                {(search || categoriesSelect) && (
-                  <button
-                    onClick={handleResetFilters}
-                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    Reset Filters
-                  </button>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Pagination Component */}
-          {marketplace.length > 0 && (
-            <div className="flex justify-center mt-10">
-              <button
-                onClick={() => handlePageChange(paginations.page - 1)}
-                disabled={paginations.page <= 1}
-                className="px-4 py-2 mx-2 border rounded disabled:opacity-50 hover:bg-gray-50"
-              >
-                Previous
-              </button>
-              <span className="px-4 py-2">
-                Page {paginations.page} of {paginations.pages}
-              </span>
-              <button
-                onClick={() => handlePageChange(paginations.page + 1)}
-                disabled={paginations.page >= paginations.pages}
-                className="px-4 py-2 mx-2 border rounded disabled:opacity-50 hover:bg-gray-50"
-              >
-                Next
-              </button>
-            </div>
-          )}
-        </section>
+    
 
         {/* AI Assistant Section - Only show when on Products tab AND no search/filter */}
         {showSpecialSections && (
