@@ -144,10 +144,18 @@ export default function Header() {
   };
 
   // Function to handle profile click - opens external URL
-  const handleProfileClick = () => {
-    const profileUrl = `${getAppBaseUrl()}/app/profile/view/${userId}`;
-    window.open(profileUrl, '_blank', 'noopener,noreferrer');
-  };
+const handleProfileClick = () => {
+  if (!userId) {
+    toast.error('User ID not found');
+    return;
+  }
+  
+  const baseUrl = getAppBaseUrl();
+  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+  const profileUrl = `${normalizedBaseUrl}/app/profile/view/${userId}`;
+  console.log('Opening profile URL:', profileUrl); // Debug log
+  window.open(profileUrl, '_blank', 'noopener,noreferrer');
+};
 
   // Function to handle dashboard click - opens external URL
   const handleDashboardClick = () => {
