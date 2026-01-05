@@ -11,7 +11,7 @@ import "swiper/css/pagination";
 import Header from "../layouts/Header";
 import Footer from "../layouts/Footer";
 import Link from "next/link";
-// import { BrowserRouter } from "react-router-dom";
+import api from "../lib/api";
 
 const ACTION_TYPES = {
   PRODUCT: 'product',
@@ -50,12 +50,141 @@ export default function Home() {
   });
   const [bundles, setBundles] = useState([]);
   const [solutions, setSolutions] = useState([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Fetch bundles function (for Services section)
+  // ==================== AUTHENTICATION LOGIC ====================
+  const checkAuthentication = () => {
+    if (typeof window === "undefined") return false;
+
+    try {
+      const token = localStorage.getItem("token");
+      const userRaw = localStorage.getItem("user");
+      const tokenExpiry = localStorage.getItem("tokenExpiry");
+
+      // Case 1: No token
+      if (!token || token.trim() === "") {
+        console.log("No token found");
+        return false;
+      }
+
+      // Case 2: Check token expiry if stored
+      if (tokenExpiry) {
+        const now = Date.now();
+        if (now > parseInt(tokenExpiry)) {
+          console.log("Token expired");
+          return false;
+        }
+      }
+
+      // Case 3: Parse user data
+      let user = null;
+      try {
+        user = userRaw ? JSON.parse(userRaw) : null;
+      } catch (e) {
+        console.error("Error parsing user data:", e);
+        return false;
+      }
+
+      // Case 4: Check user role - ISV should not access marketplace
+      const userRole = user?.role_type;
+      if (userRole === "ISV") {
+        console.log("ISV role not allowed");
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Authentication check error:", error);
+      return false;
+    }
+  };
+
+  const handleUnauthorized = () => {
+    localStorage.clear();
+    router.replace("/auth/login");
+  };
+
+  // Validate token with API
+  const validateToken = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return false;
+
+      // Optional: Make a lightweight API call to validate token
+      // You can enable this if your backend has a validation endpoint
+      /*
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}auth/validate`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      if (res.status === 401) {
+        return false;
+      }
+      */
+      
+      return true;
+    } catch (error) {
+      console.error("Token validation error:", error);
+      return false;
+    }
+  };
+
+  // Main authentication effect
+  useEffect(() => {
+    const authenticateUser = async () => {
+      if (typeof window === "undefined") return;
+
+      // Check basic authentication
+      const isAuth = checkAuthentication();
+      if (!isAuth) {
+        handleUnauthorized();
+        return;
+      }
+
+      // Optional: Validate token with API
+      const isValidToken = await validateToken();
+      if (!isValidToken) {
+        handleUnauthorized();
+        return;
+      }
+
+      // Authentication successful
+      setIsAuthenticated(true);
+      
+      // Fetch initial data
+      fetchMarketplace(1, '', activeTab);
+      fetchBundles();
+      fetchSolutions();
+      fetchCategories();
+    };
+
+    authenticateUser();
+
+    // Set up token expiry checker
+    const checkTokenExpiry = () => {
+      const expiry = localStorage.getItem('tokenExpiry');
+      if (expiry && Date.now() > parseInt(expiry)) {
+        handleUnauthorized();
+      }
+    };
+
+    // Check token expiry every minute
+    const interval = setInterval(checkTokenExpiry, 60000);
+    
+    return () => clearInterval(interval);
+  }, [router]);
+
+  // ==================== DATA FETCHING FUNCTIONS ====================
   const fetchBundles = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        handleUnauthorized();
+        return;
+      }
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=solutions&action_for=customer&limit=10`,
@@ -66,22 +195,33 @@ export default function Home() {
         }
       );
 
+      // Check for 401 Unauthorized
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
       const data = await res.json();
       if (res.ok && data.data) {
         setBundles(data.data);
       }
     } catch (error) {
       console.error('Error fetching bundles:', error);
+      if (error.message.includes('401') || error.message.includes('Unauthorized')) {
+        handleUnauthorized();
+      }
     } finally {
       setLoading(prev => ({ ...prev, bundles: false }));
     }
   };
 
-  // Fetch solutions for the Solutions slider
   const fetchSolutions = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) return;
+      if (!token) {
+        handleUnauthorized();
+        return;
+      }
 
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=customer&limit=8`,
@@ -92,42 +232,34 @@ export default function Home() {
         }
       );
 
+      // Check for 401 Unauthorized
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
       const data = await res.json();
       if (res.ok && data.data) {
         setSolutions(data.data);
       }
     } catch (error) {
       console.error('Error fetching solutions:', error);
+      if (error.message.includes('401')) {
+        handleUnauthorized();
+      }
     } finally {
       setLoading(prev => ({ ...prev, solutionsSlider: false }));
     }
   };
 
-  useEffect(() => {
-    const checkAuth = () => {
-      if (typeof window === "undefined") return;
-      
-      const token = localStorage.getItem("token");
-const user = JSON.parse(localStorage.getItem("user"));
-const userRole = user?.role_type;
-
-      if (!token || token.trim() === "") {
-        router.push('/auth/login');
-        return;
-      }else if(userRole === "ISV"){
-        router.push('/');
-      }
-    };
-
-    checkAuth();
-  }, [router]);
-
-  // Fetch marketplace function - updated for all three types
   const fetchMarketplace = async (page = 1, category = categoriesSelect, type = activeTab) => {
     if (typeof window === "undefined") return;
     
     const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!token) {
+      handleUnauthorized();
+      return;
+    }
 
     try {
       let query = `?action_type=${type}&action_for=customer&page=${page}&limit=${paginations.limit}`;
@@ -149,6 +281,12 @@ const userRole = user?.role_type;
         }
       );
 
+      // Check for 401 Unauthorized (token expired)
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
+
       const data = await res.json();
 
       if (res.ok) {
@@ -163,27 +301,41 @@ const userRole = user?.role_type;
       }
     } catch (err) {
       console.error('Error loading products:', err);
+      // If it's an authentication error
+      if (err.message.includes('401') || err.message.includes('Unauthorized')) {
+        handleUnauthorized();
+      }
     } finally {
       setLoading(prev => ({ ...prev, [type]: false }));
     }
   };
 
-  // Fetch categories
   const fetchCategories = async () => {
     try {
       if (typeof window === "undefined") return;
 
       const token = localStorage.getItem("token");
+      if (!token) {
+        handleUnauthorized();
+        return;
+      }
+
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}catalog/categories`,
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: token ? `Bearer ${token}` : "",
+            Authorization: `Bearer ${token}`,
           },
         }
       );
+
+      // Check for 401 Unauthorized
+      if (res.status === 401) {
+        handleUnauthorized();
+        return;
+      }
 
       const data = await res.json();
       if (data.data) {
@@ -191,26 +343,25 @@ const userRole = user?.role_type;
       }
     } catch (error) {
       console.log(error);
+      if (error.message.includes('401')) {
+        handleUnauthorized();
+      }
     }
   };
 
-  // Initial data fetch
+  // ==================== INITIAL DATA FETCH ====================
   useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("token")) {
-      fetchMarketplace(1, '', activeTab);
-      fetchBundles();
-      fetchSolutions();
-      fetchCategories();
-    }
+    // Test API call
+    api.get("/marketplace")
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
   }, []);
 
-  // Fetch data when search, category, or active tab changes
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("token")) {
-      fetchMarketplace(1, categoriesSelect, activeTab);
-    }
-  }, [search, categoriesSelect, activeTab]);
-
+  // ==================== AUTO-SCROLLING SLIDER ====================
   useEffect(() => {
     // Auto-scrolling slider effect
     let position = 0;
@@ -231,6 +382,7 @@ const userRole = user?.role_type;
     return () => cancelAnimationFrame(requestId);
   }, []);
 
+  // ==================== EVENT HANDLERS ====================
   const toggle = (index) => {
     setOpenIndex(openIndex === index ? null : index);
   };
@@ -241,6 +393,11 @@ const userRole = user?.role_type;
   };
 
   const handleProductClick = (product) => {
+    if (!isAuthenticated) {
+      handleUnauthorized();
+      return;
+    }
+
     trackEvent({
       eventType: "PRODUCT_CLICK",
       entityType: "product",
@@ -252,36 +409,63 @@ const userRole = user?.role_type;
   };
 
   const handleTabClick = (tab) => {
+    if (!isAuthenticated) {
+      handleUnauthorized();
+      return;
+    }
     setActiveTab(tab);
   };
 
   const handlePageChange = (newPage) => {
+    if (!isAuthenticated) {
+      handleUnauthorized();
+      return;
+    }
     fetchMarketplace(newPage, categoriesSelect, activeTab);
   };
 
-  // Check if we should show the special sections
-  // UPDATED: Show special sections only when on Products tab AND no search AND no category filter
-  const showSpecialSections = activeTab === ACTION_TYPES.PRODUCT && 
-                              categoriesSelect.length === 0 && 
-                              search.length === 0;
-
   const handleResetFilters = () => {
+    if (!isAuthenticated) {
+      handleUnauthorized();
+      return;
+    }
     setSearch('');
     setCategoriesSelect('');
     setMenu(false);
-    // Reset to first page when clearing filters
     fetchMarketplace(1, '', activeTab);
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
-  // Handle search submission
   const handleSearchSubmit = () => {
+    if (!isAuthenticated) {
+      handleUnauthorized();
+      return;
+    }
     fetchMarketplace(1, categoriesSelect, activeTab);
   };
+
+  // ==================== RENDER LOGIC ====================
+  // Show special sections only when on Products tab AND no search AND no category filter
+  const showSpecialSections = activeTab === ACTION_TYPES.PRODUCT && 
+                              categoriesSelect.length === 0 && 
+                              search.length === 0;
+
+  // Show loading state while checking authentication
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Verifying authentication...</p>
+        </div>
+      </div>
+    );
+  }
+
+if(isAuthenticated){
 
   return (
     <>
@@ -975,4 +1159,5 @@ const userRole = user?.role_type;
       <Footer />
     </>
   );
+}
 }
