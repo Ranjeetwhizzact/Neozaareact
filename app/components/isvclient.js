@@ -252,7 +252,7 @@ mobile: {
     const digits = value.replace(/\D/g, "");
 
     if (digits.length < minLen) {
-      return Please provide a valid phone number for ${selectedCountry};
+      return "Please provide a valid phone number for ${selectedCountry}";
     }
 
     return null;
