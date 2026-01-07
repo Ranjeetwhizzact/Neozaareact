@@ -105,11 +105,11 @@ useEffect(() => {
   }
 }, [headquater_country]);
 
-const validationRules = {
+  const validationRules = {
   company_name: {
     required: true,
-    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
-    message: "Company name should only contain letters and spaces."
+pattern: /^[A-Za-z0-9 ]{3,}$/,
+message: "Company name should only contain letters, numbers, and spaces."
   },
 
   designation: {
@@ -120,8 +120,8 @@ const validationRules = {
 
   registered_business_name: {
     required: true,
-    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
-    message: "Registration name should only contain letters and spaces."
+   pattern: /^[A-Za-z0-9 ]{3,}$/,
+    message: "Registration name should only contain letters, numbers, and spaces."
   },
 
 sla_link: {
@@ -132,7 +132,7 @@ sla_link: {
     }
 
     // Optional: enforce https:// or http://
-    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-])\/?$/i;
 
     if (!urlPattern.test(value)) {
       return "Please enter a valid URL (e.g., https://example.com/sla).";
@@ -149,7 +149,7 @@ terms_of_use_link: {
     }
 
     // Optional: enforce https:// or http://
-    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+    const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-])\/?$/i;
 
     if (!urlPattern.test(value)) {
       return "Please enter a valid URL (e.g., https://example.com/sla).";
@@ -161,8 +161,8 @@ terms_of_use_link: {
 
   brand_name: {
     required: true,
-    pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
-    message: "Brand name should only contain letters and spaces."
+   pattern: /^[A-Za-z0-9 ]{3,}$/,
+    message: "Brand name should only contain letters, numbers, and spaces."
   },
 
   website_url: {
@@ -252,7 +252,7 @@ mobile: {
     const digits = value.replace(/\D/g, "");
 
     if (digits.length < minLen) {
-      return `Please provide a valid phone number for ${selectedCountry}`;
+      return Please provide a valid phone number for ${selectedCountry};
     }
 
     return null;
@@ -264,53 +264,124 @@ mobile: {
 //   required: true,
 //   minLength: 8,
 //   maxLength: 16,
-//   pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+//   pattern: /^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[@$!%?&])[A-Za-z\d@$!%?&]{8,16}$/,
 //   message:
 //     "Password must be 8–16 characters long and include uppercase, lowercase, number, and special character."
 // }
 // ,
 
-  email: {
-    required: true,
-    validate: (value) => {
-      if (!value) return "Email is required.";
-      
-      const blockedDomains = [
-        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
-        "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
-      ];
-      const domain = value.split("@")[1]?.toLowerCase();
-      
-      if (!domain) return "Please enter a valid email address.";
-      if (blockedDomains.includes(domain)) {
-        return "Please provide an official (non-personal) email address.";
-      }
-      return null;
-    }
-  },
+email: {
+  required: true,
+  validate: (value) => {
+    if (!value) return "Email is required.";
 
-  support_desk_email: {
-    required: true,
-    validate: (value) => {
-      if (!value) return "Email is required.";
-      
-      const blockedDomains = [
-        "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
-        "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
-      ];
-      const domain = value.split("@")[1]?.toLowerCase();
-      
-      if (!domain) return "Please enter a valid email address.";
-      if (blockedDomains.includes(domain)) {
-        return "Please provide an official (non-personal) email address.";
-      }
-      return null;
+    // Validate overall email format
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(value)) return "Please enter a valid email address.";
+
+    // Split email into parts
+    const [prefix, domainPart] = value.split("@");
+    
+    // Validate prefix (before @)
+    if (prefix.length < 3) {
+      return "The part before @ must be at least 3 characters.";
     }
-  },
+
+    // Check for allowed characters in prefix (letters or numbers)
+    const prefixRegex = /^[A-Za-z0-9]+$/;
+    if (!prefixRegex.test(prefix)) {
+      return "The part before @ can contain only letters or numbers.";
+    }
+
+    // Check if domain part exists
+    if (!domainPart) return "Please enter a valid email address.";
+    
+    // Split domain part to get the part before TLD
+    const domainParts = domainPart.split(".");
+    if (domainParts.length < 2) {
+      return "Please enter a valid email address.";
+    }
+    
+    // Get the part between @ and . (the main domain)
+    const domainName = domainParts[0]; // Part between @ and first dot
+    
+    // Check if there are at least 3 characters between @ and .
+    if (!domainName || domainName.length < 3) {
+      return "The domain name (part between @ and .) must be at least 3 characters.";
+    }
+
+    // Blocked personal domains
+    const blockedDomains = [
+      "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+      "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+    ];
+    
+    const fullDomain = domainPart.toLowerCase();
+    
+    if (blockedDomains.includes(fullDomain)) {
+      return "Please provide an official (non-personal) email address.";
+    }
+
+    return null;
+  }
+},
+
+support_desk_email: {
+  required: true,
+  validate: (value) => {
+    if (!value) return "Email is required.";
+
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z]{2,}$/i;
+    if (!emailRegex.test(value)) return "Please enter a valid email address.";
+
+    // Split email into parts
+    const [prefix, domainPart] = value.split("@");
+    
+    if (prefix.length < 2) {
+      return "The part before @ must be at least 3 characters.";
+    }
+
+    const prefixRegex = /^[A-Za-z0-9]+$/;
+    if (!prefixRegex.test(prefix)) {
+      return "The part before @ can contain only letters or numbers.";
+    }
+
+    // Check if domain part exists
+    if (!domainPart) return "Please enter a valid email address.";
+    
+    // Split domain part to get the part before TLD
+    const domainParts = domainPart.split(".");
+    if (domainParts.length < 2) {
+      return "Please enter a valid email address.";
+    }
+    
+    // Get the part between @ and . (the main domain)
+    const domainName = domainParts[0];
+    
+    // Check if there are at least 3 characters between @ and .
+    if (!domainName || domainName.length < 2) {
+      return "The domain name (part between @ and .) must be at least 2 characters.";
+    }
+
+    const blockedDomains = [
+      "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+      "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+    ];
+    
+    const fullDomain = domainPart.toLowerCase();
+    
+    if (blockedDomains.includes(fullDomain)) {
+      return "Please provide an official (non-personal) email address.";
+    }
+
+    return null;
+  }
+}
+,
 
   neozaar_tc: {
     required: true,
-    message: "Please agree to the Terms & Conditions"
+    message: "Please agree to the Terms Of Use"
   },
 
   data_privacy: {
@@ -339,6 +410,241 @@ mobile: {
   }
 },
 };
+  
+// const validationRules = {
+//   company_name: {
+//     required: true,
+//     pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
+//     message: "Company name should only contain letters and spaces."
+//   },
+
+//   designation: {
+//     required: true,
+//     pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
+//     message: "Designation should only contain letters and spaces."
+//   },
+
+//   registered_business_name: {
+//     required: true,
+//     pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
+//     message: "Registration name should only contain letters and spaces."
+//   },
+
+// sla_link: {
+//   required: true,
+//   validate: (value) => {
+//     if (!value || value.trim() === "") {
+//       return "SLA Link is required.";
+//     }
+
+//     // Optional: enforce https:// or http://
+//     const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+
+//     if (!urlPattern.test(value)) {
+//       return "Please enter a valid URL (e.g., https://example.com/sla).";
+//     }
+
+//     return null;
+//   },
+// },
+// terms_of_use_link: {
+//   required: true,
+//   validate: (value) => {
+//     if (!value || value.trim() === "") {
+//       return "terms_of_use_link Link is required.";
+//     }
+
+//     // Optional: enforce https:// or http://
+//     const urlPattern = /^(https?:\/\/)([\w.-]+)\.([a-z]{2,})([\/\w .-]*)*\/?$/i;
+
+//     if (!urlPattern.test(value)) {
+//       return "Please enter a valid URL (e.g., https://example.com/sla).";
+//     }
+
+//     return null;
+//   },
+// },
+
+//   brand_name: {
+//     required: true,
+//     pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
+//     message: "Brand name should only contain letters and spaces."
+//   },
+
+//   website_url: {
+//     required: true,
+//     pattern: /^(https?:\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}(\/\S*)?$/,
+//     message: "Enter a valid website URL."
+//   },
+
+//   linkedin_url: {
+//     required: false,
+//     pattern: /^(https?:\/\/)?([a-z]{2,3}\.)?linkedin\.com\/(in|pub|company)\/[a-zA-Z0-9_\-\.]+\/?$/,
+//     message: "Enter a valid LinkedIn URL."
+//   },
+
+//   headquater_country: {
+//     required: true,
+//     message: "Please provide the headquarters country."
+//   },
+
+//   tax_id: {
+//     required: true,
+//     validate: (value, allValues = {}) => {
+//       if (!value) return "Tax ID is required.";
+//       const country = allValues.headquater_country || "";
+      
+//       if (value.length > 20) return "Tax ID must not exceed 20 characters.";
+
+//       if (country === "UAE") {
+//         return /^[0-9]{15}$/.test(value) ? null : "For UAE, Tax ID must be exactly 15 digits.";
+//       }
+//       if (country === "India") {
+//         return /^[0-9A-Z]{15}$/.test(value) ? null : "For India, Tax ID must be exactly 15 alphanumeric characters.";
+//       }
+      
+//       return /^[A-Za-z0-9-]*$/.test(value) ? null : "Tax ID can only contain letters, numbers, and hyphens.";
+//     }
+//   },
+
+//   legal_entity_type: {
+//     required: true,
+//     message: "Please select your legal entity type."
+//   },
+
+//   brand_logo: {
+//     required: true,
+//     validate: (file) => {
+//       if (!file) return "Brand logo is required.";
+//       const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB
+//       const ALLOWED_TYPES = ["image/png", "image/jpeg", "image/jpg", "image/webp", "image/svg+xml"];
+      
+//       if (!ALLOWED_TYPES.includes(file.type)) {
+//         return "Please upload a valid image file (PNG, JPG, JPEG, WEBP, SVG).";
+//       }
+//       if (file.size > MAX_FILE_SIZE) {
+//         return "File size must be less than 1MB.";
+//       }
+//       return null;
+//     }
+//   },
+
+//   name: {
+//     required: true,
+//     pattern: /^[A-Za-z]{3}[A-Za-z\s]*$/,
+//     message: "Personal name should only contain letters and spaces."
+//   },
+
+// mobile: {
+//   required: true,
+//   validate: (value, allValues = {}) => {
+//     if (!value) return "Please provide a mobile number.";
+
+//     const countryPhoneLength = {
+//       IN: 12,
+//       AE: 12,
+//       SG: 10,
+//       US: 11,
+//       UK: 12,
+//       SA: 12,
+//       AU: 11,
+//       DE: 12,
+//       FR: 11,
+//     };
+
+//     const selectedCountry = allValues.country_type?.toUpperCase() || "IN";
+//     const minLen = countryPhoneLength[selectedCountry] ?? 8;
+
+//     const digits = value.replace(/\D/g, "");
+
+//     if (digits.length < minLen) {
+//       return `Please provide a valid phone number for ${selectedCountry}`;
+//     }
+
+//     return null;
+//   }
+// },
+
+
+// password: {
+//   required: true,
+//   minLength: 8,
+//   maxLength: 16,
+//   pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,16}$/,
+//   message:
+//     "Password must be 8–16 characters long and include uppercase, lowercase, number, and special character."
+// }
+// ,
+
+//   email: {
+//     required: true,
+//     validate: (value) => {
+//       if (!value) return "Email is required.";
+      
+//       const blockedDomains = [
+//         "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+//         "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+//       ];
+//       const domain = value.split("@")[1]?.toLowerCase();
+      
+//       if (!domain) return "Please enter a valid email address.";
+//       if (blockedDomains.includes(domain)) {
+//         return "Please provide an official (non-personal) email address.";
+//       }
+//       return null;
+//     }
+//   },
+
+//   support_desk_email: {
+//     required: true,
+//     validate: (value) => {
+//       if (!value) return "Email is required.";
+      
+//       const blockedDomains = [
+//         "gmail.com", "yahoo.com", "outlook.com", "hotmail.com",
+//         "aol.com", "icloud.com", "protonmail.com", "zoho.com", "yandex.com"
+//       ];
+//       const domain = value.split("@")[1]?.toLowerCase();
+      
+//       if (!domain) return "Please enter a valid email address.";
+//       if (blockedDomains.includes(domain)) {
+//         return "Please provide an official (non-personal) email address.";
+//       }
+//       return null;
+//     }
+//   },
+
+//   neozaar_tc: {
+//     required: true,
+//     message: "Please agree to the Terms & Conditions"
+//   },
+
+//   data_privacy: {
+//     required: true,
+//     message: "Please agree to the Privacy Policy"
+//   },
+//   businessCert: {
+//   required: true,
+//   validate: (file) => {
+//     if (!file) return "Business certification document is required.";
+//     const MAX_FILE_SIZE = 200 * 1024; // 200 KB
+//     const ALLOWED_TYPES = [
+//       "application/pdf",
+//       "image/png",
+//       "image/jpeg",
+//       "image/jpg"
+//     ];
+
+//     if (!ALLOWED_TYPES.includes(file.type)) {
+//       return "Please upload a valid file (PDF, PNG, JPG, JPEG).";
+//     }
+//     if (file.size > MAX_FILE_SIZE) {
+//       return "File size must be less than 200kb.";
+//     }
+//     return null;
+//   }
+// },
+// };
 
   // Validate a single field
 // Corrected validateField function
