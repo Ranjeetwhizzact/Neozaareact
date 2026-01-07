@@ -1329,11 +1329,11 @@ const validateStep = (stepNumber) => {
                           type="text"
                           value={newPlatform}
                           onChange={(e) => {
-    const value = e.target.value;
-    if (/^[a-zA-Z\s]*$/.test(value)) {
-      setNewPlatform(value);
-    }
-  }}
+                            const value = e.target.value;
+                            if (/^[a-zA-Z\s]*$/.test(value)) {
+                              setNewPlatform(value);
+                            }
+                          }}
                           maxLength={20}
                           placeholder="Enter cloud name"
                           className="px-3 py-1 outline-0 m-1 dark:text-black rounded-lg text-sm"
@@ -1481,7 +1481,7 @@ const validateStep = (stepNumber) => {
                       onChange={(e) => setPreferred(e.target.value)}
                       className='bg-zinc-100 outline-0 py-2.5 px-3 w-full dark:text-black'
                     >
-                      <option value=""></option>
+                    
                       <option value="Direct">Direct</option>
                       <option value="Reseller">Reseller</option>
                       <option value="Accelerator">Accelerator</option>

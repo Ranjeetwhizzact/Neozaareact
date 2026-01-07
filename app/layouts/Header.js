@@ -14,6 +14,8 @@ export default function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [userInitials, setUserInitials] = useState('');
+  const [userName, setUserName] = useState('');
   
   // Separate dropdown states
   const [desktopDropdownOpen, setDesktopDropdownOpen] = useState(false);
@@ -51,12 +53,31 @@ export default function Header() {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
     const role = user?.role_type;
     const id = user?.id;
+    const name = user?.name || user?.username || user?.email || '';
 
     const isAuth = !!token && token.trim() !== "";
     
     setIsAuthenticated(isAuth);
     setUserRole(role);
     setUserId(id);
+    setUserName(name);
+    
+    // Extract initials based on role
+    if (isAuth && name) {
+      if (role === "admin" || role === "superadmin") {
+        // Show "NZ" for admin/superadmin
+        setUserInitials("NZ");
+      } else {
+        // Show first 2 letters of name for other users
+        const initials = name
+          .split(' ')
+          .map(word => word.charAt(0))
+          .join('')
+          .toUpperCase()
+          .slice(0, 2);
+        setUserInitials(initials || 'US'); // Fallback to 'US' if no name
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -92,6 +113,8 @@ export default function Header() {
         setIsAuthenticated(false);
         setUserRole(null);
         setUserId(null);
+        setUserInitials('');
+        setUserName('');
       }
     };
 
@@ -107,6 +130,8 @@ export default function Header() {
         setIsAuthenticated(false);
         setUserRole(null);
         setUserId(null);
+        setUserInitials('');
+        setUserName('');
         router.push("/auth/login");
       }
     };
@@ -132,6 +157,8 @@ export default function Header() {
       setIsAuthenticated(false);
       setUserRole(null);
       setUserId(null);
+      setUserInitials('');
+      setUserName('');
 
       localStorage.setItem("logout-event", Date.now());
 
@@ -144,18 +171,18 @@ export default function Header() {
   };
 
   // Function to handle profile click - opens external URL
-const handleProfileClick = () => {
-  if (!userId) {
-    toast.error('User ID not found');
-    return;
-  }
-  
-  const baseUrl = getAppBaseUrl();
-  const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
-  const profileUrl = `${normalizedBaseUrl}/app/profile/view/${userId}`;
-  console.log('Opening profile URL:', profileUrl); // Debug log
-  window.open(profileUrl, '_blank', 'noopener,noreferrer');
-};
+  const handleProfileClick = () => {
+    if (!userId) {
+      toast.error('User ID not found');
+      return;
+    }
+    
+    const baseUrl = getAppBaseUrl();
+    const normalizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    const profileUrl = `${normalizedBaseUrl}/app/profile/view/${userId}`;
+    console.log('Opening profile URL:', profileUrl); // Debug log
+    window.open(profileUrl, '_blank', 'noopener,noreferrer');
+  };
 
   // Function to handle dashboard click - opens external URL
   const handleDashboardClick = () => {
@@ -335,6 +362,36 @@ const handleProfileClick = () => {
     </div>
   );
 
+  // Profile Avatar Component with initials
+const ProfileAvatar = () => {
+  const displayInitials =
+    userRole === 'ADMIN' ? 'NZ' : userInitials;
+
+  return (
+    <div className="relative">
+      {isAuthenticated && displayInitials ? (
+        <div
+          className="w-8 h-8 rounded-full bg-gradient-to-br from-orange-500 to-orange-700 
+                     flex items-center justify-center text-white font-semibold text-sm 
+                     cursor-pointer border border-orange-600"
+          title={`${userName} (${userRole})`}
+        >
+          {displayInitials}
+        </div>
+      ) : (
+        <Image
+          src="/image/blank-profile.webp"
+          alt="User"
+          width={32}
+          height={32}
+          className="rounded-full cursor-pointer border border-gray-600"
+        />
+      )}
+    </div>
+  );
+};
+
+
   return (
     <header
       className={`bg-black text-white border-b border-white/10 relative h-20 max-w-[1920px] m-auto ${
@@ -378,13 +435,7 @@ const handleProfileClick = () => {
             )}
             
             <button onClick={() => setDesktopDropdownOpen((prev) => !prev)} className="flex items-center gap-2">
-              <Image
-                src="/image/blank-profile.webp"
-                alt="User"
-                width={32}
-                height={32}
-                className="rounded-full cursor-pointer border border-gray-600"
-              />
+              <ProfileAvatar />
             </button>
 
             {desktopDropdownOpen && <DesktopDropdown />}
@@ -437,13 +488,7 @@ const handleProfileClick = () => {
             )}
             
             <button onClick={() => setTabletDropdownOpen((prev) => !prev)} className="flex items-center gap-2">
-              <Image
-                src="/image/blank-profile.webp"
-                alt="User"
-                width={32}
-                height={32}
-                className="rounded-full cursor-pointer border border-gray-600"
-              />
+              <ProfileAvatar />
             </button>
 
             {tabletDropdownOpen && <TabletDropdown />}
@@ -477,13 +522,7 @@ const handleProfileClick = () => {
           {isAuthenticated ? (
             <div className="relative" ref={mobileDropdownRef}>
               <button onClick={() => setMobileDropdownOpen((prev) => !prev)} className="flex items-center gap-2">
-                <Image
-                  src="/image/blank-profile.webp"
-                  alt="User"
-                  width={32}
-                  height={32}
-                  className="rounded-full cursor-pointer border border-gray-600"
-                />
+                <ProfileAvatar />
               </button>
 
               {mobileDropdownOpen && <MobileDropdown />}
@@ -523,7 +562,13 @@ const handleProfileClick = () => {
             </div>
             {isAuthenticated && (
               <div className="px-6 py-4 border-b border-gray-700">
-                <div className="text-xs text-gray-400">Role: {userRole}</div>
+                <div className="flex items-center gap-3">
+                  <ProfileAvatar />
+                  <div>
+                    <div className="text-sm text-white">{userName}</div>
+                    <div className="text-xs text-gray-400">Role: {userRole}</div>
+                  </div>
+                </div>
               </div>
             )}
             <nav className="px-6 py-6 space-y-6">
