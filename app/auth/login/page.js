@@ -194,35 +194,36 @@ const handleLogin = async (e) => {
             </div>
 
             <div className="bg-zinc-900 border border-zinc-800 py-4 flex items-center justify-start h-[52px]">
-              <Image
-                src="/image/RiKey2Fill.png"
-                alt="Key Icon"
-                width={24}
-                height={24}
-                className="mx-4"
-              />
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="bg-zinc-900 px-4 py-3 h-[52px] text-sm text-zinc-300 w-full outline-none"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="mr-4"
-              >
-                <Image
-                  src="/image/RiEyeFill.png"
-                  alt="Show Password Icon"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer"
-                />
-              </button>
-            </div>
+  <Image
+    src="/image/RiKey2Fill.png"
+    alt="Key Icon"
+    width={24}
+    height={24}
+    className="mx-4"
+  />
+
+  <input
+    type={showPassword ? "text" : "password"}
+    value={password}
+    onChange={(e) => setPassword(e.target.value)}
+    placeholder="Password"
+    className="bg-zinc-900 px-4 py-3 h-[52px] text-sm text-zinc-300 w-full outline-none"
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() => setShowPassword(!showPassword)}
+    className="mr-4 text-white"
+  >
+    {showPassword ? (
+      <i className="ri-eye-line ml-2"></i>
+    ) : (
+      <i className="ri-eye-off-line ml-2"></i>
+    )}
+  </button>
+</div>
+
 
             <div className="text-right text-sm text-gray-400">
               <Link href="/auth/forget-password">Forget Password?</Link>

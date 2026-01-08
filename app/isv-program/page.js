@@ -122,50 +122,10 @@ export default function Page() {
             {/* Right Visual - Abstract Network/Ecosystem Visualization */}
             <div className="relative h-[400px] lg:h-[600px] w-full flex items-center justify-center lg:justify-end perspective-1000">
               {/* Central Hub */}
-              <div className="relative w-64 h-64 lg:w-80 lg:h-80 bg-gradient-to-br from-gray-900 to-black rounded-full border border-white/10 shadow-2xl flex items-center justify-center z-10">
-                <div className="absolute inset-0 rounded-full bg-orange-500/5 blur-2xl"></div>
-                {/* Inner Circles */}
-                <div className="absolute w-[80%] h-[80%] rounded-full border border-white/5 animate-[spin_10s_linear_infinite]"></div>
-                <div className="absolute w-[60%] h-[60%] rounded-full border border-white/5 animate-[spin_15s_linear_infinite_reverse]"></div>
-
-                <div className="text-center p-8">
-                  <div className="w-12 h-12 mx-auto bg-gradient-to-tr from-orange-400 to-amber-600 rounded-xl mb-3 shadow-lg shadow-orange-900/50 flex items-center justify-center">
-                    <Zap className="text-white w-6 h-6" />
-                  </div>
-                  <span className="text-white font-['CreatoDisplay-Light',_sans-serif] text-2xl">NeoZaar</span>
-                  <p className="text-gray-500 text-xs font-['Inter'] mt-1">Ecosystem Core</p>
-                </div>
-
-                {/* Orbiting Satellites */}
-                {/* Item 1 */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#111] rounded-2xl border border-white/10 flex items-center justify-center shadow-xl animate-float-slow">
-                  <Globe className="text-blue-400 w-6 h-6" />
-                </div>
-                {/* Item 2 */}
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-16 h-16 bg-[#111] rounded-2xl border border-white/10 flex items-center justify-center shadow-xl animate-float-slower">
-                  <Users className="text-green-400 w-6 h-6" />
-                </div>
-                {/* Item 3 */}
-                <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#111] rounded-2xl border border-white/10 flex items-center justify-center shadow-xl animate-float-fast">
-                  <TrendingUp className="text-purple-400 w-6 h-6" />
-                </div>
-                {/* Item 4 */}
-                <div className="absolute top-1/2 left-0 -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-[#111] rounded-2xl border border-white/10 flex items-center justify-center shadow-xl animate-float-medium">
-                  <Rocket className="text-red-400 w-6 h-6" />
-                </div>
-              </div>
-
+           
+            <Image src="/image/Icon/grow_withuspartner_with.png" alt="partern with us image" fill />
               {/* Connecting Lines */}
-              <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20" style={{ zIndex: 0 }}>
-                <defs>
-                  <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="transparent" />
-                    <stop offset="50%" stopColor="white" />
-                    <stop offset="100%" stopColor="transparent" />
-                  </linearGradient>
-                </defs>
-                <circle cx="50%" cy="50%" r="180" stroke="url(#lineGrad)" strokeWidth="1" fill="none" className="hidden lg:block" />
-              </svg>
+          
             </div>
           </div>
         </section>
@@ -189,21 +149,21 @@ export default function Page() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 {
-                  icon: <Rocket className="w-6 h-6 text-white" />,
+                  icon: <Image src="/image/Icon/Icon_neozaar\Icon_accelerated_gtm.png" alt="Accelerated GTM" fill />,
                   title: "Accelerated GTM",
                   desc: "Accelerated GTMSkip the steep marketplace learning curve. NeoZaar handles listing complexity, pricing alignment, and private-offer readiness, so you can start selling in weeks — not months.",
                   gradient: "from-orange-500/20 to-red-500/20",
                   border: "group-hover:border-orange-500/30"
                 },
                 {
-                  icon: <TrendingUp className="w-6 h-6 text-white" />,
+                  icon: <Image src="/image/Icon/Icon_neozaar/Icon_Productization.png" alt="Productization" fill />,
                   title: "Productization",
                   desc: "We help structure your SaaS into enterprise-ready bundles and offers that align with how buyers actually purchase — solutions, not standalone tools.",
                   gradient: "from-blue-500/20 to-cyan-500/20",
                   border: "group-hover:border-blue-500/30"
                 },
                 {
-                  icon: <Search className="w-6 h-6 text-white" />,
+                  icon: <Image src="/image/Icon/Icon_neozaar/Icon_Nova_Visibility.png" alt='Nova Visibility' fill />,
                   title: "Nova Visibility",
                   desc: "Your solution is showcased to an active ecosystem of enterprise buyers, resellers, and managed service partners — not lost in crowded marketplaces.",
 
@@ -211,7 +171,7 @@ export default function Page() {
                   border: "group-hover:border-purple-500/30"
                 },
                 {
-                  icon: <Users className="w-6 h-6 text-white" />,
+                  icon: <Image src="/image/Icon/Icon_neozaar/Icon_Co-Sell_Support.png"  alt='Co-Sell Support'  fill />,
                   title: "Co-Sell Support",
                   desc: "We actively co-sell alongside you through NeoZaar’s GTM engine, delivery partners, and hyperscaler-aligned motions to improve deal velocity and closure rates.",
                   gradient: "from-emerald-500/20 to-teal-500/20",
@@ -361,12 +321,12 @@ export default function Page() {
                     {/* Header */}
                     <div className="relative z-10 flex items-start justify-between mb-8">
                       <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-                        {idx === 0 && <ShieldCheck className={`w-7 h-7 ${theme.color}`} strokeWidth={1.5} />}
-                        {idx === 1 && <Terminal className={`w-7 h-7 ${theme.color}`} strokeWidth={1.5} />}
-                        {idx === 2 && <MessageSquare className={`w-7 h-7 ${theme.color}`} strokeWidth={1.5} />}
-                        {idx === 3 && <PieChart className={`w-7 h-7 ${theme.color}`} strokeWidth={1.5} />}
-                        {idx === 4 && <Brain className={`w-7 h-7 ${theme.color}`} strokeWidth={1.5} />}
-                        {idx === 5 && <CreditCard className={`w-7 h-7 ${theme.color}`} strokeWidth={1.5} />}
+                        {idx === 0 && <Image src="/image/Icon/Icon_Marketplace/Icon_Marketplace/Icon_Security_Compliance.png" alt="Security Compliance" width={60} height={60} />}
+                        {idx === 1 && <Image src="/image/Icon/Icon_Marketplace/Icon_Marketplace/Icon_automation.png" alt="AI, Data & Intelligent Automation" width={60} height={60} />}
+                        {idx === 2 && <Image src="/image/Icon/Icon_Marketplace/Icon_Marketplace/Icon_HR.png" alt="HR Tech & Workforce Solutions" width={60} height={60} />}
+                        {idx === 3 && <Image src="/image/Icon/Icon_Marketplace/Icon_Marketplace/Icon_crm.png" alt="CRM, Helpdesk & Collaboration" width={60} height={60} />}
+                        {idx === 4 && <Image src="/image/Icon/Icon_Marketplace/Icon_Marketplace/Icon_Healttech_saas.png" alt="HealthTech & Regulated Industry SaaS" width={60} height={60} />}
+                        {idx === 5 && <Image src="/image/Icon/Icon_Marketplace/Icon_Marketplace/RetailTech_ecomeer.png" alt="RetailTech & Commerce Platforms" width={60} height={60} />}
                       </div>
                       <span className="text-white/20 font-mono text-sm font-medium">0{idx + 1}</span>
                     </div>
