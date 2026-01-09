@@ -108,7 +108,7 @@ useEffect(() => {
 const validationRules = {
   company_name: {
     required: true,
-pattern: /^[A-Za-z0-9 ]{3,}$/,
+pattern: /^(?=.*[A-Za-z])[A-Za-z0-9 ]{3,}$/,
 message: "Company name should only contain letters, numbers, and spaces."
   },
 
@@ -120,7 +120,7 @@ message: "Company name should only contain letters, numbers, and spaces."
 
   registered_business_name: {
     required: true,
-   pattern: /^[A-Za-z0-9 ]{3,}$/,
+   pattern: /^(?=.*[A-Za-z])[A-Za-z0-9 ]{3,}$/,
     message: "Registration name should only contain letters, numbers, and spaces."
   },
 
@@ -161,7 +161,7 @@ terms_of_use_link: {
 
   brand_name: {
     required: true,
-   pattern: /^[A-Za-z0-9 ]{3,}$/,
+   pattern: /^(?=.*[A-Za-z])[A-Za-z0-9 ]{3,}$/,
     message: "Brand name should only contain letters, numbers, and spaces."
   },
 
