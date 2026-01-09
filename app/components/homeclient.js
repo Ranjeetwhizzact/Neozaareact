@@ -241,7 +241,7 @@ export default function Page(){
               },
                
               {
-                img: "/brand-log/curated_Solutions.png",
+                img: "/brand-log/curated_bundles.png",
                 title: "Curated Solutions",
                 desc: "Accelerate your outcomes with solution-focused Solutions. NeoZaar FastTrack FlexSolutions combine top products, cloud infrastructure, and deployment support — aligned to your goals",
                   point1:'Security, AI, Modernization, FinOps kits',
