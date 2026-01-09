@@ -49,13 +49,13 @@ export default function Home() {
     solutionsSlider: true,
     marketplace: false,
     initialData: true,
-    authChecking: true // Added for auth checking
+    authChecking: true
   });
   const [bundles, setBundles] = useState([]);
   const [solutions, setSolutions] = useState([]);
   const [products, setProducts] = useState([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false); // Track if auth check is complete
+  const [authChecked, setAuthChecked] = useState(false);
 
   // ==================== AUTHENTICATION LOGIC ====================
   const checkAuthentication = () => {
@@ -389,14 +389,10 @@ export default function Home() {
     return () => clearTimeout(debounceTimer);
   }, [search, categoriesSelect, isAuthenticated, fetchMarketplace, activeTab, authChecked]);
 
+  // Remove the problematic api.get call - it's causing 401 errors
   useEffect(() => {
-    api.get("/marketplace")
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(err => {
-        console.error(err);
-      });
+    // Removed the problematic api.get("/marketplace") call that was causing 401 errors
+    // This call was not using authentication headers
   }, []);
 
   // ==================== AUTO-SCROLLING SLIDER ====================
@@ -775,7 +771,12 @@ export default function Home() {
                 </div>
               </div>
               <div>
-                <Link href="/product-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2 font-bold text-white shadow rounded-full">See more..</Link>
+                <button 
+                  onClick={() => handleTabClick(ACTION_TYPES.PRODUCT)}
+                  className="text-nowrap bg-orange-500 inline-block px-4 py-2 font-bold text-white shadow rounded-full hover:bg-orange-600 transition-colors"
+                >
+                  See more..
+                </button>
               </div>
             </div>
 
@@ -852,7 +853,12 @@ export default function Home() {
                 </div>
               </div>
               <div>
-                <Link href="/service-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2 font-bold text-white shadow rounded-full">See more..</Link>
+                <button 
+                  onClick={() => handleTabClick(ACTION_TYPES.SERVICE)}
+                  className="text-nowrap bg-orange-500 inline-block px-4 py-2 font-bold text-white shadow rounded-full hover:bg-orange-600 transition-colors"
+                >
+                  See more..
+                </button>
               </div>
             </div>
 
@@ -927,7 +933,12 @@ export default function Home() {
                   </div>
                 </div>
                 <div>
-                  <Link href="/solution-list" className="text-nowrap bg-orange-500 inline-block px-4 py-2 font-bold text-white shadow rounded-full">See more..</Link>
+                  <button 
+                    onClick={() => handleTabClick(ACTION_TYPES.SOLUTION)}
+                    className="text-nowrap bg-orange-500 inline-block px-4 py-2 font-bold text-white shadow rounded-full hover:bg-orange-600 transition-colors"
+                  >
+                    See more..
+                  </button>
                 </div>
               </div>
             </div>
@@ -1172,7 +1183,7 @@ export default function Home() {
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between px-6 md:px-12 lg:px-20 py-12 gap-3">
               <div className="text-center md:text-left max-w-xl">
                 <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
-                  Not Sure Which Bundle Fits Your Need?
+                  Not Sure Which Solutions Fits Your Need?
                 </h2>
                 <p className="text-sm md:text-base text-neutral-700 leading-relaxed">
                   Tell us your goals — our team will recommend a private offer–aligned bundle built by trusted ISVs and expert partners.
