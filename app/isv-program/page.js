@@ -64,14 +64,35 @@ export default function Page() {
     return () => window.removeEventListener('keydown', handleEsc);
   }, []);
 
+  // Handle ISV Registration with auth check
+  const handleISVRegistration = () => {
+    const isLoggedIn = localStorage.getItem("token");
+    if (isLoggedIn) {
+      router.push("/auth/login");
+    } else {
+      // Redirect to login with return URL
+      router.push(`/isv-registration?redirect=${encodeURIComponent("/auth/login")}`);
+    }
+  };
+
+  // Handle Marketplace click with auth check
   const handleMarketplaceClick = () => {
     const isLoggedIn = localStorage.getItem("token");
     if (isLoggedIn) {
       router.push("/market_place");
     } else {
-      router.push("/auth/login");
+      router.push(`/auth/login?redirect=${encodeURIComponent("/market_place")}`);
     }
   };
+
+  // Check auth when component mounts (optional, for direct access)
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    // If user tries to access ISV registration page directly without login
+    if (pathname === "/auth/login" && !token) {
+      router.push(`/isv-registration?redirect=${encodeURIComponent("/auth/login")}`);
+    }
+  }, [pathname, router]);
 
   return (
     <>
@@ -109,13 +130,13 @@ export default function Page() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                <Link
-                  href="/isv-registration"
-                  className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-2 font-['Inter'] shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)]"
+                <button
+                  onClick={handleISVRegistration}
+                  className="px-8 py-4 bg-white text-black font-bold rounded-full hover:bg-gray-100 transition-all duration-300 flex items-center justify-center gap-2 font-['Inter'] shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] cursor-pointer"
                 >
                  Register Now!
                   <ArrowRight className="w-4 h-4" />
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -173,7 +194,7 @@ export default function Page() {
                 {
                   icon: <Image src="/image/Icon/Icon_neozaar/Icon_Co-Sell_Support.png"  alt='Co-Sell Support'  fill />,
                   title: "Co-Sell Support",
-                  desc: "We actively co-sell alongside you through NeoZaar’s GTM engine, delivery partners, and hyperscaler-aligned motions to improve deal velocity and closure rates.",
+                  desc: "We actively co-sell alongside you through NeoZaar's GTM engine, delivery partners, and hyperscaler-aligned motions to improve deal velocity and closure rates.",
                   gradient: "from-emerald-500/20 to-teal-500/20",
                   border: "group-hover:border-emerald-500/30"
                 }
@@ -275,10 +296,7 @@ export default function Page() {
           </div>
         </section>
 
-        {/* Marketplace Categories Section ("The Kinetic Shutter") */}
-        {/* Marketplace Categories Section ("The Vertical Cinema Stack") */}
-        {/* Marketplace Categories Section ("The Swiss Vertical") */}
-        {/* Marketplace Categories Section ("The Glass Grid") */}
+        {/* Marketplace Categories Section */}
         <section className="w-full py-10 lg:py-32 bg-black text-white relative z-10 font-sans border-t border-white/5">
           {/* Background Atmosphere */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-500/5 rounded-full blur-[120px] pointer-events-none"></div>
@@ -310,10 +328,10 @@ export default function Page() {
                 ][idx];
 
                 return (
-                  <Link
-                    href="/isv-registration"
+                  <div
+                    onClick={handleISVRegistration}
                     key={idx}
-                    className={`group relative flex flex-col p-8 bg-white/[0.02] backdrop-blur-sm border border-white/5 rounded-[32px] transition-all duration-500 hover:-translate-y-2 ${theme.border} ${theme.shadow}`}
+                    className={`group relative flex flex-col p-8 bg-white/[0.02] backdrop-blur-sm border border-white/5 rounded-[32px] transition-all duration-500 hover:-translate-y-2 ${theme.border} ${theme.shadow} cursor-pointer`}
                   >
                     {/* Hover Gradient Background */}
                     <div className={`absolute inset-0 rounded-[32px] opacity-0 transition-opacity duration-500 ${theme.bg}`}></div>
@@ -346,7 +364,7 @@ export default function Page() {
                       <span>Explore</span>
                       <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
@@ -365,13 +383,13 @@ export default function Page() {
              NeoZaar supports both horizontal and vertical SaaS, positioning ISVs through outcome-driven solutions rather than standalone listings.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center w-full sm:w-auto">
-              <Link
-                href="/isv-registration"
-                className="group min-w-[220px] px-8 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2 font-['Inter'] text-sm lg:text-lg"
+              <button
+                onClick={handleISVRegistration}
+                className="group min-w-[220px] px-8 py-5 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-all duration-300 flex items-center justify-center gap-2 font-['Inter'] text-sm lg:text-lg cursor-pointer"
               >
                 Start Your Application
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </button>
             </div>
           </div>
         </section>

@@ -21,9 +21,7 @@ const robotoMono = Roboto_Mono({
 // ✅ Dynamic Metadata (Next.js 15 App Router)
 // =============================================================
 export const metadata = {
- 
   openGraph: {
-   
     url: seoconfig.default.url,
     siteName: "NeoZaar",
     images: [
@@ -62,7 +60,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${inter.variable} ${robotoMono.variable}`}>
       <body className="antialiased" suppressHydrationWarning={true}>
-     
         {children}
 
         <Toaster position="top-right" reverseOrder={false} />
@@ -83,7 +80,49 @@ export default function RootLayout({ children }) {
           `}
         </Script>
 
+        {/* ========================================================= */}
+        {/* 🔗 LINKEDIN INSIGHTS TAG */}
+        {/* ========================================================= */}
+        <Script id="linkedin-insights" strategy="afterInteractive">
+          {`
+            _linkedin_partner_id = "9182225";
+            window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+            window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+          `}
+        </Script>
+        
+        <Script id="linkedin-insights-script" strategy="afterInteractive">
+          {`
+            (function(l) {
+              if (!l){
+                window.lintrk = function(a,b){
+                  window.lintrk.q.push([a,b])
+                };
+                window.lintrk.q=[];
+              }
+              var s = document.getElementsByTagName("script")[0];
+              var b = document.createElement("script");
+              b.type = "text/javascript";
+              b.async = true;
+              b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+              s.parentNode.insertBefore(b, s);
+            })(window.lintrk);
+          `}
+        </Script>
+        
+        <noscript>
+          <Image
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            alt=""
+            src="https://px.ads.linkedin.com/collect/?pid=9182225&fmt=gif"
+          />
+        </noscript>
 
+        {/* ========================================================= */}
+        {/* 📱 FACEBOOK PIXEL */}
+        {/* ========================================================= */}
         {FB_PIXEL_ID && (
           <>
             <Script id="facebook-pixel" strategy="afterInteractive">
