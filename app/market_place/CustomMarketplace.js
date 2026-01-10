@@ -762,7 +762,7 @@ export default function Home() {
             <div className="w-11/12 m-auto flex flex-wrap lg:flex-nowrap justify-between">
               <div>
                 <div className="max-w-[400px]">
-                  <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-normal">
+                  <div className="text-black font-['CreatoDisplay-Regular',_sans-serif] text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-semibold">
                     Popular & Trending Products
                   </div>
                   <div className="text-neutral-500 text-left text-sm sm:text-base">
@@ -924,7 +924,7 @@ export default function Home() {
               <div className="flex w-full flex-wrap lg:flex-nowrap justify-between"> 
                 <div className="max-w-[400px]">
                   <div>
-                    <div className="text-black text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] font-normal">
+                    <div className="text-black font-semibold text-left text-xl sm:text-2xl mb-5 md:text-[25px] font-['CreatoDisplay-Regular',_sans-serif] ">
                       Solutions
                     </div>
                     <p className="dark:text-black mb-2">

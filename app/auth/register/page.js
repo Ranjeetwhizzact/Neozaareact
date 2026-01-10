@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/bootstrap.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { Eye, EyeOff } from 'lucide-react'; // Import eye icons from lucide-react
 
 export default function Page() {
   const router = useRouter();
@@ -355,16 +356,14 @@ export default function Page() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2"
+                      className="absolute right-3 top-6 -translate-y-1/2 text-gray-400 hover:text-white  transition-colors"
                       aria-label={showPassword ? "Hide password" : "Show password"}
                     >
-                      <Image
-                        src={showPassword ? "/image/RiEyeOffFill.png" : "/image/RiEyeFill.png"}
-                        alt="Toggle password visibility"
-                        width={20}
-                        height={20}
-                        className="cursor-pointer"
-                      />
+                      {showPassword ? (
+                        <EyeOff size={20} />
+                      ) : (
+                        <Eye size={20} />
+                      )}
                     </button>
                   </>
                 ) : (
