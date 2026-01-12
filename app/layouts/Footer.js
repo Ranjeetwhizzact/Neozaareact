@@ -57,7 +57,7 @@ export default function Footer() {
     setMessage("");
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}api/subscribe/create`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}subscribe/create`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, source: "website" }),
@@ -99,6 +99,7 @@ export default function Footer() {
     { href: "/isv-registration", label: "ISV Registration" },
     { href: "/partner-with-us", label: "Our Solution Partners " },
     { href: "/contact-us", label: "Contact" },
+    { href: "/customer-faq", label: "FAQ" },
   ];
 
   return (
@@ -197,8 +198,12 @@ export default function Footer() {
           <div className="container mx-auto px-6 py-6 flex flex-col md:flex-row justify-between items-center text-xs text-gray-400">
             <p>© 2025, Designed by NeoZaar.</p>
             <div className="flex gap-4 mt-2 md:mt-0">
-              <Link href="/terms-and-conditions" className="hover:underline semibold">
-                Terms & Condition
+              <Link href="/security-faq" className="hover:underline semibold">
+              Security FAQ
+              </Link>
+           
+              <Link href="/terms-of-use" className="hover:underline semibold">
+                Terms of Use
               </Link>
               <Link href="/privacy-policy" className="hover:underline semibold">
                 Privacy Policy

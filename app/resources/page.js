@@ -156,9 +156,9 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative w-full flex flex-col items-center justify-start pt-0 px-2 sm:px-6 pb-15 min-h-screen lg:min-h-screen 2xl:min-h-auto">
+      <section className="relative w-full flex flex-col items-center justify-start pt-0 px-2 sm:px-6 pb-15 min-h-[70vh] lg:min-h-screen 2xl:min-h-auto">
         {/* Background Video */}
-        <div className='w-full h-screen absolute z-1 bg-black'></div>
+        <div className='w-full h-full absolute z-1 bg-black'></div>
         <video
           className="absolute inset-0 w-full h-full object-cover z-0 "
           autoPlay
@@ -174,7 +174,7 @@ export default function Home() {
           <Header />
         </div>
         {/* Hero Content */}
-        <div className="relative mx-auto md:my-35 lg:my-25 my-40 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
+        <div className="relative mx-auto md:my-35 lg:my-25 my-24 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
           <h1 className="text-white font-light font-['CreatoDisplay',_sans-serif] text-3xl sm:text-4xl md:text-5xl mb-4 leading-snug">
             Resources & Insights
           </h1>
@@ -186,7 +186,7 @@ export default function Home() {
             <input
               type="search"
               placeholder="Search for articles, playbooks, and more..."
-              className="w-full h-14 pl-6 pr-16 rounded-full  bg-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#ffffff] placeholder:text-gray-400"
+              className="w-full h-14 pl-6 pr-16 rounded-full  bg-white border border-white/20 focus:outline-none focus:ring-2 focus:ring-[#ffffff] placeholder:text-gray-900 text-gray-900"
             />
             <button className="absolute inset-y-0 right-0 flex items-center justify-center w-14 h-14 text-black bg-white rounded-full transition">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-6">
@@ -250,12 +250,16 @@ export default function Home() {
         >
           {filteredInsights.map((a, i) => (
             <SwiperSlide key={i} className="flex justify-center">
-              <div className="w-[320px] sm:w-[360px] h-[450px] m-auto bg-black rounded-2xl border border-[#FFA348]/60 hover:border-[#FFA348] hover:shadow-[0_0_25px_rgba(255,163,72,0.3)] overflow-hidden transition-all duration-300 group">
-                <img
+              <div className="w-[300px] sm:w-[300px] h-[450px] m-auto bg-black rounded-2xl border border-[#FFA348]/60 hover:border-[#FFA348] hover:shadow-[0_0_25px_rgba(255,163,72,0.3)] overflow-hidden transition-all duration-300 group">
+                <div className="relative w-full h-56 ">
+
+                <Image
                   src={a.image}
                   alt={a.title}
-                  className="w-full h-56 object-cover"
+                  fill
+                  className="object-cover"
                 />
+                </div>
                 <div className="p-6 flex flex-col justify-between h-[calc(100%-14rem)]">
                   <div>
                     <span
@@ -528,7 +532,7 @@ export default function Home() {
         >
           {webinars.map((w, i) => (
             <SwiperSlide key={i} className="flex justify-center">
-              <div className="w-[320px] sm:w-[360px] h-[420px] mx-auto bg-black rounded-2xl border border-[#FFA348]/60 hover:border-[#FFA348] hover:shadow-[0_0_25px_rgba(255,163,72,0.3)] overflow-hidden transition-all duration-300 group">
+              <div className="w-[310px] sm:w-[320px] h-[420px] mx-auto bg-black rounded-2xl border border-[#FFA348]/60 hover:border-[#FFA348] hover:shadow-[0_0_25px_rgba(255,163,72,0.3)] overflow-hidden transition-all duration-300 group">
 
                 {/* YouTube Video */}
                 <div className="relative w-full h-56 overflow-hidden">

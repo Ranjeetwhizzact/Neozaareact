@@ -35,7 +35,7 @@ export default function Page() {
 }
     if (!message) errs.message = 'Message required';
     if (!inquiryType) errs.inquiryType = 'Please select a category';
-    if (!consent) errs.consent = 'You must agree to the terms and conditions';
+    if (!consent) errs.consent = 'You must agree to the terms of use';
 
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -130,7 +130,7 @@ export default function Page() {
 
             <div>
               <label htmlFor="inquiryType" className="text-white text-md block mb-1">
-                What Do You Need Help With?
+                How may I assist you?
               </label>
               <select
                 id="inquiryType"
@@ -140,7 +140,7 @@ export default function Page() {
                   errors.inquiryType ? 'border-red-500 bg-zinc-900 ' : 'border-zinc-800 bg-zinc-900'
                 }`}
               >
-                <option value="">-- Select Type --</option>
+                <option value=""  disabled selected hidden>-- Select Type --</option>
                 <option value="Product Enquiry">Product Enquiry</option>
                 <option value="Partnership">Partnership</option>
                 <option value="Billing Enquiry">Billing Enquiry</option>

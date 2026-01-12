@@ -76,7 +76,7 @@ export default function Page(){
           {/* Hero Content */}
           <div className="relative mx-auto md:my-35 lg:my-25 my-10 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
             <h1 className="text-white font-light font-['CreatoDisplay',_sans-serif] text-3xl sm:text-4xl md:text-5xl mb-4 leading-snug">
-              Smarter Cloud Solutions. Curated Bundles. Aligned to Your Cloud Commitments.
+              Smarter Cloud Solutions. Curated Solutions. Aligned to Your Cloud Commitments.
             </h1>
             <p className="text-gray-200 mb-6 px-2 sm:px-6 text-sm sm:text-base font-['Inter',_sans-serif] mt-3">
               {/* Discover enterprise-ready solutions across Security, AI, Modernization, and FinOps — powered by global ISVs like Zscaler, Databricks, Acronis, Commvault, and Snowflake, and tailored for your AWS MACC or Azure EDP strategy. */}
@@ -163,11 +163,11 @@ export default function Page(){
               {
                 src: '/brand-log/cost_effective.png',
                 title: 'Cost-Effective Solutions',
-                text: 'Access budget-friendly cloud bundles aligned to your existing cloud credits',
+                text: 'Access budget-friendly cloud Solutions aligned to your existing cloud credits',
               },
               {
                 src: '/brand-log/Diverse.png',
-                title: 'Diverse Products & Bundles',
+                title: 'Diverse Products & Solutions',
                 text: 'From backup to GenAI — find everything in one place.',
               },
               {
@@ -242,13 +242,13 @@ export default function Page(){
                
               {
                 img: "/brand-log/curated_bundles.png",
-                title: "Curated Bundles",
-                desc: "Accelerate your outcomes with solution-focused bundles. NeoZaar FastTrack FlexBundles combine top products, cloud infrastructure, and deployment support — aligned to your goals",
+                title: "Curated Solutions",
+                desc: "Accelerate your outcomes with solution-focused Solutions. NeoZaar FastTrack FlexSolutions combine top products, cloud infrastructure, and deployment support — aligned to your goals",
                   point1:'Security, AI, Modernization, FinOps kits',
                 point2:'Pre-configured and deployable in days',
                 point3:'AWS/Azure credit-aligned (MACC/EDP support)',
                 point4:'Add-on services available from certified partners',
-                btn: "Discover Bundles",
+                btn: "Discover Solutions",
 
               },
               {
@@ -320,15 +320,15 @@ export default function Page(){
                 btn: "Explore Products",
               },
               {
-                img: "/brand-log/curated_bundles.png",
-                title: "Curated Bundles",
-                desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+                img: "/brand-log/curated_Solutions.png",
+                title: "Curated Solutions",
+                desc: "Get more value with pre-configured packages. Our Solutions combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
                   point1:'Security, AI, Modernization, FinOps kits',
                 point2:'Pre-configured and deployable in days',
                 point3:'AWS/Azure credit-aligned (MACC/EDP support)',
                 point4:'Add-on services available from certified partners',
-                btn: "Discover Bundles",
-                btn: "Discover Bundles",
+                btn: "Discover Solutions",
+                btn: "Discover Solutions",
               },
               {
                 img: "/brand-log/expert_services.png",
@@ -405,15 +405,15 @@ export default function Page(){
 
     },
     {
-      img: "/brand-log/curated_bundles.png",
-      title: "Curated Bundles",
-      desc: "Get more value with pre-configured packages. Our bundles combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
+      img: "/brand-log/curated_Solutions.png",
+      title: "Curated Solutions",
+      desc: "Get more value with pre-configured packages. Our Solutions combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
         point1:'Security, AI, Modernization, FinOps kits',
                 point2:'Pre-configured and deployable in days',
                 point3:'AWS/Azure credit-aligned (MACC/EDP support)',
                 point4:'Add-on services available from certified partners',
-                btn: "Discover Bundles",
-      btn: "Discover Bundles",
+                btn: "Discover Solutions",
+      btn: "Discover Solutions",
     },
     {
       img: "/brand-log/expert_services.png",
@@ -512,7 +512,7 @@ NeoZaar connects you with verified ISVs and solution partners who handle demos, 
             <div className="flex flex-col justify-between bg-transparent text-white p-6 sm:py-8 sm:pt-16 md:pl-20 max-w-full md:border-l border-gray-700 xl:w-125">
               <h4 className="text-2xl font-normal mb-4 font-['CreatoDisplay-Light',_sans-serif] overflow-hidden line-clamp-2">Build & Manage</h4>
               <p className="text-[#71717A] mb-4 text-sm sm:text-base font-['Inter',_sans-serif] overflow-hidden line-clamp-4">
-                Choose NeoZaar’s pre-packaged bundles for a fully managed experience — from day one to day 100 and beyond.
+                Choose NeoZaar’s pre-packaged Solutions for a fully managed experience — from day one to day 100 and beyond.
               </p>
             <ul className='text-[#71717A] ps-4'>
               {/* <li className='list-decimal'>One Point of Contact
@@ -532,7 +532,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
               </div>
               <button onClick={handleMarketplaceClick}
               className="px-5 font-['Inter'] cursor-pointer py-2 mb-10 bg-zinc-700 text-white rounded-[27px] hover:bg-white hover:text-black transition w-auto self-start">
-                View Our Bundles
+                View Our Solutions
               </button>
             </div>
           </div>
@@ -635,7 +635,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
               <div>
                 <div className="text-sm font-['Inter'] leading-relaxed mb-2">Inquires</div>
                 <p className="text-xs text-gray-400">
-                  Submit a query for one of our bundles.
+                  Submit a query for one of our Solutions.
                 </p>
               </div>
               <div className="border-t border-gray-700 mb-6" />
@@ -684,7 +684,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
             <h3 className="text-base font-['Inter'] mb-2 line-clamp-2 text-white">One-Stop Discovery</h3>
             <p className="text-gray-400 text-sm line-clamp-5">
              No more jumping across tabs or vendor sites.
-              NeoZaar brings verified SaaS products, services, and bundles together in a single, user-friendly marketplace experience.
+              NeoZaar brings verified SaaS products, services, and Solutions together in a single, user-friendly marketplace experience.
             </p>
           </div>
         </section>
@@ -750,10 +750,10 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                       <p className='font-medium'>NeoZaar Delivers:</p>
                       <ul className='ps-4 text-gray-200'>
                         <li className='list-disc'>
-                         Pre-configured FastTrack FlexBundles for common use cases
+                         Pre-configured FastTrack FlexSolutions for common use cases
                         </li>
                         <li className='list-disc'>
-                         Bundles aligned to industry challenges (Security, FinOps, AI)
+                         Solutions aligned to industry challenges (Security, FinOps, AI)
                         </li>
                         <li className='list-disc'>
                          Integrated deployment and support
@@ -770,7 +770,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                           </div> */}
                           <div>
                             {/* <p className="text-sm font-semibold text-white">Sarah Jenkins</p> */}
-                            <p className="text-lg text-orange-400"> Featured Solution Bundles</p>
+                            <p className="text-lg text-orange-400"> Qurater Solutions</p>
                           </div>
                         </div>
                         <div className="w-6 h-6 relative">
@@ -877,7 +877,7 @@ Simplify procurement with one contract, one invoice, one support channel.</li> *
                        30–50% savings vs standalone procurement or hyperscaler rates
                         </li>
                         <li className='list-disc'>
-                       Deployments in under 10 days for most bundles
+                       Deployments in under 10 days for most Solutions
                         </li>
                         <li className='list-disc'>
                         100+ curated ISV offerings, all transactable

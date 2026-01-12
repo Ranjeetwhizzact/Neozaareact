@@ -1,55 +1,125 @@
 "use client";
-
+import { trackEvent } from "../lib/track";
 import Link from "next/link";
 import { useRef, useEffect, useState } from "react";
-import { X } from "lucide-react";
-// import { Swiper, SwiperSlide } from "swiper/react";
-// import { Navigation } from "swiper/modules";
-// import { Autoplay } from 'swiper/modules';
+import { X, Download } from "lucide-react";
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import { useSearchParams } from 'next/navigation';
-// import "swiper/css";
-// import "swiper/css/navigation";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
 import "swiper/css/autoplay";
-import { set } from "react-hook-form";
-
 
 export default function CustomSlider() {
-    const [userIdid, setUserId] = useState();
   const searchParams = useSearchParams();
-  const userId = searchParams.get('productid');
   const router = useRouter();
-
-  const prevRef = useRef(null);
-  const [activeTab, setActiveTab] = useState("info");
+  
+  const [userId, setUserId] = useState(null);
+  const [activeSection, setActiveSection] = useState("overview");
   const [products, setProducts] = useState([]);
-  const [productDetails, setProductDetails] = useState(null)
+  const [productDetails, setProductDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const [errors, setErrors] = useState({}); 
-     useEffect(() => {
-    const productid = searchParams.get("productid");
-    if (productid) { setUserId(productid); }
-  }, [searchParams]);
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const idFromUrl = params.get("productid"); // get the productid
-  //   setUserId(idFromUrl); 
-  // }, []);
-  useEffect(() => {
+  const [errors, setErrors] = useState({});
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  
+  // Form states
+  const [roleTitle, setRoleTitle] = useState("");
+  const [useCase, setUseCase] = useState("");
+  const [message, setMessage] = useState("");
+  const [AWSID, setAWSID] = useState("");
+  const [messageB, setMessageB] = useState("");
 
+  // Menu items
+  const menu = [
+    { id: "overview", label: "Overview" },
+    { id: "details", label: "Details" },
+    // { id: "features", label: "Features" },
+    { id: "pricing", label: "Pricing" },
+  ];
+
+  // Get product ID from URL
+  useEffect(() => {
+    const productid = searchParams.get("productid");
+    if (productid) {
+      setUserId(productid);
+    }
    
-    async function fetchProducts() {
+  }, [searchParams]);
+
+  // Authentication check
+  useEffect(() => {
+    const checkAuth = () => {
+      const token = localStorage.getItem("token");
+      if (!token || token.trim() === "") {
+        router.push('/auth/login');
+        return;
+      }
+    };
+    checkAuth();
+  }, [router]);
+
+  // Fetch product details and recommendations
+  useEffect(() => {
+    async function fetchProductDetails() {
+      if (!userId) return;
+      
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products/${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        
+        if (res.status === 401 || res.status === 403) {
+          router.push("/auth/login");
+          return;
+        }
+        
+        const data = await res.json();
+        if (data.data) {
+          setProductDetails(data.data);
+          
+          // Set recommendations if available
+          if (Array.isArray(data.data.recommendations)) {
+            setProducts(data.data.recommendations);
+          }
+            trackEvent({
+      eventType: "PRODUCT_VIEW",
+      entityType: "product",
+      entityId: data.data.product.id,
+      pageUrl:data.data.product.name,
+      utm: {
+        utm_source: searchParams.get("utm_source"),
+        utm_medium: searchParams.get("utm_medium"),
+        utm_campaign: searchParams.get("utm_campaign"),
+      },
+    });
+        }
+      } catch (err) {
+        console.error('Failed to fetch product details:', err);
+      }
+    }
+
+    fetchProductDetails();
+  }, [userId, router]);
+
+  // Fetch all products if no recommendations
+  useEffect(() => {
+    async function fetchAllProducts() {
+      if (products.length > 0) return; // Skip if we already have recommendations
+      
       const token = localStorage.getItem('token');
       if (!token) return;
 
@@ -57,962 +127,1053 @@ export default function CustomSlider() {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}products/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        
         if (res.status === 401 || res.status === 403) {
-        // Token expired → redirect to login
-        router.push("/auth/login");
-        return;
-      }
+          router.push("/auth/login");
+          return;
+        }
+        
         const data = await res.json();
         if (res.ok && Array.isArray(data?.data?.products)) {
           setProducts(data.data.products);
-        } else {
-          console.error('Invalid product response format');
         }
       } catch (err) {
         console.error('Failed to fetch products:', err);
       }
     }
 
-    // fetch product details 
-    async function producDetail() {
-      const token = localStorage.getItem('token');
-      if (!token) return;
+    fetchAllProducts();
+  }, [products.length, router]);
 
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        setProductDetails(data.data)
-          if (Array.isArray(data?.data?.recommendations)) {
-    setProducts(data.data.recommendations);
-  } else {
-    setProducts([]); 
-  }
-      } catch (err) {
-        console.error('Failed to fetch products:', err);
-      }
+  // Helper function to clean HTML
+  const clean = (html) => {
+    if (!html) return "";
+    return html.replace(/&nbsp;/g, " ").replace(/<[^>]*>/g, "");
+  };
+
+  // Parse key features from JSON string
+  const parseKeyFeatures = (featuresString) => {
+    if (!featuresString) return [];
+    try {
+      const parsed = JSON.parse(featuresString);
+      return Array.isArray(parsed) ? parsed : [featuresString];
+    } catch (e) {
+      console.error("Failed to parse key features:", e);
+      return [featuresString];
     }
+  };
 
-    
+  // Button handlers
+  const handleDemoClick = () => {
+    setIsModalOpen(true);
+  };
 
-  // if (userIdid) {
-    producDetail();
-  // }
-}, [userId]);
+  const handlePrivatePriceClick = () => {
+    setIsPriceModalOpen(true);
+  };
 
-useEffect(() => {
-  async function fetchProducts() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+
+
+
+
+  const handleDemoVideoClick = () => {
+    if (productDetails?.product?.demo_video_link) {
+      window.open(productDetails.product.demo_video_link, "_blank");
+    }
+  };
+
+  const handleViewPricingClick = (e) => {
+    e.preventDefault();
+    setIsPriceModalOpen(true);
+  };
+
+  // Demo form submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    let newErrors = {};
+    // if (!roleTitle.trim()) newErrors.roleTitle = "Role Title is required";
+    // if (!useCase.trim()) newErrors.useCase = "Use Case is required";
+    // if (!message.trim()) newErrors.message = "Message cannot be empty";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}products/`, {
-        headers: { Authorization: `Bearer ${token}` },
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}lead/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          action_id: productDetails?.product?.id,
+          action_type: "product",
+          status: "new",
+          leadType: "demo",
+          message: message,
+          demoData: {
+            role_title: roleTitle,
+            use_case: useCase
+          }
+        }),
       });
-      if (res.status === 401 || res.status === 403) {
-        router.push("/auth/login");
-        return;
-      }
-      const data = await res.json();
-      if (res.ok && Array.isArray(data?.data?.products)) {
-        setProducts(data.data.products);
+
+      if (res.ok) {
+        setShowSuccessModal(true);
+        setIsModalOpen(false);
+        setRoleTitle("");
+        setUseCase("");
+        setMessage("");
+        setErrors({});
+        setTimeout(() => {
+          setShowSuccessModal(false);
+        }, 9000);
+      } else {
+        alert("Failed to submit enquiry.");
       }
     } catch (err) {
-      console.error('Failed to fetch products:', err);
+      console.error("Error submitting enquiry:", err);
     }
-  }
+  };
 
-  fetchProducts();
-}, []);
+  // Price form submission
+  const handleSubmitB = async (e) => {
+    e.preventDefault();
 
-  useEffect(() => {
-    const checkAuth = () => {
-      console.log("🔐 Checking authentication from localStorage...");
+    let newErrors = {};
+    // if (!AWSID.trim()) {
+    //   newErrors.AWSID = "AWS Account ID is required";
+    // } else if (!/^\d{12}$/.test(AWSID.trim())) {
+    //   newErrors.AWSID = "Invalid AWS Account ID format";
+    // }
+    // if (!messageB.trim()) {
+    //   newErrors.messageB = "Message cannot be empty";
+    // }
+
+    // if (Object.keys(newErrors).length > 0) {
+    //   setErrors(newErrors);
+    //   return;
+    // }
+
+    try {
       const token = localStorage.getItem("token");
-
-      if (!token || token.trim() === "") {
-        console.warn("🚫 No valid token in localStorage. Redirecting to login.");
-        router.push('/auth/login');
-        return;
-      }
-
-      console.log("✅ Token found in localStorage:", token);
-    };
-
-    checkAuth();
-  }, []);
-
-  const [roleTitle, setRoleTitle] = useState("");
-const [useCase, setUseCase] = useState("");
-const [message, setMessage] = useState("");
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-   let newErrors = {};
-    if (!roleTitle.trim()) newErrors.roleTitle = "Role Title is required";
-    if (!useCase.trim()) newErrors.useCase = "Use Case is required";
-    if (!message.trim()) newErrors.message = "Message cannot be empty";
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return; // ❌ stop API call
-    }
-  
-  try {
-    const token = localStorage.getItem("token");
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}lead/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        "action_id": productDetails?.product?.id, 
-        "action_type": "product", //"product", "bundle"
-        "status": "new",
-        "leadType": "demo",
-        "message": message,
-    "demoData": {
-        "role_title": roleTitle,
-        "use_case": useCase
-    }
-      }),
-    });
-    
-    if (res.ok) {
-      setShowSuccessModal(true);
-      setIsModalOpen(false);
-      setRoleTitle("");
-      setUseCase("");
-      setMessage("");
-      setErrors({});
-      setTimeout(() => {
-        setShowSuccessModal(false);
-      }, 5000);
-    } else {
-      alert("Failed to submit enquiry.");
-    }
-  } catch (err) {
-    console.error("Error submitting enquiry:", err);
-  }
-};
-
-  const [AWSID, setAWSID] = useState("");
-  const [messageB, setMessageB] = useState("");
-
-const handleSubmitB = async (e) => {
-  e.preventDefault();
-
-   let newErrors = {};
-    if (!AWSID.trim()) {
-      newErrors.AWSID = "AWS Account ID is required";
-    } else if (!/^\d{12}$/.test(AWSID.trim())) {
-      newErrors.AWSID = "Invalid AWS Account ID format";
-    }
-    if (!messageB.trim()) {newErrors.messageB = "Message cannot be empty";}
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return; 
-    }
-
-  try {
-    const token = localStorage.getItem("token");
-
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}lead/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        action_id: productDetails?.product?.id,   
-        action_type: "product",                   
-        status: "new",
-        leadType: "buy_now",                
-        message: messageB,                       
-        "purchaseData": {                       
-          "aws_account_id": AWSID,
-          "product_id": 3,
-          "entitlement_status": "entitlement_status",
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}lead/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      }),
-    });
+        body: JSON.stringify({
+          action_id: productDetails?.product?.id,
+          action_type: "product",
+          status: "new",
+          leadType: "buy_now",
+          message: messageB,
+          purchaseData: {
+            aws_account_id: AWSID,
+            product_id: productDetails?.product?.id || 3,
+            entitlement_status: "pending",
+          },
+        }),
+      });
 
-    const data = await res.json();
-    console.log("API Response:", data);
-
-    if (data.status === "status") {
-      setShowSuccessModal(true);
-      setIsPriceModalOpen(false);
-      setAWSID("");
-      setMessageB("");
-      setErrors({});
-      setTimeout(() => {
-        setShowSuccessModal(false);
-      }, 5000);
-    } else {
-      alert(data.message || "Failed to submit price enquiry.");
+      const data = await res.json();
+      if (res.ok) {
+        setShowSuccessModal(true);
+        setIsPriceModalOpen(false);
+        setAWSID("");
+        setMessageB("");
+        setErrors({});
+        setTimeout(() => {
+          setShowSuccessModal(false);
+        }, 5000);
+      } else {
+        alert(data.message || "Failed to submit price enquiry.");
+      }
+    } catch (err) {
+      console.error("Error submitting price enquiry:", err);
     }
-  } catch (err) {
-    console.error("Error submitting price enquiry:", err);
-  }
-};
-  return (
-    <div>
-      <Header></Header>
-      <main className="text-gray-800 font-sans max-w-screen-[1920px]  m-auto">
-        <div
-          className="breadcrumb flex flex-wrap items-center gap-2 text-sm lg:px-[6.25rem] py-3 border-b max-w-[1920px] m-auto">
-          <Link href="/market_place" className="back-btn flex items-center gap-1 text-black font-medium hover:underline hover:font-bold text-xs md:text-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" className="icon-left w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" className="" />
-            </svg>
-            Back
-          </Link>
-          <span className="text-gray-300 text-xs md:text-sm hidden md:block hover:underline ">/</span>
-          <Link href="/" className="nav-link text-xs md:text-sm hidden md:block hover:underline hover:font-bold">Home</Link>
-          <span className="text-gray-300 text-xs md:text-sm hidden md:block ">/</span>
-          <Link href="/market_place" className="nav-link text-xs md:text-sm hidden md:block hover:underline hover:font-bold">Marketplace</Link>
-          <span className="text-gray-300 text-xs md:text-sm hidden md:block ">/ </span>
-          <Link href="/bundle" className="nav-link text-xs md:text-sm hidden md:block hover:underline hover:font-bold">Acronis Cyber Protect Cloud</Link>
-        </div>
+  };
 
-        <div className="grid grid-cols-1  lg:grid-cols-2 max-w-[1920px] m-auto">
-          <section
-            className="flex flex-col justify-between w-full text-black pt-6 pb-0 space-y-6 lg:border lg:border-y-0">
-            <div className="flex flex-col items-start lg:items-start p-2 py-2 xl:px-[7rem] pt-6">
-              <img src="/image/acronis.png" alt="Acronis" className="w-40 h-40 xl:w-52 xl:h-52 object-cover mb-4" />
-              <p className="uppercase text-xs tracking-widest text-gray-400 mb-2">{productDetails?.bundle_type}</p>
-              <h1 className="text-2xl lg:text-4xl mxl:text-5xl font-normal leading-snug mb-4 max-w-xl text-left lg:text-left">
-                {productDetails?.product?.name}
-              </h1>
-              <p className="text-base text-gray-600 mxl:text-2xl leading-relaxed mb-6 text-left lg:text-left max-w-xl">
-                {productDetails?.product?.long_description}
-              </p>
+  // Add keyboard navigation
+useEffect(() => {
+  const handleKeyDown = (e) => {
+    if (!isGalleryOpen) return;
+    
+    if (e.key === 'Escape') {
+      setIsGalleryOpen(false);
+    } else if (e.key === 'ArrowLeft') {
+      setCurrentImageIndex(prev => {
+        const newIndex = prev === 0 ? productDetails?.product?.screenshots?.length - 1 : prev - 1;
+        // Track keyboard navigation
+        trackEvent({
+          eventType: "IMAGEVIEW",
+          entityType: "product",
+          entityId: productDetails?.product?.id,
+          pageUrl: `Keyboard Left - Image ${newIndex}`,
+        });
+        return newIndex;
+      });
+    } else if (e.key === 'ArrowRight') {
+      setCurrentImageIndex(prev => {
+        const newIndex = prev === productDetails?.product?.screenshots?.length - 1 ? 0 : prev + 1;
+        // Track keyboard navigation
+        trackEvent({
+          eventType: "GALLERY_KEYBOARD_NAVIGATION",
+          entityType: "product",
+          entityId: productDetails?.product?.id,
+          pageUrl: `Keyboard Right - Image ${newIndex}`,
+        });
+        return newIndex;
+      });
+    }
+  };
+
+  window.addEventListener('keydown', handleKeyDown);
+  return () => window.removeEventListener('keydown', handleKeyDown);
+}, [isGalleryOpen, productDetails?.product?.screenshots?.length]);
+
+  return (
+    <>
+      <Header />
+      
+      {/* Product Header Section */}
+      <div className="bg-white border-b">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="grid grid-cols-12">
+            {/* Left: Logo and Title */}
+            <div className="grid grid-cols-12 items-start gap-6 col-span-12 lg:col-span-8">
+              <div className="w-40 h-40 relative m-auto col-span-12 lg:col-span-4  border-2 border-gray-200 rounded-3xl flex  items-center justify-center bg-white p-6">
+                {productDetails?.product?.product_logo && (
+                  <Image
+                    src={productDetails.product.product_logo}
+                    alt={productDetails.product.name}
+                   fill
+                    className="object-contain"
+                  />
+                )}
+              </div>
+              <div className="pt-4 mx-3 col-span-12 lg:col-span-8 ">
+                <h1 className="text-xl lg:text-3xl text-center md:text-start font-bold text-gray-900 mb-2">
+                  {productDetails?.product?.name || "Loading..."}
+                </h1>
+                <p className="text-sm text-gray-400 text-center md:text-start uppercase tracking-wider">
+                  {productDetails?.product?.category_subcategory?.join(", ") || ""}
+                </p>
+              </div>
+            </div>
+
+            {/* Right: Action Buttons */}
+            <div className="flex mt-3 flex-col gap-3 items-center md:items-end col-span-12 lg:col-span-4">
               <button
-                className="btn mt-2 lg:mt-4 text-black bg-gray-200 hover:bg-black hover:text-white px-4 py-2 rounded" onClick={() => setIsModalOpen(true)}>
-                <i className="fa-solid fa-headphones"></i>
+                className="px-8  w-[250px] py-3 bg-orange-400  hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
+                onClick={handleDemoClick}
+              >
                 Request Demo
               </button>
-            </div>
-            <div className="flex flex-col sm:flex-row mt-8 mb-2  md:mb-0">
-              <button className="bg-black text-white px-6 py-4 text-center w-full sm:w-1/2  " onClick={() => setIsPriceModalOpen(true)} >
-                <span className="text-lg text-gray-300">Starting From &nbsp;&nbsp; </span><span
-                  className="text-2xl font-semibold">$599</span>
-              </button>
-              <button className="border px-6 py-4 w-full sm:w-1/2 text-2xl font-medium hover:bg-gray-100 ">
-                Get Private Price
+              <button
+                className="px-8 w-[250px] py-3  bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
+                onClick={handlePrivatePriceClick}
+              >
+                Get Private Offer
               </button>
             </div>
-          </section>
-          {/* for laptop and tablets */}
-          <section
-            className="hidden md:block w-full lg:border-t-0 lg:border lg:border-l-0 lg:px-0 py-6 lg:min-h-[95vh] h-full px-2 ">
-            <nav className="flex flex-wrap gap-5 border-b pl-10 pb-2 mb-4 text-md font-medium">
-              <button
-                onClick={() => setActiveTab("info")}
-                className={`${activeTab === "info" ? "text-black" : "text-gray-400"
-                  } hover:text-black`}
-              >
-                INFO
-              </button>
-              <button
-                onClick={() => setActiveTab("tech_info")}
-                className={`${activeTab === "tech_info" ? "text-black" : "text-gray-400"
-                  } hover:text-black`}
-              >
-                Technical INFO
-              </button>
-              <button
-                onClick={() => setActiveTab("pricing")}
-                className={`${activeTab === "pricing" ? "text-black" : "text-gray-400"
-                  } hover:text-black`}
-              >
-                Pricing & Licensing
-              </button>
-              {/* <button
-                onClick={() => setActiveTab("support_info")}
-                className={`${activeTab === "support_info" ? "text-black" : "text-gray-400"
-                  } hover:text-black`}
-              >
-                Support INFO
-              </button> */}
-              <button
-                onClick={() => setActiveTab("media_assets")}
-                className={`${activeTab === "media_assets" ? "text-black" : "text-gray-400"
-                  } hover:text-black`}
-              >
-                Media & Assets
-              </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Section */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Left Sidebar */}
+          <div className="w-64 flex-shrink-0">
+            <nav className="space-y-1 flex md:flex-col">
+              {menu.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActiveSection(item.id)}
+                  className={`block w-full text-left px-4 py-3 transition-colors ${
+                    activeSection === item.id
+                      ? "text-gray-900 font-semibold border-b-2 border-gray-900"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
             </nav>
+          </div>
 
-            <div className="space-y-4 text-sm max-w-2xl mxl:max-w-3xl lg:px-[5rem] mxl:pl-[8rem] mxl:pr-0 lg:pt-[3rem] ">
-              {activeTab === "info" && (
-                <div className="flex flex-col space-y-1 ">
-                  <div className="mb-5">
-                    <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Short Description</p>
-                    <p className="text-gray-600 text-lg font-normal font-[inter]">
-                      {
-                        productDetails?.product?.short_description
-                      }
-                  </p>
-                  </div>
+          {/* Right Content Area */}
+          <div className="flex-1 flex flex-col md:flex-row gap-6">
+            {/* Main Section */}
+            <div className="flex-1">
+              {/* OVERVIEW */}
+              {activeSection === "overview" && (
+                <SectionCard>
+                  <div className="my-3">
 
-                  <div className="mb-5">
-                    <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Key Features</p>
-                    {/* <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.key_features}</p> */}
-                      <ul className="list-disc pl-5 text-gray-600 text-lg font-normal font-[inter]">
-    {(() => {
-      try {
-        const arr = JSON.parse(productDetails?.product?.key_features);
-        return arr.map((item, i) => <li key={i}>{item}</li>);
-      } catch {
-        return <li>{productDetails?.product?.key_features}</li>;
-      }
-    })()}
-  </ul>
-                  </div>
-                  <div className="my-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Target Audience</p>
-                  {/* <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.target_audience}</p> */}
-                      <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.target_audience?.map((item, index) => (
-      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
-    ))}</p>
-                  </div>
-                  <div className="my-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Category & Subcategory</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.category_subcategory?.map((item, index) => (
-      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
-    ))}</p>
-                  </div>
-                  <div className="my-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Regions Supported</p>
-                  {/* <p className="text-gray-600 text-lg font-normal font-[inter]">{productDetails?.product?.regions_supported}</p> */}
-                      <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.regions_supported?.map((item, index) => (
-      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
-    ))}</p>
-                  </div>
-                </div>
-
-              )}
-
-              {activeTab === "tech_info" && (
-                <div className="flex flex-col space-y-1">
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Cloud Provider Support</p>
-                      <p className="text-gray-600 text-lg font-normal font-[inter] flex flex-wrap gap-2">{productDetails?.product?.cloud_provider_support?.map((item, index) => (
-      <li key={index} className="list-none bg-gray-200 px-4 py-1 rounded-full border-1  ">{item}</li>
-    ))}</p>
-                  {/* <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.cloud_provider_support}
-                  </p> */}
-                </div>
-                {/* <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Supported AWS Services</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.supported_aws_services}
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Support Azure Services</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.supported_azure_services}
-                  </p>
-                </div> */}
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Deployment Model</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.deployment_model}
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Primary Use Cases</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]"  dangerouslySetInnerHTML={{ __html: productDetails?.product?.primary_use_cases || ""}}>
-                   
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Technical Prerequisites</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]"  dangerouslySetInnerHTML={{ __html: productDetails?.product?.technical_prerequisites || ""}}>
-                   
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">API/ Metering Endpoint</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.api_metering_endpoint}
-                  </p>
-                </div>
-                </div>
-              )}
-
-              {activeTab === "pricing" && (
-                <div className="flex flex-col space-y-1">
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Pricing Model</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.pricing_model}
-                  </p>
-                </div>
-                {/* <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Billing Dimension</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.billing_dimension}
-                  </p>
-                </div> */}
-                {/* <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">License Model</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.license_model}
-                  </p>
-                </div> */}
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Free Trial Available</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {/* {productDetails?.product?.free_trial_available ? "Yes" : "No"} */}Yes
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">SKU ID</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.sku_id}
-                  </p>
-                </div>
-                </div>
-              )}
-
-              {/* {activeTab === "support_info" && (
-              <div className="flex flex-col space-y-1">
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Support Contact Person</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.support_contact_name}
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Support Contact Email</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.support_email}
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Support Phone Number</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.support_phone}
-                  </p>
-                </div>
-                <div className="mb-5">
-                  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Support Availability</p>
-                  <p className="text-gray-600 text-lg font-normal font-[inter]">
-                    {productDetails?.product?.support_hours}
-                  </p>
-                </div>
-                <div className="mb-5">
-                
-  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Service Level Agreement (SLA)</p>
-                  {productDetails?.product?.sla_documents?.length > 0 ? (
-                    <ul className="list-none pl-5 space-y-2 flex flex-col md:flex-row">
-                      {productDetails.product.sla_documents.map((url, index) => (
-                        <li key={index} className="md:mr-4">
-
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 font-[inter] underline border-gray-300 border font-medium hover:text-blue-700 transition"
-          >
-             SLA Document {index + 1}
-          </a>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-gray-600 lg:text-md">No SLA documents available</p>
-  )}
-</div>
-
-                </div>
-              )} */}
-              {activeTab === "media_assets" && (
-                <div className="flex flex-col space-y-1">
-<div>
-  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">
-    Screenshots
-  </p>
-
-  {productDetails?.product?.screenshots?.length > 0 ? (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {productDetails.product.screenshots.map((imgUrl, index) => (
+                   <h3 className="text-gray-900 text-xl font-semibold">
+                 Images
+                  </h3>
+{productDetails?.product?.screenshots?.length > 0 && (
+  <div className="grid md:grid-cols-2 gap-4 my-2">
+    {productDetails.product.screenshots
+      .filter(src => typeof src === "string" && src.trim() !== "")
+      .map((src, i) => (
         <div
-          key={index}
-          className="bg-gray-300 p-3 rounded-md shadow-sm"
+          key={i}
+          className="
+            relative
+            w-full
+            h-52
+            overflow-hidden
+            rounded-xl
+            border
+            shadow-sm
+            bg-gray-100
+            cursor-pointer
+          "
+          onClick={() => {
+            // Track the image click event
+            trackEvent({
+              eventType: "PRODUCT_VIEW",
+              entityType: "product",
+              entityId: productDetails?.product?.id,
+              pageUrl: productDetails?.product?.name,
+              utm: {
+                utm_source: typeof window !== "undefined" 
+                  ? new URLSearchParams(window.location.search).get("utm_source")
+                  : null,
+                utm_medium: typeof window !== "undefined" 
+                  ? new URLSearchParams(window.location.search).get("utm_medium")
+                  : null,
+                utm_campaign: typeof window !== "undefined" 
+                  ? new URLSearchParams(window.location.search).get("utm_campaign")
+                  : null,
+              },
+            });
+            
+            // Set the initial image index when clicking
+            setCurrentImageIndex(i);
+            setIsGalleryOpen(true);
+          }}
         >
           <img
-            src={imgUrl}
-            alt={`Screenshot ${index + 1}`}
-            className="w-full aspect-video object-cover rounded-md"
+            src={src}
+            alt={`Screenshot ${i + 1}`}
+            className="
+              w-full
+              h-full
+              object-cover
+              transition-transform
+              duration-500
+              ease-[cubic-bezier(0.16,1,0.3,1)]
+              hover:scale-110
+            "
           />
         </div>
       ))}
-    </div>
-  ) : (
-    <p className="text-gray-600 lg:text-md">No Screenshot available</p>
-  )}
-</div>
-
-
-                <div>
-  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Brochure</p>
-  {productDetails?.product?.brochures?.length > 0 ? (
-    <ul className="list-none pl-5 space-y-2 flex flex-col md:flex-row">
-      {productDetails.product.brochures.map((url, index) => (
-        <li key={index} className="md:mr-4">
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 font-[inter] underline border-gray-300 border font-medium hover:text-blue-700 transition"
+    
+    {/* Gallery Modal */}
+    {isGalleryOpen && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+        <div className="relative w-full max-w-6xl max-h-[90vh] mx-4">
+          {/* Close Button */}
+          <button
+            onClick={() => setIsGalleryOpen(false)}
+            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
           >
-             Brochure {index + 1}
-          </a>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-gray-600 lg:text-md">No Brochures available</p>
-  )}
-</div>
-
-<div>
-  <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Customer Case Study</p>
-  {productDetails?.product?.customer_case_studies?.length > 0 ? (
-    <ul className="list-none pl-5 space-y-2 flex flex-col md:flex-row">
-      {productDetails.product.customer_case_studies.map((url, index) => (
-        <li key={index} className="md:mr-4">
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 font-[inter] underline border-gray-300 border font-medium hover:text-blue-700 transition"
-          >
-             Case Study {index + 1}
-          </a>
-        </li>
-      ))}
-    </ul>
-  ) : (
-    <p className="text-gray-600 lg:text-md">No Customer Case Studies available</p>
-  )}
-</div>
-
-                <div>
-    <p className="font-semibold mb-1 text-sm font-[inter] underline text-gray-800">Demo Video Link</p>
-    {productDetails?.product?.demo_video_link ? (
-      <a
-        href={productDetails.product.demo_video_link}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-block px-4 py-2 rounded-2xl md:ml-4 bg-white text-gray-500 font-[inter] underline border-gray-300 border font-medium hover:text-blue-700 transition"
-      >
-        View Demo Video
-      </a>
-    ) : (
-      <p className="text-gray-600 lg:text-md">No Demo video available</p>
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          
+          {/* Navigation Arrows - Only show if more than 1 image */}
+          {productDetails.product.screenshots.length > 1 && (
+            <>
+              <button
+                onClick={() => {
+                  setCurrentImageIndex(prev => 
+                    prev === 0 ? productDetails.product.screenshots.length - 1 : prev - 1
+                  );
+                  // Track navigation to previous image
+                  trackEvent({
+                    eventType: "GALLERY_NAVIGATION",
+                    entityType: "product",
+                    entityId: productDetails?.product?.id,
+                    pageUrl: `Gallery Previous - Image ${currentImageIndex}`,
+                  });
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setCurrentImageIndex(prev => 
+                    prev === productDetails.product.screenshots.length - 1 ? 0 : prev + 1
+                  );
+                  // Track navigation to next image
+                  trackEvent({
+                    eventType: "GALLERY_NAVIGATION",
+                    entityType: "product",
+                    entityId: productDetails?.product?.id,
+                    pageUrl: `Gallery Next - Image ${currentImageIndex}`,
+                  });
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
+          
+          {/* Current Image */}
+          <div className="relative w-full h-[70vh] rounded-xl overflow-hidden">
+            <Image
+              src={productDetails.product.screenshots[currentImageIndex]}
+              alt={`Screenshot ${currentImageIndex + 1}`}
+              fill
+              className="object-contain"
+              sizes="(max-width: 1200px) 100vw, 1200px"
+            />
+          </div>
+          
+          {/* Image Counter */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/50 text-white text-sm">
+            {currentImageIndex + 1} / {productDetails.product.screenshots.length}
+          </div>
+          
+          {/* Thumbnail Strip */}
+          {productDetails.product.screenshots.length > 1 && (
+            <div className="flex justify-center gap-2 mt-4 overflow-x-auto py-2">
+              {productDetails.product.screenshots.map((src, i) => (
+                <button
+                  key={i}
+                  onClick={() => {
+                    setCurrentImageIndex(i);
+                    // Track thumbnail click
+                    trackEvent({
+                      eventType: "GALLERY_THUMBNAIL_CLICK",
+                      entityType: "product",
+                      entityId: productDetails?.product?.id,
+                      pageUrl: `Thumbnail Click - Image ${i + 1}`,
+                    });
+                  }}
+                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                    currentImageIndex === i 
+                      ? 'border-blue-500 scale-105' 
+                      : 'border-transparent hover:border-gray-400'
+                  }`}
+                >
+                  <Image
+                    src={src}
+                    alt={`Thumbnail ${i + 1}`}
+                    width={80}
+                    height={80}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
     )}
   </div>
-                </div>
+)}
+
+
+
+                  </div>
+
+                  <h3 className="text-gray-900 text-xl font-semibold">
+                    Short Description
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-8">
+                    {productDetails?.product?.short_description || "No description available."}
+                  </p>
+                  <h3 className="text-gray-900 text-xl font-semibold">
+                    Description
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-8">
+                    {productDetails?.product?.long_description || "No detailed description available."}
+                  </p>
+
+                  <div className="flex gap-4 flex-wrap">
+                    {/* Brochures */}
+                   {productDetails?.product?.brochures?.length > 0 && (
+  <div className="flex flex-col gap-2">
+    {productDetails.product.brochures.map((url, index) => (
+      <a
+        key={index}
+        href={url}
+        download
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
+        onClick={() => {
+          trackEvent({
+            eventType: "BROCHURE_DOWNLOAD",
+            entityType: "product",
+            entityId: productDetails?.product?.id,
+            utm: {
+              utm_source: "email",
+              utm_medium: "newsletter",
+              utm_campaign: "q4_launch",
+            },
+          });
+        }}
+      >
+        Brochure {index + 1} <Download size={18} />
+      </a>
+    ))}
+  </div>
+)}
+
+
+                    {/* Case Studies */}
+              {productDetails?.product?.customer_case_studies?.length > 0 && (
+  <div className="flex flex-col gap-2">
+    {productDetails.product.customer_case_studies.map((url, index) => (
+      <a
+        key={index}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors"
+        onClick={() => {
+          trackEvent({
+            eventType: "CASE_STUDY",
+            entityType: "product",
+            entityId: productDetails?.product?.id,
+            utm: {
+              utm_source: "email",
+              utm_medium: "newsletter",
+              utm_campaign: "q4_launch",
+            },
+          });
+        }}
+      >
+        Case Study {index + 1}
+      </a>
+    ))}
+  </div>
+)}
+
+                    {/* Demo Video */}
+                    {productDetails?.product?.demo_video_link && (
+                      <button
+                        className="px-6 py-3 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
+                        onClick={handleDemoVideoClick}
+                      >
+                        Demo Video
+                      </button>
+                    )}
+                  </div>
+                </SectionCard>
+              )}
+
+              {/* DETAILS */}
+              {activeSection === "details" && (
+                <SectionCard>
+                  <h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
+                    Key Features
+                  </h3>
+                  <ul className="list-disc pl-5 text-gray-600 text-md font-normal mb-6">
+                    {parseKeyFeatures(productDetails?.product?.key_features).map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+
+                  <h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
+  Primary Use Cases
+</h3>
+
+<div className="text-gray-600 text-md font-normal mb-6">
+  {(() => {
+    const data = productDetails?.product?.primary_use_cases;
+    if (!data) return null;
+
+    // Check if it contains HTML tags
+    const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
+
+    // If HTML → render directly
+    if (isHtml) {
+      return (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: data.replace(/&nbsp;/g, " "),
+          }}
+        />
+      );
+    }
+
+    // Else → render numbered/plain text nicely
+    return data
+      .split(/\n\s*\n/)
+      .filter(Boolean)
+      .map((block, i) => {
+        const [title, ...desc] = block.split("\n");
+        return (
+          <div key={i} className="mb-4">
+            <h4 className="font-semibold text-gray-900 text-lg">
+              {title.replace(/^\d+\.\s*/, "")}
+            </h4>
+            <p className="text-gray-600 text-base mt-1">
+              {desc.join(" ").trim()}
+            </p>
+          </div>
+        );
+      });
+  })()}
+</div>
+<h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
+  Technical Prerequisites
+</h3>
+
+<div className="text-gray-600 text-md font-normal mb-6">
+  {(() => {
+    const data = productDetails?.product?.technical_prerequisites;
+    if (!data) return null;
+
+    // Check if it contains HTML tags
+    const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
+
+    // If HTML → render directly
+    if (isHtml) {
+      return (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: data.replace(/&nbsp;/g, " "),
+          }}
+        />
+      );
+    }
+
+    // Else → render structured plain text
+    return data
+      .split(/\n\s*\n/)
+      .filter(Boolean)
+      .map((block, i) => {
+        const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+
+        return (
+          <div key={i} className="mb-4">
+            <h4 className=" text-gray-600 text-base">
+              {lines[0]}
+            </h4>
+            {lines.slice(1).map((line, idx) => (
+              <p key={idx} className="text-gray-600 text-base mt-1">
+                {line}
+              </p>
+            ))}
+          </div>
+        );
+      });
+  })()}
+</div>
+
+
+
+                  {/* Target Audience */}
+                  {productDetails?.product?.target_audience?.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-semibold mb-2 text-black">Target Audience</h3>
+                      <ul className="list-disc pl-5 text-gray-600">
+                        {productDetails.product.target_audience.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Category */}
+                  {productDetails?.product?.category_subcategory?.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-semibold mb-2 text-black">Category</h3>
+                      <ul className="list-disc pl-5 text-gray-600">
+                        {productDetails.product.category_subcategory.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Cloud Provider Support */}
+                  {productDetails?.product?.cloud_provider_support?.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-semibold mb-2 text-black">
+                        Cloud Provider Support
+                      </h3>
+                      <ul className="list-disc pl-5 text-gray-600">
+                        {productDetails.product.cloud_provider_support.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Regions Supported */}
+                  {productDetails?.product?.regions_supported?.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="font-semibold mb-2 text-black">Regions Supported</h3>
+                      <ul className="list-disc pl-5 text-gray-600">
+                        {productDetails.product.regions_supported.map((item, i) => (
+                          <li key={i}>{item}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </SectionCard>
+              )}
+
+              {/* FEATURES */}
+              {activeSection === "features" && (
+                <SectionCard>
+                  <h3 className="text-gray-900 text-2xl font-bold mb-6">
+                    Technical & Pricing Information
+                  </h3>
+                  
+                  {productDetails?.product?.technical_prerequisites && (
+                    <div className="mb-6">
+                      <h4 className="font-semibold mb-2 text-black">Technical Prerequisites:</h4>
+                      <p className="text-gray-700">
+                         dangerouslySetInnerHTML={{
+                      __html: productDetails?.product?.technical_prerequisites?.replace(/&nbsp;/g, " ") || "",
+                    }}
+                      </p>
+                    </div>
+                  )}
+
+                  {productDetails?.product?.pricing_model && (
+                    <div className="mb-6">
+                      <h4 className="font-semibold mb-2 text-black">Pricing Model:</h4>
+                      <p className="text-gray-700">
+                        {clean(productDetails.product.pricing_model)}
+                      </p>
+                    </div>
+                  )}
+
+                  {productDetails?.product?.api_metering_endpoint && (
+                    <div className="mt-6">
+                      <a
+                        href={productDetails.product.api_metering_endpoint}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline hover:text-blue-800"
+                      >
+                        View Terms Of Use
+                      </a>
+                    </div>
+                  )}
+                </SectionCard>
+              )}
+
+              {/* PRICING */}
+              {activeSection === "pricing" && (
+                <SectionCard>
+                  <h3 className="text-gray-900 text-2xl font-bold mb-6">
+                    Pricing Information
+                  </h3>
+                  <p className="text-gray-600 leading-relaxed mb-8">
+                    Flexible pricing plans based on your business needs. Please contact us for custom pricing or use the &quot;Get Private Offer&quot; button for detailed pricing information.
+                  </p>
+                </SectionCard>
               )}
             </div>
 
+            {/* Pricing Sidebar */}
+            <div className="w-80 flex-shrink-0">
+              <div className="bg-white rounded-2xl border border-gray-200 p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                  Pricing
+                </h3>
+                <p className="text-sm text-gray-500 mb-6">
+                  Contact for detailed pricing information
+                </p>
 
-          </section>
-          {/* for mobile screensize */}
-<section className="block md:hidden w-full px-2 py-6">
-  <div className="space-y-6 text-sm max-w-xl mx-auto font-[inter]">
-    
-    {/* --- INFO Section --- */}
-    <div className="border-b pl-2">
-    <h3 className="font-semibold text-lg pb-2 mb-3 text-gray-700">INFORMATION</h3>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Short Description</p>
-      <p className="text-gray-600">{productDetails?.product?.short_description}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Key Features</p>
-      <p className="text-gray-600">{productDetails?.product?.key_features}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Target Audience</p>
-      <p className="text-gray-600">{productDetails?.product?.target_audience}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Category & Subcategory</p>
-      <p className="text-gray-600">{productDetails?.product?.category_subcategory}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Regions Supported</p>
-      <p className="text-gray-600">{productDetails?.product?.regions_supported}</p>
-    </div>
-    </div>
-    {/* --- TECH INFO Section --- */}
-    <div className="border-b pl-2">
-    <h3 className="font-semibold text-lg pb-2 mb-3 text-gray-700">TECHNICAL INFORMATION</h3>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700 ">Cloud Provider Support</p>
-      <p className="text-gray-600">{productDetails?.product?.cloud_provider_support}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Supported AWS Services</p>
-      <p className="text-gray-600">{productDetails?.product?.supported_aws_services}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Supported Azure Services</p>
-      <p className="text-gray-600">{productDetails?.product?.supported_azure_services}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Deployment Model</p>
-      <p className="text-gray-600">{productDetails?.product?.deployment_model}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700" >Technical Prerequisites</p>
-      <p className="text-gray-600">{productDetails?.product?.technical_prerequisites}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">API / Metering Endpoint</p>
-      <p className="text-gray-600">{productDetails?.product?.api_metering_endpoint}</p>
-    </div>
-    </div>
-    {/* --- PRICING Section --- */}
-    <div className="border-b pl-2">
-    <h3 className="font-semibold text-lg pb-2 mb-3 text-gray-700">PRICING & LICENSING</h3>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Pricing Model</p>
-      <p className="text-gray-600">{productDetails?.product?.pricing_model}</p>
-    </div>
-    {/* <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Billing Dimension</p>
-      <p className="text-gray-600">{productDetails?.product?.billing_dimension}</p>
-    </div> */}
-    {/* <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">License Model</p>
-      <p className="text-gray-600">{productDetails?.product?.license_model}</p>
-    </div> */}
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Free Trial Available</p>
-      <p className="text-gray-600">{productDetails?.product?.free_trial_available ? "Yes" : "No"}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">SKU ID</p>
-      <p className="text-gray-600">{productDetails?.product?.sku_id}</p>
-    </div>
-    </div>
-    {/* --- SUPPORT INFO Section --- */}
-    {/* <div className="border-b pl-2">
-    <h3 className="font-semibold text-lg pb-2 mb-3 text-gray-700">SUPPORT INFORMATION</h3>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Support Contact Person</p>
-      <p className="text-gray-600">{productDetails?.product?.support_contact_name}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Support Contact Email</p>
-      <p className="text-gray-600">{productDetails?.product?.support_email}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Support Phone Number</p>
-      <p className="text-gray-600">{productDetails?.product?.support_phone}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Support Availability</p>
-      <p className="text-gray-600">{productDetails?.product?.support_hours}</p>
-    </div>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Service Level Agreement (SLA)</p>
-      {productDetails?.product?.sla_documents?.length > 0 ? (
-        <ul className="list-none pl-5 space-y-2 flex flex-col">
-          {productDetails.product.sla_documents.map((url, index) => (
-            <li key={index}>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 underline border-gray-300 border font-medium hover:text-blue-700 transition"
-              >
-                SLA Document {index + 1}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-600">No SLA documents available</p>
-      )}
-    </div>
-    </div> */}
-
-    {/* --- MEDIA Section --- */}
-    <div className="border-b pb-4 pl-2">
-    <h3 className="font-semibold text-lg pb-2 mb-3 text-gray-700">MEDIA & ASSETS</h3>
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Screenshots</p>
-      {productDetails?.product?.screenshots?.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {productDetails.product.screenshots.map((imgUrl, index) => (
-            <img key={index} src={imgUrl} alt={`Screenshot ${index + 1}`} className="w-full h-50" />
-          ))}
-        </div>
-      ) : (
-        <p className="text-gray-600">No Screenshot available</p>
-      )}
-    </div>
-
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Brochure</p>
-      {productDetails?.product?.brochures?.length > 0 ? (
-        <ul className="list-none pl-5 space-y-2 flex flex-col">
-          {productDetails.product.brochures.map((url, index) => (
-            <li key={index}>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 underline border-gray-300 border font-medium hover:text-blue-700 transition"
-              >
-                Brochure {index + 1}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-600">No Brochures available</p>
-      )}
-    </div>
-
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Customer Case Study</p>
-      {productDetails?.product?.customer_case_studies?.length > 0 ? (
-        <ul className="list-none pl-5 space-y-2 flex flex-col">
-          {productDetails.product.customer_case_studies.map((url, index) => (
-            <li key={index}>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 underline border-gray-300 border font-medium hover:text-blue-700 transition"
-              >
-                Case Study {index + 1}
-              </a>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-600">No Customer Case Studies available</p>
-      )}
-    </div>
-
-    <div className="mb-5">
-      <p className="font-semibold mb-1 underline text-gray-700">Demo Video Link</p>
-      {productDetails?.product?.demo_video_link ? (
-        <a
-          href={productDetails.product.demo_video_link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-block px-4 py-2 rounded-2xl bg-white text-gray-500 underline border-gray-300 border font-medium hover:text-blue-700 transition"
-        >
-          View Demo Video
-        </a>
-      ) : (
-        <p className="text-gray-600">No Demo video available</p>
-      )}
-    </div>
-
-  </div>
-  </div>
-</section>
-        </div>
-        <section className="relative px-4 py-10 max-w-[1920px] mx-auto">
-          <div className="flex justify-between items-center absolute md:top-[70px] mb-40 z-30 pointer-events-none">
-            <h2 className="text-xl font-semibold pointer-events-auto">More Similar Products</h2>
-          </div>
-          <Swiper
-            className="relative z-20"
-            modules={[Navigation, Autoplay]}
-            spaceBetween={20}
-            // loop={true}
-            navigation={true}
-            pagination={{ clickable: true }}
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            // default hai (horizontal slide)
-            // direction="horizontal"  // (optional) explicitly add
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              900: { slidesPerView: 3 },
-              1024: { slidesPerView: 4 },
-            }}
-          >
-            {products.map((product) => (
-              <SwiperSlide key={product.id}>
-                <Link href={`/bundle?productid=${product.id}`} passHref>
-                <div className="bg-zinc-50 border border-zinc-200 h-[400px] cursor-pointer w-[90%] sm:w-[295px] mx-auto">
-                  <div className="w-full h-[258px] relative">
-                    <Image
-                      fill
-                      alt={product.title || 'Product Image'}
-                      className="w-full h-[256px] object-cover rounded-t"
-                      src="/image/acronis.png"
-                    />
-                  </div>
-                  <div className="p-2">
-                    <p className="uppercase text-xs text-zinc-400 tracking-wider">
-                      {product.name}
-                    </p>
-                    <p className="text-black text-left text-lg font-normal w-[90%] leading-snug h-12 overflow-hidden line-clamp-2">
-                      {product.short_description}
-                    </p>
-                    <p className="text-blue-600 text-sm pt-3">
-                      Starting From {product.starting_price}
-                    </p>
-                  </div>
+                <div className="bg-gray-50 rounded-xl p-6 mb-4">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    Starting From
+                  </p>
+                  <p className="text-4xl font-bold text-gray-900 mb-2">
+                    &#x20b9;{productDetails?.product?.starting_price || "Contact"}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Custom pricing available based on requirements
+                  </p>
                 </div>
-                </Link>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </section>
-         {isModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 ">
-            <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col "> 
-              {/* Close Button */}
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-              >
-                <X className="w-6 h-6" />
-              </button>
 
-              <h2 className="text-xl font-semibold mb-4 text-white ">Request Demo</h2>
-              <form
-              onSubmit={handleSubmit}>
-                {/* Role Title */}
-        <input
-          type="text"
-          placeholder="Your Role (e.g. CTO)"
-          className={`w-full border bg-zinc-800 p-2 mb-4 placeholder:text-zinc-600 text-white ${
-            errors.roleTitle ? "border-red-500" : "border-none"
-          }`}
-          value={roleTitle}
-          onChange={(e) => setRoleTitle(e.target.value)}
-        />
-                {errors.roleTitle && (
-  <p className="text-red-500 text-sm mb-1">{errors.roleTitle}</p>
-)}
-
-        {/* Use Case */}
-        <input
-          type="text"
-          placeholder="Use Case (e.g. Evaluate new system)"
-          className={`w-full border bg-zinc-800 p-2 mb-4 placeholder:text-zinc-600 text-white ${
-            errors.useCase ? "border-red-500" : "border-none"
-          }`}
-          value={useCase}
-          onChange={(e) => setUseCase(e.target.value)}
-        />
-        {errors.useCase && (
-  <p className="text-red-500 text-sm mb-1">{errors.useCase}</p>
-)}
-        {/* Message */}
-        <textarea
-          rows={6}
-          placeholder="Comments"
-          className={`w-full border bg-zinc-800 p-2 mb-4 placeholder:text-zinc-600 text-white ${
-            errors.message ? "border-red-500" : "border-none"
-          }`}
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-        />
-        {errors.message && (
-  <p className="text-red-500 text-sm mb-1">{errors.message}</p>
-)}
-        <button
-          type="submit"
-          className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-2 w-full"
-        >
-          Submit
-        </button>
-              </form>
+                <button
+                  className="w-full text-center text-blue-600 hover:text-blue-700 font-semibold transition-colors"
+                  onClick={handleViewPricingClick}
+                >
+                  View More Pricing Information
+                </button>
+              </div>
             </div>
           </div>
-        )}
-         {isPriceModalOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
-              {/* Close Button */}
-              <button
-                onClick={() => setIsPriceModalOpen(false)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-              >
-                <X className="w-6 h-6" />
-              </button>
+        </div>
+      </div>
 
-              <h2 className="text-xl font-semibold mb-4 text-white ">Enquiry Form</h2>
-              <form onSubmit={handleSubmitB}>
+      {/* Similar Products Slider */}
+      <section className="relative px-4 py-10 max-w-[1920px] mx-auto">
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-xl text-black font-semibold">More Similar Products</h2>
+        </div>
+        <Swiper
+          modules={[Navigation, Autoplay]}
+          spaceBetween={20}
+          navigation={true}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
+          breakpoints={{
+            0: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            900: { slidesPerView: 3 },
+            1024: { slidesPerView: 4 },
+          }}
+        >
+          {products.map((product) => (
+  
+
+<SwiperSlide key={product.id}>
+  <Link href={`/bundle?productid=${product.id}`} passHref>
+    <div
+      className="bg-zinc-50 border border-zinc-200 h-[415px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden"
+      onClick={() => {
+        trackEvent({
+          eventType: "PRODUCT_CLICK",
+          entityType: "product",
+          entityId: product.id,
+          pageUrl: window.location.pathname,
+        });
+      }}
+    >
+      <div className="w-full h-[258px] relative">
+        <Image
+          src={product.product_logo || "/image/acronis.png"}
+          alt={product.name || "Product Image"}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+        />
+      </div>
+
+      <div className="p-4">
+        <p className="uppercase text-base text-black  tracking-wider mb-2">
+          {product.category || "Product"}
+        </p>
+
+        <p className=" text-left text-zinc-400 text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
+          {product.short_description || product.name}
+        </p>
+
+        <p className="text-blue-600 text-sm">
+          Starting From  &#x20b9;{product.starting_price || "Contact"}
+        </p>
+      </div>
+    </div>
+  </Link>
+</SwiperSlide>
+
+          ))}
+        </Swiper>
+      </section>
+
+      {/* Request Demo Modal */}
+      {isModalOpen && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+  <div className="bg-black text-zinc-300 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
+    
+    {/* Close Button */}
+    <button
+      onClick={() => setIsModalOpen(false)}
+      className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
+    >
+      <X className="w-6 h-6" />
+    </button>
+
+    {/* Title */}
+    <h2 className="text-xl font-semibold mb-4 text-white">
+      Request Demo
+    </h2>
+
+    {/* Product Info */}
+    <div className="mb-6 space-y-3">
+      <p className="text-white font-semibold text-lg">
+       <span className="text-orange-400">{productDetails.product.name}</span>
+      </p>
+
+      <p className="text-zinc-400 text-sm">
+       {productDetails.product.short_description}
+      </p>
+
+      <p className="text-zinc-500 text-sm italic">
+       
+      </p>
+    </div>
+
+    {/* Submit Form */}
+  <form onSubmit={handleSubmit}>
+  {/* Authorization Checkbox */}
+  <div className="flex items-start gap-3 mb-4">
+    <input
+      type="checkbox"
+      id="authorization"
+      required
+      className="mt-1 w-7 h-7 accent-orange-500"
+    />
+    <label
+      htmlFor="authorization"
+      className="text-sm text-zinc-400 leading-snug"
+    >
+      I authorize <span className="text-orange-400">NeoZaar</span> to share my
+      information with relevant solution experts for follow-up on this inquiry.
+    </label>
+  </div>
+
+  <button
+    type="submit"
+    className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
+  >
+    Submit Request
+  </button>
+  <p className="text-xs text-gray-500 pl-3 mt-3">
+
+  NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
+  </p>
+</form>
+
+  </div>
+</div>
+
+
+      )}
+
+      {/* Price Enquiry Modal */}
+ {isPriceModalOpen && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
+
+      {/* Close */}
+      <button
+        onClick={() => setIsPriceModalOpen(false)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
+      >
+        <X className="w-6 h-6" />
+      </button>
+
+      <h2 className="text-xl font-semibold mb-4 text-white">
+      Get Private Offer
+      </h2>
+
+      <form onSubmit={handleSubmitB}>
+        
+        {/* Hidden default values */}
+        <input
+          type="hidden"
+          name="requestType"
+          value="Demo Request"
+        />
 
         <input
-          type="text"
-          placeholder="enter AWS id"
-          className={`w-full border bg-zinc-800 p-2 mb-4 placeholder:text-zinc-600 text-white ${
-            errors.AWSID ? "border-red-500" : "border-none"
-          }`}
-          value={AWSID}
-          onChange={(e) => setAWSID(e.target.value)}
+          type="hidden"
+          name="product"
+          value="Your Product Name"
         />
-        {errors.AWSID && (
-  <p className="text-red-500 text-sm mb-1">{errors.AWSID}</p>
-)}
 
-        {/* Message */}
+        <input
+          type="hidden"
+          name="AWSID"
+          value={AWSID || "N/A"}
+        />
+
         <textarea
-          rows={6}
-          placeholder="Comments"
-          className={`w-full border bg-zinc-800 p-2 mb-4 placeholder:text-zinc-600 text-white ${
-            errors.messageB ? "border-red-500" : "border-none"
-          }`}
-          value={messageB}
-          onChange={(e) => setMessageB(e.target.value)}
+          className="hidden"
+          name="message"
+          value={messageB || "User requested pricing information"}
+          readOnly
         />
-        {errors.messageB && (
-  <p className="text-red-500 text-sm mb-1">{errors.messageB}</p>
-)}
 
+        {/* Display info only */}
+        <div className="mb-6 space-y-2 text-zinc-300">
+          <p>
+            <span className="text-white font-semibold">Product:</span>{" "}
+            {productDetails.product.name}
+          </p>
+          <p className="text-sm text-zinc-400">
+         { productDetails.product.short_description}
+          </p>
+        </div>
+        <div className="flex items-start gap-3 mb-4">
+    <input
+      type="checkbox"
+      id="authorization"
+      required
+      className="mt-1 w-7 h-7 accent-orange-500"
+    />
+    <label
+      htmlFor="authorization"
+      className="text-sm text-zinc-400 leading-snug"
+    >
+      I authorize <span className="text-orange-400">NeoZaar</span> to share my
+      information with relevant solution experts for follow-up on this inquiry.
+    </label>
+  </div>
+        {/* Submit */}
         <button
           type="submit"
-          className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-2 w-full"
+          className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
         >
-          Submit
+          Submit Enquiry
         </button>
-              </form>
-            </div>
-          </div>
-        )}
-        {showSuccessModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-          <div className="bg-white shadow-lg p-6 w-96 text-center">
-            <h2 className="text-xl font-bold text-green-600">Success!</h2>
-            <p className="mt-2 text-gray-600">
-              Thank you for reaching out to us.  
-               Our team has received your request and will contact you shortly.
+         <p className="text-xs text-gray-500 pl-3 mt-3">
+
+  NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
+  </p>
+      </form>
+    </div>
+  </div>
+)}
+
+
+      {/* Success Modal */}
+      {showSuccessModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+          <div className="bg-white shadow-lg p-6 w-96 text-center rounded-lg">
+            <h2 className="text-xl font-bold text-orange-500 mb-2">Success!</h2>
+            <p className="text-gray-600">
+              Thank you for your request. Our team has received it and will reach out shortly to understand your requirements and schedule a demo.
             </p>
           </div>
         </div>
       )}
-      </main>
-      <Footer></Footer>
-    </div>
+      
 
+      <Footer />
+    </>
+  );
+}
+
+// SectionCard Component
+function SectionCard({ children }) {
+  return (
+    <div className="bg-white rounded-2xl border border-gray-200 p-8">
+      {children}
+    </div>
   );
 }

@@ -160,7 +160,7 @@ export default function Page() {
                         <Header />
                     </div>
                     {/* Hero Content */}
-                    <div className="relative mx-auto md:my-35 lg:my-25 my-40 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
+                    <div className="relative mx-auto md:my-35 lg:my-25 my-24 w-full max-w-full sm:max-w-[800px] flex flex-col items-center justify-center rounded-lg text-center px-2">
                         <h1 className="text-white font-light font-['serif'] text-3xl sm:text-4xl md:text-5xl mb-4 leading-snug">
                             Shaping the Future, Together.
                         </h1>
@@ -392,14 +392,17 @@ export default function Page() {
                                         {/* Icon Container */}
                                         <div className="flex justify-center mb-6 sm:mb-8">
                                             <div className={`relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 rounded-full border-2 border-[#FFA348] flex items-center justify-center  transition-all duration-500 group-hover:shadow-lg`}>
-                                                <div className='w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14'>
-
-                                                <Image
+                                                <div className='w-10 h-10 sm:w-12 sm:h-12 lg:w-14 lg:h-14 flex justify-center items-center'>
+                                                    <div className='relative h-10 w-10' >
+                                                      <Image
                                                     src={feature.image}
                                                     alt={feature.title}
                                                     className="object-contain h-10 w-10"
                                                     fill
                                                 />
+                                                    </div>
+
+                                              
                                                 </div>
                                             </div>
                                         </div>

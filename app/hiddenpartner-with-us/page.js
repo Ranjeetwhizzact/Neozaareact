@@ -1602,10 +1602,10 @@ if (!formData.company_registration_number.trim()) {
     >
       I agree to the{" "}
       <Link
-        href="/terms-and-conditions"
+        href="/terms-of-use"
         className="font-semibold underline"
       >
-        Terms & Conditions
+        Terms Of Use
       </Link>{" "}
       and consent to the collection and use of my data as outlined in the{" "}
       <Link
