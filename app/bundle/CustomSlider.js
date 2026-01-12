@@ -390,23 +390,46 @@ useEffect(() => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Left Sidebar */}
-          <div className="w-64 flex-shrink-0">
-            <nav className="space-y-1 flex md:flex-col">
-              {menu.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`block w-full text-left px-4 py-3 transition-colors ${
-                    activeSection === item.id
-                      ? "text-gray-900 font-semibold border-b-2 border-gray-900"
-                      : "text-gray-600 hover:text-gray-900"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-          </div>
+<div className="w-64 flex-shrink-0">
+  <nav className="space-y-1 flex md:flex-col">
+  {menu.map((item) => (
+  <button
+    key={item.id}
+    onClick={() => {
+      setActiveSection(item.id);
+      
+      // Track menu click event
+      trackEvent({
+        eventType: `PRODUST_${item.label.toUpperCase().replace(/\s+/g, '_')}_CLICK`,
+        entityType: "product",
+        entityId: productDetails?.product?.id,
+        section: item.id,
+        sectionLabel: item.label,
+        pageUrl: productDetails?.product?.name,
+        utm: {
+          utm_source: typeof window !== "undefined" 
+            ? new URLSearchParams(window.location.search).get("utm_source")
+            : null,
+          utm_medium: typeof window !== "undefined" 
+            ? new URLSearchParams(window.location.search).get("utm_medium")
+            : null,
+          utm_campaign: typeof window !== "undefined" 
+            ? new URLSearchParams(window.location.search).get("utm_campaign")
+            : null,
+        },
+      });
+    }}
+    className={`block w-full text-left px-4 py-3 transition-colors ${
+      activeSection === item.id
+        ? "text-gray-900 font-semibold border-b-2 border-gray-900"
+        : "text-gray-600 hover:text-gray-900"
+    }`}
+  >
+    {item.label}
+  </button>
+))}
+  </nav>
+</div>
 
           {/* Right Content Area */}
           <div className="flex-1 flex flex-col md:flex-row gap-6">
@@ -441,7 +464,7 @@ useEffect(() => {
           onClick={() => {
             // Track the image click event
             trackEvent({
-              eventType: "PRODUCT_VIEW",
+              eventType: "PRODUCT_IMAGE_CLICK",
               entityType: "product",
               entityId: productDetails?.product?.id,
               pageUrl: productDetails?.product?.name,
