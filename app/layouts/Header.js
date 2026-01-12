@@ -28,7 +28,7 @@ export default function Header() {
 
   // Get the base URL for the app dynamically
   const getAppBaseUrl = () => {
-    return process.env.NEXT_PUBLIC_APP_BASE_URL || "http://135.235.138.35/";
+    return process.env.NEXT_PUBLIC_APP_BASE_URL || "https://www.neozaar.com/";
   };
 
   // Close dropdowns when clicking outside
