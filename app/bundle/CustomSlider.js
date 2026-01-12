@@ -612,56 +612,64 @@ useEffect(() => {
 
                   <div className="flex gap-4 flex-wrap">
                     {/* Brochures */}
-                    {productDetails?.product?.brochures?.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        {productDetails.product.brochures.map((url, index) => (
-                          <button
-                            key={index}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
-                            onClick={() => {
-        trackEvent({
-          eventType: "BROCHURE_DOWNLOAD", // CASE_STUDY, DEMO_VIDEO_LINK
-          entityType: "product",
-          entityId:  productDetails?.product?.id,
-          utm: {
-            utm_source: "email",
-            utm_medium: "newsletter",
-            utm_campaign: "q4_launch",
-          },
-        });
-      }}
-                          >
-                            Brochure {index + 1} <Download size={18} />
-                          </button>
-                        ))}
-                      </div>
-                    )}
+                   {productDetails?.product?.brochures?.length > 0 && (
+  <div className="flex flex-col gap-2">
+    {productDetails.product.brochures.map((url, index) => (
+      <a
+        key={index}
+        href={url}
+        download
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
+        onClick={() => {
+          trackEvent({
+            eventType: "BROCHURE_DOWNLOAD",
+            entityType: "product",
+            entityId: productDetails?.product?.id,
+            utm: {
+              utm_source: "email",
+              utm_medium: "newsletter",
+              utm_campaign: "q4_launch",
+            },
+          });
+        }}
+      >
+        Brochure {index + 1} <Download size={18} />
+      </a>
+    ))}
+  </div>
+)}
+
 
                     {/* Case Studies */}
-                    {productDetails?.product?.customer_case_studies?.length > 0 && (
-                      <div className="flex flex-col gap-2">
-                        {productDetails.product.customer_case_studies.map((url, index) => (
-                          <button
-                            key={index}
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors"
-                                       onClick={() => {
-        trackEvent({
-          eventType: "CASE_STUDY", // CASE_STUDY, DEMO_VIDEO_LINK
-          entityType: "product",
-          entityId: productDetails?.product?.id,
-          utm: {
-            utm_source: "email",
-            utm_medium: "newsletter",
-            utm_campaign: "q4_launch",
-          },
-        });
-      }}
-                          >
-                            Case Study {index + 1}
-                          </button>
-                        ))}
-                      </div>
-                    )}
+              {productDetails?.product?.customer_case_studies?.length > 0 && (
+  <div className="flex flex-col gap-2">
+    {productDetails.product.customer_case_studies.map((url, index) => (
+      <a
+        key={index}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors"
+        onClick={() => {
+          trackEvent({
+            eventType: "CASE_STUDY",
+            entityType: "product",
+            entityId: productDetails?.product?.id,
+            utm: {
+              utm_source: "email",
+              utm_medium: "newsletter",
+              utm_campaign: "q4_launch",
+            },
+          });
+        }}
+      >
+        Case Study {index + 1}
+      </a>
+    ))}
+  </div>
+)}
 
                     {/* Demo Video */}
                     {productDetails?.product?.demo_video_link && (

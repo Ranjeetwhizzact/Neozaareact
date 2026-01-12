@@ -208,8 +208,16 @@ export default function Page() {
         }
       } else {
         // Handle specific server errors
-        if (data.message?.toLowerCase().includes('email') || data.message?.toLowerCase().includes('already exists')) {
+        if (data.message?.toLowerCase().includes('email') || 
+            data.message?.toLowerCase().includes('already exists') ||
+            data.message?.toLowerCase().includes('already registered')) {
+          
           toast.error('This email is already registered. Please use a different email or try logging in.');
+          
+          // Redirect to login page after showing the message
+          setTimeout(() => {
+            router.push('/auth/login');
+          }, 2000); // Redirect after 2 seconds so user can see the message
         } else if (data.message?.toLowerCase().includes('phone') || data.message?.toLowerCase().includes('mobile')) {
           toast.error('This mobile number is already registered.');
         } else {
