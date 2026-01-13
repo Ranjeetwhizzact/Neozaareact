@@ -15,6 +15,65 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
+// SEO Meta Tags Component
+function SeoMetaTags({ seoData }) {
+  if (!seoData) return null;
+
+  const {
+    meta_title,
+    meta_description,
+    meta_keywords,
+    canonical_url,
+    og_title,
+    og_description,
+    og_image,
+    twitter_title,
+    twitter_description,
+    twitter_image,
+    is_follow = 1,
+    is_index = 1,
+    schema_markup
+  } = seoData;
+
+  // Determine robots meta tag
+  const robotsContent = [
+    is_index === 1 ? 'index' : 'noindex',
+    is_follow === 1 ? 'follow' : 'nofollow'
+  ].join(', ');
+
+  return (
+    <>
+      {/* Basic Meta Tags */}
+      <title>{meta_title}</title>
+      <meta name="description" content={meta_description} />
+      <meta name="keywords" content={meta_keywords} />
+      <link rel="canonical" href={canonical_url} />
+      <meta name="robots" content={robotsContent} />
+
+      {/* Open Graph Tags */}
+      <meta property="og:title" content={og_title} />
+      <meta property="og:description" content={og_description} />
+      <meta property="og:image" content={og_image} />
+      <meta property="og:type" content="product" />
+      <meta property="og:url" content={canonical_url} />
+
+      {/* Twitter Card Tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={twitter_title} />
+      <meta name="twitter:description" content={twitter_description} />
+      <meta name="twitter:image" content={twitter_image} />
+
+      {/* JSON-LD Schema Markup */}
+      {schema_markup && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schema_markup }}
+        />
+      )}
+    </>
+  );
+}
+
 export default function CustomSlider() {
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -23,12 +82,13 @@ export default function CustomSlider() {
   const [activeSection, setActiveSection] = useState("overview");
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState(null);
+  const [seoData, setSeoData] = useState(null); // Add SEO state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState({});
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
-const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   
   // Form states
   const [roleTitle, setRoleTitle] = useState("");
@@ -41,7 +101,6 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const menu = [
     { id: "overview", label: "Overview" },
     { id: "details", label: "Details" },
-    // { id: "features", label: "Features" },
     { id: "pricing", label: "Pricing" },
   ];
 
@@ -51,7 +110,6 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
     if (productid) {
       setUserId(productid);
     }
-   
   }, [searchParams]);
 
   // Authentication check
@@ -66,7 +124,33 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
     checkAuth();
   }, [router]);
 
-  // Fetch product details and recommendations
+  // Function to fetch SEO data
+  const fetchSeoData = async (productId) => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+      
+      // Fetch SEO data from your SEO API endpoint
+      // Replace with your actual SEO API endpoint
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}seo/product/${productId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === 'success') {
+          setSeoData(data.data);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching SEO data:', error);
+    }
+  };
+
+  // Fetch product details, recommendations, and SEO data
   useEffect(() => {
     async function fetchProductDetails() {
       if (!userId) return;
@@ -80,7 +164,7 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
           {
             headers: { Authorization: `Bearer ${token}` },
           }
-        );
+        );gi
         
         if (res.status === 401 || res.status === 403) {
           router.push("/auth/login");
@@ -90,6 +174,9 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
         const data = await res.json();
         if (data.data) {
           setProductDetails(data.data);
+          
+          // Fetch SEO data after product details are loaded
+          fetchSeoData(userId);
           
           // Set recommendations if available
           if (Array.isArray(data.data.recommendations)) {
@@ -172,10 +259,6 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
     setIsPriceModalOpen(true);
   };
 
-
-
-
-
   const handleDemoVideoClick = () => {
     if (productDetails?.product?.demo_video_link) {
       window.open(productDetails.product.demo_video_link, "_blank");
@@ -192,10 +275,6 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
     e.preventDefault();
 
     let newErrors = {};
-    // if (!roleTitle.trim()) newErrors.roleTitle = "Role Title is required";
-    // if (!useCase.trim()) newErrors.useCase = "Use Case is required";
-    // if (!message.trim()) newErrors.message = "Message cannot be empty";
-
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
@@ -245,19 +324,6 @@ const [currentImageIndex, setCurrentImageIndex] = useState(0);
     e.preventDefault();
 
     let newErrors = {};
-    // if (!AWSID.trim()) {
-    //   newErrors.AWSID = "AWS Account ID is required";
-    // } else if (!/^\d{12}$/.test(AWSID.trim())) {
-    //   newErrors.AWSID = "Invalid AWS Account ID format";
-    // }
-    // if (!messageB.trim()) {
-    //   newErrors.messageB = "Message cannot be empty";
-    // }
-
-    // if (Object.keys(newErrors).length > 0) {
-    //   setErrors(newErrors);
-    //   return;
-    // }
 
     try {
       const token = localStorage.getItem("token");
@@ -309,7 +375,6 @@ useEffect(() => {
     } else if (e.key === 'ArrowLeft') {
       setCurrentImageIndex(prev => {
         const newIndex = prev === 0 ? productDetails?.product?.screenshots?.length - 1 : prev - 1;
-        // Track keyboard navigation
         trackEvent({
           eventType: "IMAGEVIEW",
           entityType: "product",
@@ -321,7 +386,6 @@ useEffect(() => {
     } else if (e.key === 'ArrowRight') {
       setCurrentImageIndex(prev => {
         const newIndex = prev === productDetails?.product?.screenshots?.length - 1 ? 0 : prev + 1;
-        // Track keyboard navigation
         trackEvent({
           eventType: "GALLERY_KEYBOARD_NAVIGATION",
           entityType: "product",
@@ -339,6 +403,31 @@ useEffect(() => {
 
   return (
     <>
+      {/* Add SEO Meta Tags in head */}
+      <head>
+        {seoData ? (
+          <SeoMetaTags seoData={seoData} />
+        ) : productDetails?.product ? (
+          // Fallback SEO using product data when SEO API data is not available
+          <>
+            <title>{productDetails.product.name} - NeoZaar Marketplace</title>
+            <meta 
+              name="description" 
+              content={productDetails.product.short_description || "Explore this product on NeoZaar Marketplace"} 
+            />
+            <meta 
+              name="keywords" 
+              content={productDetails.product.category_subcategory?.join(", ") || ""} 
+            />
+            <meta property="og:title" content={productDetails.product.name} />
+            <meta property="og:description" content={productDetails.product.short_description || ""} />
+            <meta property="og:image" content={productDetails.product.product_logo || ""} />
+            <meta property="og:type" content="product" />
+            <meta property="og:url" content={typeof window !== 'undefined' ? window.location.href : ''} />
+          </>
+        ) : null}
+      </head>
+      
       <Header />
       
       {/* Product Header Section */}
@@ -351,7 +440,7 @@ useEffect(() => {
                 {productDetails?.product?.product_logo && (
                   <Image
                     src={productDetails.product.product_logo}
-                    alt={productDetails.product.name}
+                    alt={seoData?.h1_title || productDetails.product.name}
                    fill
                     className="object-contain"
                   />
@@ -359,7 +448,7 @@ useEffect(() => {
               </div>
               <div className="pt-4 mx-3 col-span-12 lg:col-span-8 ">
                 <h1 className="text-xl lg:text-3xl text-center md:text-start font-bold text-gray-900 mb-2">
-                  {productDetails?.product?.name || "Loading..."}
+                  {seoData?.h1_title || productDetails?.product?.name || "Loading..."}
                 </h1>
                 <p className="text-sm text-gray-400 text-center md:text-start uppercase tracking-wider">
                   {productDetails?.product?.category_subcategory?.join(", ") || ""}
@@ -488,7 +577,7 @@ useEffect(() => {
         >
           <img
             src={src}
-            alt={`Screenshot ${i + 1}`}
+            alt={`${seoData?.h1_title || productDetails.product.name} - Screenshot ${i + 1}`}
             className="
               w-full
               h-full
@@ -565,7 +654,7 @@ useEffect(() => {
           <div className="relative w-full h-[70vh] rounded-xl overflow-hidden">
             <Image
               src={productDetails.product.screenshots[currentImageIndex]}
-              alt={`Screenshot ${currentImageIndex + 1}`}
+              alt={`${seoData?.h1_title || productDetails.product.name} - Screenshot ${currentImageIndex + 1}`}
               fill
               className="object-contain"
               sizes="(max-width: 1200px) 100vw, 1200px"
@@ -601,7 +690,7 @@ useEffect(() => {
                 >
                   <Image
                     src={src}
-                    alt={`Thumbnail ${i + 1}`}
+                    alt={`${seoData?.h1_title || productDetails.product.name} - Thumbnail ${i + 1}`}
                     width={80}
                     height={80}
                     className="w-full h-full object-cover"
