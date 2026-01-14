@@ -320,7 +320,7 @@ export default function Page(){
                 btn: "Explore Products",
               },
               {
-                img: "/brand-log/curated_Solutions.png",
+                img: "/brand-log/curated_bundles.png",
                 title: "Curated Solutions",
                 desc: "Get more value with pre-configured packages. Our Solutions combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
                   point1:'Security, AI, Modernization, FinOps kits',
@@ -405,7 +405,7 @@ export default function Page(){
 
     },
     {
-      img: "/brand-log/curated_Solutions.png",
+      img: "/brand-log/curated_bundles.png",
       title: "Curated Solutions",
       desc: "Get more value with pre-configured packages. Our Solutions combine storage, compute, and ISV solutions for maximum flexibility, scalability, and savings in key pipelines.",
         point1:'Security, AI, Modernization, FinOps kits',

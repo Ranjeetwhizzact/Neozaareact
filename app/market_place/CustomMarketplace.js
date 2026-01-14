@@ -560,8 +560,10 @@ export default function Home() {
         {/* Search Section */}
         <section id="search-section">
           <div className="w-full bg-white">
-            <div className="flex items-center gap-2 px-4 py-3 max-w-[1400px] mx-auto">
+            <div className="flex items-center flex-wrap lg:flex-nowrap gap-2 px-4 py-3 max-w-[1400px] mx-auto">
               {/* AI Assistant Button */}
+              <div className="flex gap-2">
+
               <div className="relative bg-white shrink-0 w-[100px] h-[68px] rounded-[20px] overflow-hidden flex items-center justify-center">
                 <Image
                   src="/assests/unsureaibg.png"
@@ -630,12 +632,13 @@ export default function Home() {
                   </button>
                 </div>
               </div>
+              </div>
 
               {/* Categories Button */}
               <div className="relative">
                 <button
                   onClick={() => setMenu(!menu)}
-                  className="flex items-center gap-3 h-[68px] text-black px-8 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 hover:bg-gray-50 transition-all group"
+                  className="flex items-center gap-3 h-[68px] text-black px-8 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 hover:bg-gray-50 transition-all group w-full"
                 >
                   <div className="flex flex-col gap-[5px]">
                     <span className="w-5 h-[2px] bg-gray-800 rounded-full transition-all group-hover:w-6"></span>
@@ -1173,7 +1176,7 @@ export default function Home() {
 
         {/* AI Assistant Section - Show when no tab is selected */}
         {!activeTab && !search && !categoriesSelect && (
-          <section className="w-11/12 m-auto bg-cover bg-center rounded-2xl overflow-hidden my-10 h-[242px] relative">
+          <section className="w-11/12 m-auto bg-cover bg-center rounded-2xl overflow-hidden my-10 h-[255px] lg:h-[242px] relative">
             <Image
               src="/assests/ask_ai_bg.png"
               alt="AI Background"
