@@ -829,7 +829,8 @@ support_desk_email: {
         toast.error('Something went wrong. Please try again.');
       }
     } else {
-      toast.error("Please agree to the Terms Of Use and Privacy Policy");
+     toast.error("Required information is missing. Please complete all mandatory fields.");
+
     }
   };
 

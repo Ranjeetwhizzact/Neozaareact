@@ -82,13 +82,15 @@ export default function CustomSlider() {
   const [activeSection, setActiveSection] = useState("overview");
   const [products, setProducts] = useState([]);
   const [productDetails, setProductDetails] = useState(null);
-  const [seoData, setSeoData] = useState(null); // Add SEO state
+  const [seoData, setSeoData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [errors, setErrors] = useState({});
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingProducts, setIsLoadingProducts] = useState(false);
   
   // Form states
   const [roleTitle, setRoleTitle] = useState("");
@@ -130,8 +132,6 @@ export default function CustomSlider() {
       const token = localStorage.getItem('token');
       if (!token) return;
       
-      // Fetch SEO data from your SEO API endpoint
-      // Replace with your actual SEO API endpoint
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}seo/product/${productId}`,
         {
@@ -150,87 +150,116 @@ export default function CustomSlider() {
     }
   };
 
-  // Fetch product details, recommendations, and SEO data
-  useEffect(() => {
-    async function fetchProductDetails() {
-      if (!userId) return;
-      
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products/${userId}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );gi
-        
-        if (res.status === 401 || res.status === 403) {
-          router.push("/auth/login");
-          return;
-        }
-        
-        const data = await res.json();
-        if (data.data) {
-          setProductDetails(data.data);
-          
-          // Fetch SEO data after product details are loaded
-          fetchSeoData(userId);
-          
-          // Set recommendations if available
-          if (Array.isArray(data.data.recommendations)) {
-            setProducts(data.data.recommendations);
-          }
-            trackEvent({
-      eventType: "PRODUCT_VIEW",
-      entityType: "product",
-      entityId: data.data.product.id,
-      pageUrl:data.data.product.name,
-      utm: {
-        utm_source: searchParams.get("utm_source"),
-        utm_medium: searchParams.get("utm_medium"),
-        utm_campaign: searchParams.get("utm_campaign"),
-      },
-    });
-        }
-      } catch (err) {
-        console.error('Failed to fetch product details:', err);
-      }
+  // Fetch product details
+  const fetchProductDetails = async () => {
+    if (!userId) return;
+    
+    setIsLoading(true);
+    const token = localStorage.getItem('token');
+    if (!token) {
+      router.push("/auth/login");
+      return;
     }
 
-    fetchProductDetails();
-  }, [userId, router]);
-
-  // Fetch all products if no recommendations
-  useEffect(() => {
-    async function fetchAllProducts() {
-      if (products.length > 0) return; // Skip if we already have recommendations
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products/${userId}`,
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+        }
+      );
       
-      const token = localStorage.getItem('token');
-      if (!token) return;
-
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}products/`, {
-          headers: { Authorization: `Bearer ${token}` },
+      if (res.status === 401 || res.status === 403) {
+        router.push("/auth/login");
+        return;
+      }
+      
+      const data = await res.json();
+      console.log('Product details response:', data);
+      
+      if (data.data) {
+        setProductDetails(data.data);
+        
+        // Fetch SEO data
+        fetchSeoData(userId);
+        
+        // Set recommendations if available
+        if (data.data.recommendations && Array.isArray(data.data.recommendations)) {
+          setProducts(data.data.recommendations);
+        } else {
+          // If no recommendations, fetch all products
+          fetchAllProducts();
+        }
+        
+        // Track product view
+        trackEvent({
+          eventType: "PRODUCT_VIEW",
+          entityType: "product",
+          entityId: data.data.product?.id || userId,
+          pageUrl: window.location.pathname,
+          utm: {
+            utm_source: searchParams.get("utm_source"),
+            utm_medium: searchParams.get("utm_medium"),
+            utm_campaign: searchParams.get("utm_campaign"),
+          },
         });
-        
-        if (res.status === 401 || res.status === 403) {
-          router.push("/auth/login");
-          return;
-        }
-        
-        const data = await res.json();
-        if (res.ok && Array.isArray(data?.data?.products)) {
-          setProducts(data.data.products);
-        }
-      } catch (err) {
-        console.error('Failed to fetch products:', err);
+      } else {
+        console.error('No data in response');
       }
+    } catch (err) {
+      console.error('Failed to fetch product details:', err);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    fetchAllProducts();
-  }, [products.length, router]);
+  // Fetch all products
+  const fetchAllProducts = async () => {
+    if (products.length > 0) return;
+    
+    setIsLoadingProducts(true);
+    const token = localStorage.getItem('token');
+    if (!token) return;
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}products/`, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+      });
+      
+      if (res.status === 401 || res.status === 403) {
+        router.push("/auth/login");
+        return;
+      }
+      
+      const data = await res.json();
+      console.log('All products response:', data);
+      
+      if (res.ok && data?.data?.products && Array.isArray(data.data.products)) {
+        // Filter out current product
+        const filteredProducts = data.data.products.filter(
+          product => product.id?.toString() !== userId?.toString()
+        );
+        setProducts(filteredProducts.slice(0, 10)); // Limit to 10 products
+      }
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
+    } finally {
+      setIsLoadingProducts(false);
+    }
+  };
+
+  // Fetch product details when userId changes
+  useEffect(() => {
+    if (userId) {
+      fetchProductDetails();
+    }
+  }, [userId]);
 
   // Helper function to clean HTML
   const clean = (html) => {
@@ -242,10 +271,19 @@ export default function CustomSlider() {
   const parseKeyFeatures = (featuresString) => {
     if (!featuresString) return [];
     try {
+      // Check if it's already an array
+      if (Array.isArray(featuresString)) {
+        return featuresString;
+      }
+      
+      // Try to parse JSON
       const parsed = JSON.parse(featuresString);
       return Array.isArray(parsed) ? parsed : [featuresString];
     } catch (e) {
-      console.error("Failed to parse key features:", e);
+      // If parsing fails, try splitting by commas or newlines
+      if (typeof featuresString === 'string') {
+        return featuresString.split(/[,|\n]/).filter(item => item.trim());
+      }
       return [featuresString];
     }
   };
@@ -365,50 +403,84 @@ export default function CustomSlider() {
     }
   };
 
-  // Add keyboard navigation
-useEffect(() => {
-  const handleKeyDown = (e) => {
-    if (!isGalleryOpen) return;
-    
-    if (e.key === 'Escape') {
-      setIsGalleryOpen(false);
-    } else if (e.key === 'ArrowLeft') {
-      setCurrentImageIndex(prev => {
-        const newIndex = prev === 0 ? productDetails?.product?.screenshots?.length - 1 : prev - 1;
-        trackEvent({
-          eventType: "IMAGEVIEW",
-          entityType: "product",
-          entityId: productDetails?.product?.id,
-          pageUrl: `Keyboard Left - Image ${newIndex}`,
+  // Add keyboard navigation for gallery
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isGalleryOpen) return;
+      
+      if (e.key === 'Escape') {
+        setIsGalleryOpen(false);
+      } else if (e.key === 'ArrowLeft') {
+        setCurrentImageIndex(prev => {
+          const newIndex = prev === 0 ? productDetails?.product?.screenshots?.length - 1 : prev - 1;
+          trackEvent({
+            eventType: "GALLERY_KEYBOARD_NAVIGATION",
+            entityType: "product",
+            entityId: productDetails?.product?.id,
+            pageUrl: `Keyboard Left - Image ${newIndex}`,
+          });
+          return newIndex;
         });
-        return newIndex;
-      });
-    } else if (e.key === 'ArrowRight') {
-      setCurrentImageIndex(prev => {
-        const newIndex = prev === productDetails?.product?.screenshots?.length - 1 ? 0 : prev + 1;
-        trackEvent({
-          eventType: "GALLERY_KEYBOARD_NAVIGATION",
-          entityType: "product",
-          entityId: productDetails?.product?.id,
-          pageUrl: `Keyboard Right - Image ${newIndex}`,
+      } else if (e.key === 'ArrowRight') {
+        setCurrentImageIndex(prev => {
+          const newIndex = prev === productDetails?.product?.screenshots?.length - 1 ? 0 : prev + 1;
+          trackEvent({
+            eventType: "GALLERY_KEYBOARD_NAVIGATION",
+            entityType: "product",
+            entityId: productDetails?.product?.id,
+            pageUrl: `Keyboard Right - Image ${newIndex}`,
+          });
+          return newIndex;
         });
-        return newIndex;
-      });
-    }
-  };
+      }
+    };
 
-  window.addEventListener('keydown', handleKeyDown);
-  return () => window.removeEventListener('keydown', handleKeyDown);
-}, [isGalleryOpen, productDetails?.product?.screenshots?.length]);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isGalleryOpen, productDetails?.product?.screenshots?.length]);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading product details...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  // Error state if no product details
+  if (!productDetails?.product) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h2>
+            <p className="text-gray-600 mb-4">The product you{"'"}re looking for doesn{"'"}t exist or is no longer available.</p>
+            <Link href="/marketplace" className="text-orange-500 hover:text-orange-600 font-semibold">
+              Browse Marketplace
+            </Link>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
-      {/* Add SEO Meta Tags in head */}
+      {/* SEO Meta Tags */}
       <head>
         {seoData ? (
           <SeoMetaTags seoData={seoData} />
         ) : productDetails?.product ? (
-          // Fallback SEO using product data when SEO API data is not available
           <>
             <title>{productDetails.product.name} - NeoZaar Marketplace</title>
             <meta 
@@ -436,17 +508,18 @@ useEffect(() => {
           <div className="grid grid-cols-12">
             {/* Left: Logo and Title */}
             <div className="grid grid-cols-12 items-start gap-6 col-span-12 lg:col-span-8">
-              <div className="w-40 h-40 relative m-auto col-span-12 lg:col-span-4  border-2 border-gray-200 rounded-3xl flex  items-center justify-center bg-white p-6">
+              <div className="w-40 h-40 relative m-auto col-span-12 lg:col-span-4 border-2 border-gray-200 rounded-3xl flex items-center justify-center bg-white p-6">
                 {productDetails?.product?.product_logo && (
                   <Image
                     src={productDetails.product.product_logo}
                     alt={seoData?.h1_title || productDetails.product.name}
-                   fill
+                    fill
                     className="object-contain"
+                    priority
                   />
                 )}
               </div>
-              <div className="pt-4 mx-3 col-span-12 lg:col-span-8 ">
+              <div className="pt-4 mx-3 col-span-12 lg:col-span-8">
                 <h1 className="text-xl lg:text-3xl text-center md:text-start font-bold text-gray-900 mb-2">
                   {seoData?.h1_title || productDetails?.product?.name || "Loading..."}
                 </h1>
@@ -459,13 +532,13 @@ useEffect(() => {
             {/* Right: Action Buttons */}
             <div className="flex mt-3 flex-col gap-3 items-center md:items-end col-span-12 lg:col-span-4">
               <button
-                className="px-8  w-[250px] py-3 bg-orange-400  hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
+                className="px-8 w-[250px] py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
                 onClick={handleDemoClick}
               >
                 Request Demo
               </button>
               <button
-                className="px-8 w-[250px] py-3  bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
+                className="px-8 w-[250px] py-3 bg-white hover:bg-gray-50 text-gray-900 font-semibold rounded-full border-2 border-gray-900 transition-colors"
                 onClick={handlePrivatePriceClick}
               >
                 Get Private Offer
@@ -479,46 +552,33 @@ useEffect(() => {
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Left Sidebar */}
-<div className="w-64 flex-shrink-0">
-  <nav className="space-y-1 flex md:flex-col">
-  {menu.map((item) => (
-  <button
-    key={item.id}
-    onClick={() => {
-      setActiveSection(item.id);
-      
-      // Track menu click event
-      trackEvent({
-        eventType: `PRODUST_${item.label.toUpperCase().replace(/\s+/g, '_')}_CLICK`,
-        entityType: "product",
-        entityId: productDetails?.product?.id,
-        section: item.id,
-        sectionLabel: item.label,
-        pageUrl: productDetails?.product?.name,
-        utm: {
-          utm_source: typeof window !== "undefined" 
-            ? new URLSearchParams(window.location.search).get("utm_source")
-            : null,
-          utm_medium: typeof window !== "undefined" 
-            ? new URLSearchParams(window.location.search).get("utm_medium")
-            : null,
-          utm_campaign: typeof window !== "undefined" 
-            ? new URLSearchParams(window.location.search).get("utm_campaign")
-            : null,
-        },
-      });
-    }}
-    className={`block w-full text-left px-4 py-3 transition-colors ${
-      activeSection === item.id
-        ? "text-gray-900 font-semibold border-b-2 border-gray-900"
-        : "text-gray-600 hover:text-gray-900"
-    }`}
-  >
-    {item.label}
-  </button>
-))}
-  </nav>
-</div>
+          <div className="w-64 flex-shrink-0">
+            <nav className="space-y-1 flex md:flex-col">
+              {menu.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => {
+                    setActiveSection(item.id);
+                    trackEvent({
+                      eventType: `PRODUCT_${item.label.toUpperCase().replace(/\s+/g, '_')}_CLICK`,
+                      entityType: "product",
+                      entityId: productDetails?.product?.id,
+                      section: item.id,
+                      sectionLabel: item.label,
+                      pageUrl: productDetails?.product?.name,
+                    });
+                  }}
+                  className={`block w-full text-left px-4 py-3 transition-colors ${
+                    activeSection === item.id
+                      ? "text-gray-900 font-semibold border-b-2 border-gray-900"
+                      : "text-gray-600 hover:text-gray-900"
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </div>
 
           {/* Right Content Area */}
           <div className="flex-1 flex flex-col md:flex-row gap-6">
@@ -528,185 +588,142 @@ useEffect(() => {
               {activeSection === "overview" && (
                 <SectionCard>
                   <div className="my-3">
-
-                   <h3 className="text-gray-900 text-xl font-semibold">
-                 Images
-                  </h3>
-{productDetails?.product?.screenshots?.length > 0 && (
-  <div className="grid md:grid-cols-2 gap-4 my-2">
-    {productDetails.product.screenshots
-      .filter(src => typeof src === "string" && src.trim() !== "")
-      .map((src, i) => (
-        <div
-          key={i}
-          className="
-            relative
-            w-full
-            h-52
-            overflow-hidden
-            rounded-xl
-            border
-            shadow-sm
-            bg-gray-100
-            cursor-pointer
-          "
-          onClick={() => {
-            // Track the image click event
-            trackEvent({
-              eventType: "PRODUCT_IMAGE_CLICK",
-              entityType: "product",
-              entityId: productDetails?.product?.id,
-              pageUrl: productDetails?.product?.name,
-              utm: {
-                utm_source: typeof window !== "undefined" 
-                  ? new URLSearchParams(window.location.search).get("utm_source")
-                  : null,
-                utm_medium: typeof window !== "undefined" 
-                  ? new URLSearchParams(window.location.search).get("utm_medium")
-                  : null,
-                utm_campaign: typeof window !== "undefined" 
-                  ? new URLSearchParams(window.location.search).get("utm_campaign")
-                  : null,
-              },
-            });
-            
-            // Set the initial image index when clicking
-            setCurrentImageIndex(i);
-            setIsGalleryOpen(true);
-          }}
-        >
-          <img
-            src={src}
-            alt={`${seoData?.h1_title || productDetails.product.name} - Screenshot ${i + 1}`}
-            className="
-              w-full
-              h-full
-              object-cover
-              transition-transform
-              duration-500
-              ease-[cubic-bezier(0.16,1,0.3,1)]
-              hover:scale-110
-            "
-          />
-        </div>
-      ))}
-    
-    {/* Gallery Modal */}
-    {isGalleryOpen && (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
-        <div className="relative w-full max-w-6xl max-h-[90vh] mx-4">
-          {/* Close Button */}
-          <button
-            onClick={() => setIsGalleryOpen(false)}
-            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          
-          {/* Navigation Arrows - Only show if more than 1 image */}
-          {productDetails.product.screenshots.length > 1 && (
-            <>
-              <button
-                onClick={() => {
-                  setCurrentImageIndex(prev => 
-                    prev === 0 ? productDetails.product.screenshots.length - 1 : prev - 1
-                  );
-                  // Track navigation to previous image
-                  trackEvent({
-                    eventType: "GALLERY_NAVIGATION",
-                    entityType: "product",
-                    entityId: productDetails?.product?.id,
-                    pageUrl: `Gallery Previous - Image ${currentImageIndex}`,
-                  });
-                }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              
-              <button
-                onClick={() => {
-                  setCurrentImageIndex(prev => 
-                    prev === productDetails.product.screenshots.length - 1 ? 0 : prev + 1
-                  );
-                  // Track navigation to next image
-                  trackEvent({
-                    eventType: "GALLERY_NAVIGATION",
-                    entityType: "product",
-                    entityId: productDetails?.product?.id,
-                    pageUrl: `Gallery Next - Image ${currentImageIndex}`,
-                  });
-                }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
-          )}
-          
-          {/* Current Image */}
-          <div className="relative w-full h-[70vh] rounded-xl overflow-hidden">
-            <Image
-              src={productDetails.product.screenshots[currentImageIndex]}
-              alt={`${seoData?.h1_title || productDetails.product.name} - Screenshot ${currentImageIndex + 1}`}
-              fill
-              className="object-contain"
-              sizes="(max-width: 1200px) 100vw, 1200px"
-            />
-          </div>
-          
-          {/* Image Counter */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/50 text-white text-sm">
-            {currentImageIndex + 1} / {productDetails.product.screenshots.length}
-          </div>
-          
-          {/* Thumbnail Strip */}
-          {productDetails.product.screenshots.length > 1 && (
-            <div className="flex justify-center gap-2 mt-4 overflow-x-auto py-2">
-              {productDetails.product.screenshots.map((src, i) => (
-                <button
-                  key={i}
-                  onClick={() => {
-                    setCurrentImageIndex(i);
-                    // Track thumbnail click
-                    trackEvent({
-                      eventType: "GALLERY_THUMBNAIL_CLICK",
-                      entityType: "product",
-                      entityId: productDetails?.product?.id,
-                      pageUrl: `Thumbnail Click - Image ${i + 1}`,
-                    });
-                  }}
-                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
-                    currentImageIndex === i 
-                      ? 'border-blue-500 scale-105' 
-                      : 'border-transparent hover:border-gray-400'
-                  }`}
-                >
-                  <Image
-                    src={src}
-                    alt={`${seoData?.h1_title || productDetails.product.name} - Thumbnail ${i + 1}`}
-                    width={80}
-                    height={80}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    )}
-  </div>
-)}
-
-
-
+                    <h3 className="text-gray-900 text-xl font-semibold">
+                      Images
+                    </h3>
+                    {productDetails?.product?.screenshots?.length > 0 && (
+                      <div className="grid md:grid-cols-2 gap-4 my-2">
+                        {productDetails.product.screenshots
+                          .filter(src => typeof src === "string" && src.trim() !== "")
+                          .map((src, i) => (
+                            <div
+                              key={i}
+                              className="relative w-full h-52 overflow-hidden rounded-xl border shadow-sm bg-gray-100 cursor-pointer"
+                              onClick={() => {
+                                trackEvent({
+                                  eventType: "PRODUCT_IMAGE_CLICK",
+                                  entityType: "product",
+                                  entityId: productDetails?.product?.id,
+                                  pageUrl: productDetails?.product?.name,
+                                });
+                                setCurrentImageIndex(i);
+                                setIsGalleryOpen(true);
+                              }}
+                            >
+                              <img
+                                src={src}
+                                alt={`${seoData?.h1_title || productDetails.product.name} - Screenshot ${i + 1}`}
+                                className="w-full h-full object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110"
+                              />
+                            </div>
+                          ))}
+                      </div>
+                    )}
+                    
+                    {/* Gallery Modal */}
+                    {isGalleryOpen && (
+                      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm">
+                        <div className="relative w-full max-w-6xl max-h-[90vh] mx-4">
+                          {/* Close Button */}
+                          <button
+                            onClick={() => setIsGalleryOpen(false)}
+                            className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                          </button>
+                          
+                          {/* Navigation Arrows */}
+                          {productDetails.product.screenshots.length > 1 && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setCurrentImageIndex(prev => 
+                                    prev === 0 ? productDetails.product.screenshots.length - 1 : prev - 1
+                                  );
+                                  trackEvent({
+                                    eventType: "GALLERY_NAVIGATION",
+                                    entityType: "product",
+                                    entityId: productDetails?.product?.id,
+                                    pageUrl: `Gallery Previous - Image ${currentImageIndex}`,
+                                  });
+                                }}
+                                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                              >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                </svg>
+                              </button>
+                              
+                              <button
+                                onClick={() => {
+                                  setCurrentImageIndex(prev => 
+                                    prev === productDetails.product.screenshots.length - 1 ? 0 : prev + 1
+                                  );
+                                  trackEvent({
+                                    eventType: "GALLERY_NAVIGATION",
+                                    entityType: "product",
+                                    entityId: productDetails?.product?.id,
+                                    pageUrl: `Gallery Next - Image ${currentImageIndex}`,
+                                  });
+                                }}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors"
+                              >
+                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                              </button>
+                            </>
+                          )}
+                          
+                          {/* Current Image */}
+                          <div className="relative w-full h-[70vh] rounded-xl overflow-hidden">
+                            <img
+                              src={productDetails.product.screenshots[currentImageIndex]}
+                              alt={`${seoData?.h1_title || productDetails.product.name} - Screenshot ${currentImageIndex + 1}`}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                          
+                          {/* Image Counter */}
+                          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/50 text-white text-sm">
+                            {currentImageIndex + 1} / {productDetails.product.screenshots.length}
+                          </div>
+                          
+                          {/* Thumbnail Strip */}
+                          {productDetails.product.screenshots.length > 1 && (
+                            <div className="flex justify-center gap-2 mt-4 overflow-x-auto py-2">
+                              {productDetails.product.screenshots.map((src, i) => (
+                                <button
+                                  key={i}
+                                  onClick={() => {
+                                    setCurrentImageIndex(i);
+                                    trackEvent({
+                                      eventType: "GALLERY_THUMBNAIL_CLICK",
+                                      entityType: "product",
+                                      entityId: productDetails?.product?.id,
+                                      pageUrl: `Thumbnail Click - Image ${i + 1}`,
+                                    });
+                                  }}
+                                  className={`flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${
+                                    currentImageIndex === i 
+                                      ? 'border-blue-500 scale-105' 
+                                      : 'border-transparent hover:border-gray-400'
+                                  }`}
+                                >
+                                  <img
+                                    src={src}
+                                    alt={`${seoData?.h1_title || productDetails.product.name} - Thumbnail ${i + 1}`}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <h3 className="text-gray-900 text-xl font-semibold">
@@ -715,6 +732,7 @@ useEffect(() => {
                   <p className="text-gray-600 leading-relaxed mb-8">
                     {productDetails?.product?.short_description || "No description available."}
                   </p>
+                  
                   <h3 className="text-gray-900 text-xl font-semibold">
                     Description
                   </h3>
@@ -724,64 +742,53 @@ useEffect(() => {
 
                   <div className="flex gap-4 flex-wrap">
                     {/* Brochures */}
-                   {productDetails?.product?.brochures?.length > 0 && (
-  <div className="flex flex-col gap-2">
-    {productDetails.product.brochures.map((url, index) => (
-      <a
-        key={index}
-        href={url}
-        download
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
-        onClick={() => {
-          trackEvent({
-            eventType: "BROCHURE_DOWNLOAD",
-            entityType: "product",
-            entityId: productDetails?.product?.id,
-            utm: {
-              utm_source: "email",
-              utm_medium: "newsletter",
-              utm_campaign: "q4_launch",
-            },
-          });
-        }}
-      >
-        Brochure {index + 1} <Download size={18} />
-      </a>
-    ))}
-  </div>
-)}
-
+                    {productDetails?.product?.brochures?.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        {productDetails.product.brochures.map((url, index) => (
+                          <a
+                            key={index}
+                            href={url}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-orange-400 hover:bg-orange-500 text-white font-semibold rounded-full transition-colors"
+                            onClick={() => {
+                              trackEvent({
+                                eventType: "BROCHURE_DOWNLOAD",
+                                entityType: "product",
+                                entityId: productDetails?.product?.id,
+                              });
+                            }}
+                          >
+                            Brochure {index + 1} <Download size={18} />
+                          </a>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Case Studies */}
-              {productDetails?.product?.customer_case_studies?.length > 0 && (
-  <div className="flex flex-col gap-2">
-    {productDetails.product.customer_case_studies.map((url, index) => (
-      <a
-        key={index}
-        href={url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors"
-        onClick={() => {
-          trackEvent({
-            eventType: "CASE_STUDY",
-            entityType: "product",
-            entityId: productDetails?.product?.id,
-            utm: {
-              utm_source: "email",
-              utm_medium: "newsletter",
-              utm_campaign: "q4_launch",
-            },
-          });
-        }}
-      >
-        Case Study {index + 1}
-      </a>
-    ))}
-  </div>
-)}
+                    {productDetails?.product?.customer_case_studies?.length > 0 && (
+                      <div className="flex flex-col gap-2">
+                        {productDetails.product.customer_case_studies.map((url, index) => (
+                          <a
+                            key={index}
+                            href={url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-900 font-semibold rounded-full transition-colors"
+                            onClick={() => {
+                              trackEvent({
+                                eventType: "CASE_STUDY",
+                                entityType: "product",
+                                entityId: productDetails?.product?.id,
+                              });
+                            }}
+                          >
+                            Case Study {index + 1}
+                          </a>
+                        ))}
+                      </div>
+                    )}
 
                     {/* Demo Video */}
                     {productDetails?.product?.demo_video_link && (
@@ -809,94 +816,78 @@ useEffect(() => {
                   </ul>
 
                   <h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
-  Primary Use Cases
-</h3>
-
-<div className="text-gray-600 text-md font-normal mb-6">
-  {(() => {
-    const data = productDetails?.product?.primary_use_cases;
-    if (!data) return null;
-
-    // Check if it contains HTML tags
-    const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
-
-    // If HTML → render directly
-    if (isHtml) {
-      return (
-        <div
-          dangerouslySetInnerHTML={{
-            __html: data.replace(/&nbsp;/g, " "),
-          }}
-        />
-      );
-    }
-
-    // Else → render numbered/plain text nicely
-    return data
-      .split(/\n\s*\n/)
-      .filter(Boolean)
-      .map((block, i) => {
-        const [title, ...desc] = block.split("\n");
-        return (
-          <div key={i} className="mb-4">
-            <h4 className="font-semibold text-gray-900 text-lg">
-              {title.replace(/^\d+\.\s*/, "")}
-            </h4>
-            <p className="text-gray-600 text-base mt-1">
-              {desc.join(" ").trim()}
-            </p>
-          </div>
-        );
-      });
-  })()}
-</div>
-<h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
-  Technical Prerequisites
-</h3>
-
-<div className="text-gray-600 text-md font-normal mb-6">
-  {(() => {
-    const data = productDetails?.product?.technical_prerequisites;
-    if (!data) return null;
-
-    // Check if it contains HTML tags
-    const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
-
-    // If HTML → render directly
-    if (isHtml) {
-      return (
-        <div
-          dangerouslySetInnerHTML={{
-            __html: data.replace(/&nbsp;/g, " "),
-          }}
-        />
-      );
-    }
-
-    // Else → render structured plain text
-    return data
-      .split(/\n\s*\n/)
-      .filter(Boolean)
-      .map((block, i) => {
-        const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
-
-        return (
-          <div key={i} className="mb-4">
-            <h4 className=" text-gray-600 text-base">
-              {lines[0]}
-            </h4>
-            {lines.slice(1).map((line, idx) => (
-              <p key={idx} className="text-gray-600 text-base mt-1">
-                {line}
-              </p>
-            ))}
-          </div>
-        );
-      });
-  })()}
-</div>
-
-
+                    Primary Use Cases
+                  </h3>
+                  <div className="text-gray-600 text-md font-normal mb-6">
+                    {(() => {
+                      const data = productDetails?.product?.primary_use_cases;
+                      if (!data) return null;
+                      const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
+                      if (isHtml) {
+                        return (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: data.replace(/&nbsp;/g, " "),
+                            }}
+                          />
+                        );
+                      }
+                      return data
+                        .split(/\n\s*\n/)
+                        .filter(Boolean)
+                        .map((block, i) => {
+                          const [title, ...desc] = block.split("\n");
+                          return (
+                            <div key={i} className="mb-4">
+                              <h4 className="font-semibold text-gray-900 text-lg">
+                                {title.replace(/^\d+\.\s*/, "")}
+                              </h4>
+                              <p className="text-gray-600 text-base mt-1">
+                                {desc.join(" ").trim()}
+                              </p>
+                            </div>
+                          );
+                        });
+                    })()}
+                  </div>
+                  
+                  <h3 className="text-gray-900 text-xl capitalize font-semibold mb-4">
+                    Technical Prerequisites
+                  </h3>
+                  <div className="text-gray-600 text-md font-normal mb-6">
+                    {(() => {
+                      const data = productDetails?.product?.technical_prerequisites;
+                      if (!data) return null;
+                      const isHtml = /<\/?[a-z][\s\S]*>/i.test(data);
+                      if (isHtml) {
+                        return (
+                          <div
+                            dangerouslySetInnerHTML={{
+                              __html: data.replace(/&nbsp;/g, " "),
+                            }}
+                          />
+                        );
+                      }
+                      return data
+                        .split(/\n\s*\n/)
+                        .filter(Boolean)
+                        .map((block, i) => {
+                          const lines = block.split("\n").map(l => l.trim()).filter(Boolean);
+                          return (
+                            <div key={i} className="mb-4">
+                              <h4 className="text-gray-600 text-base">
+                                {lines[0]}
+                              </h4>
+                              {lines.slice(1).map((line, idx) => (
+                                <p key={idx} className="text-gray-600 text-base mt-1">
+                                  {line}
+                                </p>
+                              ))}
+                            </div>
+                          );
+                        });
+                    })()}
+                  </div>
 
                   {/* Target Audience */}
                   {productDetails?.product?.target_audience?.length > 0 && (
@@ -950,48 +941,6 @@ useEffect(() => {
                 </SectionCard>
               )}
 
-              {/* FEATURES */}
-              {activeSection === "features" && (
-                <SectionCard>
-                  <h3 className="text-gray-900 text-2xl font-bold mb-6">
-                    Technical & Pricing Information
-                  </h3>
-                  
-                  {productDetails?.product?.technical_prerequisites && (
-                    <div className="mb-6">
-                      <h4 className="font-semibold mb-2 text-black">Technical Prerequisites:</h4>
-                      <p className="text-gray-700">
-                         dangerouslySetInnerHTML={{
-                      __html: productDetails?.product?.technical_prerequisites?.replace(/&nbsp;/g, " ") || "",
-                    }}
-                      </p>
-                    </div>
-                  )}
-
-                  {productDetails?.product?.pricing_model && (
-                    <div className="mb-6">
-                      <h4 className="font-semibold mb-2 text-black">Pricing Model:</h4>
-                      <p className="text-gray-700">
-                        {clean(productDetails.product.pricing_model)}
-                      </p>
-                    </div>
-                  )}
-
-                  {productDetails?.product?.api_metering_endpoint && (
-                    <div className="mt-6">
-                      <a
-                        href={productDetails.product.api_metering_endpoint}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 underline hover:text-blue-800"
-                      >
-                        View Terms Of Use
-                      </a>
-                    </div>
-                  )}
-                </SectionCard>
-              )}
-
               {/* PRICING */}
               {activeSection === "pricing" && (
                 <SectionCard>
@@ -1040,228 +989,193 @@ useEffect(() => {
       </div>
 
       {/* Similar Products Slider */}
-      <section className="relative px-4 py-10 max-w-[1920px] mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-xl text-black font-semibold">More Similar Products</h2>
-        </div>
-        <Swiper
-          modules={[Navigation, Autoplay]}
-          spaceBetween={20}
-          navigation={true}
-          autoplay={{
-            delay: 3000,
-            disableOnInteraction: false,
-          }}
-          breakpoints={{
-            0: { slidesPerView: 1 },
-            640: { slidesPerView: 2 },
-            900: { slidesPerView: 3 },
-            1024: { slidesPerView: 4 },
-          }}
-        >
-          {products.map((product) => (
-  
+      {products.length > 0 && (
+        <section className="relative px-4 py-10 max-w-[1920px] mx-auto">
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-xl text-black font-semibold">More Similar Products</h2>
+          </div>
+          {isLoadingProducts ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
+              <p className="mt-2 text-gray-600">Loading similar products...</p>
+            </div>
+          ) : (
+            <Swiper
+              modules={[Navigation, Autoplay]}
+              spaceBetween={20}
+              navigation={true}
+              autoplay={{
+                delay: 3000,
+                disableOnInteraction: false,
+              }}
+              breakpoints={{
+                0: { slidesPerView: 1 },
+                640: { slidesPerView: 2 },
+                900: { slidesPerView: 3 },
+                1024: { slidesPerView: 4 },
+              }}
+            >
+              {products.map((product) => (
+                <SwiperSlide key={product.id}>
+                  <Link href={`/bundle?productid=${product.id}`} passHref>
+                    <div
+                      className="bg-zinc-50 border border-zinc-200 h-[415px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden"
+                      onClick={() => {
+                        trackEvent({
+                          eventType: "PRODUCT_CLICK",
+                          entityType: "product",
+                          entityId: product.id,
+                          pageUrl: window.location.pathname,
+                        });
+                      }}
+                    >
+                      <div className="w-full h-[258px] relative">
+                        <Image
+                          src={product.product_logo || "/placeholder-image.png"}
+                          alt={product.name || "Product Image"}
+                          fill
+                          className="object-cover"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        />
+                      </div>
 
-<SwiperSlide key={product.id}>
-  <Link href={`/bundle?productid=${product.id}`} passHref>
-    <div
-      className="bg-zinc-50 border border-zinc-200 h-[415px] cursor-pointer w-[90%] sm:w-[295px] mx-auto rounded-lg overflow-hidden"
-      onClick={() => {
-        trackEvent({
-          eventType: "PRODUCT_CLICK",
-          entityType: "product",
-          entityId: product.id,
-          pageUrl: window.location.pathname,
-        });
-      }}
-    >
-      <div className="w-full h-[258px] relative">
-        <Image
-          src={product.product_logo || "/image/acronis.png"}
-          alt={product.name || "Product Image"}
-          fill
-          className="object-cover"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-        />
-      </div>
+                      <div className="p-4">
+                        <p className="uppercase text-base text-black tracking-wider mb-2">
+                          {product.category || "Product"}
+                        </p>
 
-      <div className="p-4">
-        <p className="uppercase text-base text-black  tracking-wider mb-2">
-          {product.category || "Product"}
-        </p>
+                        <p className="text-left text-zinc-400 text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
+                          {product.short_description || product.name}
+                        </p>
 
-        <p className=" text-left text-zinc-400 text-md font-normal leading-snug h-12 overflow-hidden line-clamp-2 mb-2">
-          {product.short_description || product.name}
-        </p>
-
-        <p className="text-blue-600 text-sm">
-          Starting From  &#x20b9;{product.starting_price || "Contact"}
-        </p>
-      </div>
-    </div>
-  </Link>
-</SwiperSlide>
-
-          ))}
-        </Swiper>
-      </section>
+                        <p className="text-blue-600 text-sm">
+                          Starting From &#x20b9;{product.starting_price || "Contact"}
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
+        </section>
+      )}
 
       {/* Request Demo Modal */}
       {isModalOpen && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-  <div className="bg-black text-zinc-300 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
-    
-    {/* Close Button */}
-    <button
-      onClick={() => setIsModalOpen(false)}
-      className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
-    >
-      <X className="w-6 h-6" />
-    </button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-black text-zinc-300 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
+            <button
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
+            >
+              <X className="w-6 h-6" />
+            </button>
 
-    {/* Title */}
-    <h2 className="text-xl font-semibold mb-4 text-white">
-      Request Demo
-    </h2>
+            <h2 className="text-xl font-semibold mb-4 text-white">
+              Request Demo
+            </h2>
 
-    {/* Product Info */}
-    <div className="mb-6 space-y-3">
-      <p className="text-white font-semibold text-lg">
-       <span className="text-orange-400">{productDetails.product.name}</span>
-      </p>
+            <div className="mb-6 space-y-3">
+              <p className="text-white font-semibold text-lg">
+                <span className="text-orange-400">{productDetails.product.name}</span>
+              </p>
+              <p className="text-zinc-400 text-sm">
+                {productDetails.product.short_description}
+              </p>
+            </div>
 
-      <p className="text-zinc-400 text-sm">
-       {productDetails.product.short_description}
-      </p>
+            <form onSubmit={handleSubmit}>
+              <div className="flex items-start gap-3 mb-4">
+                <input
+                  type="checkbox"
+                  id="authorization"
+                  required
+                  className="mt-1 w-7 h-7 accent-orange-500"
+                />
+                <label
+                  htmlFor="authorization"
+                  className="text-sm text-zinc-400 leading-snug"
+                >
+                  I authorize <span className="text-orange-400">NeoZaar</span> to share my
+                  information with relevant solution experts for follow-up on this inquiry.
+                </label>
+              </div>
 
-      <p className="text-zinc-500 text-sm italic">
-       
-      </p>
-    </div>
-
-    {/* Submit Form */}
-  <form onSubmit={handleSubmit}>
-  {/* Authorization Checkbox */}
-  <div className="flex items-start gap-3 mb-4">
-    <input
-      type="checkbox"
-      id="authorization"
-      required
-      className="mt-1 w-7 h-7 accent-orange-500"
-    />
-    <label
-      htmlFor="authorization"
-      className="text-sm text-zinc-400 leading-snug"
-    >
-      I authorize <span className="text-orange-400">NeoZaar</span> to share my
-      information with relevant solution experts for follow-up on this inquiry.
-    </label>
-  </div>
-
-  <button
-    type="submit"
-    className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
-  >
-    Submit Request
-  </button>
-  <p className="text-xs text-gray-500 pl-3 mt-3">
-
-  NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
-  </p>
-</form>
-
-  </div>
-</div>
-
-
+              <button
+                type="submit"
+                className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
+              >
+                Submit Request
+              </button>
+              <p className="text-xs text-gray-500 pl-3 mt-3">
+                NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
+              </p>
+            </form>
+          </div>
+        </div>
       )}
 
       {/* Price Enquiry Modal */}
- {isPriceModalOpen && (
-  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-    <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
+      {isPriceModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-black text-zinc-600 w-full max-w-lg shadow-lg p-10 relative my-auto flex flex-col">
+            <button
+              onClick={() => setIsPriceModalOpen(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
+            >
+              <X className="w-6 h-6" />
+            </button>
 
-      {/* Close */}
-      <button
-        onClick={() => setIsPriceModalOpen(false)}
-        className="absolute top-3 right-3 text-gray-500 hover:text-gray-300"
-      >
-        <X className="w-6 h-6" />
-      </button>
+            <h2 className="text-xl font-semibold mb-4 text-white">
+              Get Private Offer
+            </h2>
 
-      <h2 className="text-xl font-semibold mb-4 text-white">
-      Get Private Offer
-      </h2>
+            <form onSubmit={handleSubmitB}>
+              <input type="hidden" name="requestType" value="Demo Request" />
+              <input type="hidden" name="product" value={productDetails?.product?.name || ""} />
+              <input type="hidden" name="AWSID" value={AWSID || "N/A"} />
+              <textarea className="hidden" name="message" value={messageB || "User requested pricing information"} readOnly />
 
-      <form onSubmit={handleSubmitB}>
-        
-        {/* Hidden default values */}
-        <input
-          type="hidden"
-          name="requestType"
-          value="Demo Request"
-        />
-
-        <input
-          type="hidden"
-          name="product"
-          value="Your Product Name"
-        />
-
-        <input
-          type="hidden"
-          name="AWSID"
-          value={AWSID || "N/A"}
-        />
-
-        <textarea
-          className="hidden"
-          name="message"
-          value={messageB || "User requested pricing information"}
-          readOnly
-        />
-
-        {/* Display info only */}
-        <div className="mb-6 space-y-2 text-zinc-300">
-          <p>
-            <span className="text-white font-semibold">Product:</span>{" "}
-            {productDetails.product.name}
-          </p>
-          <p className="text-sm text-zinc-400">
-         { productDetails.product.short_description}
-          </p>
+              <div className="mb-6 space-y-2 text-zinc-300">
+                <p>
+                  <span className="text-white font-semibold">Product:</span>{" "}
+                  {productDetails.product.name}
+                </p>
+                <p className="text-sm text-zinc-400">
+                  {productDetails.product.short_description}
+                </p>
+              </div>
+              
+              <div className="flex items-start gap-3 mb-4">
+                <input
+                  type="checkbox"
+                  id="authorization2"
+                  required
+                  className="mt-1 w-7 h-7 accent-orange-500"
+                />
+                <label
+                  htmlFor="authorization2"
+                  className="text-sm text-zinc-400 leading-snug"
+                >
+                  I authorize <span className="text-orange-400">NeoZaar</span> to share my
+                  information with relevant solution experts for follow-up on this inquiry.
+                </label>
+              </div>
+              
+              <button
+                type="submit"
+                className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
+              >
+                Submit Enquiry
+              </button>
+              <p className="text-xs text-gray-500 pl-3 mt-3">
+                NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
+              </p>
+            </form>
+          </div>
         </div>
-        <div className="flex items-start gap-3 mb-4">
-    <input
-      type="checkbox"
-      id="authorization"
-      required
-      className="mt-1 w-7 h-7 accent-orange-500"
-    />
-    <label
-      htmlFor="authorization"
-      className="text-sm text-zinc-400 leading-snug"
-    >
-      I authorize <span className="text-orange-400">NeoZaar</span> to share my
-      information with relevant solution experts for follow-up on this inquiry.
-    </label>
-  </div>
-        {/* Submit */}
-        <button
-          type="submit"
-          className="bg-gradient-to-bl from-orange-400 to-orange-700 text-white px-4 py-3 w-full rounded-lg font-semibold hover:opacity-90 transition-opacity"
-        >
-          Submit Enquiry
-        </button>
-         <p className="text-xs text-gray-500 pl-3 mt-3">
-
-  NeoZaar processes personal data in accordance with applicable data protection regulations. You may request access, correction, or deletion of your data at any time.
-  </p>
-      </form>
-    </div>
-  </div>
-)}
-
+      )}
 
       {/* Success Modal */}
       {showSuccessModal && (
@@ -1274,7 +1188,6 @@ useEffect(() => {
           </div>
         </div>
       )}
-      
 
       <Footer />
     </>
