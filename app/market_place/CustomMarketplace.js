@@ -562,7 +562,7 @@ export default function Home() {
           <div className="w-full bg-white">
             <div className="flex items-center flex-wrap lg:flex-nowrap gap-2 px-4 py-3 max-w-[1400px] mx-auto">
               {/* AI Assistant Button */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
 
               <div className="relative bg-white shrink-0 w-[100px] h-[68px] rounded-[20px] overflow-hidden flex items-center justify-center">
                 <Image
@@ -575,7 +575,7 @@ export default function Home() {
 
               {/* Search Input Container */}
               <div className="flex-1 relative">
-                <div className="relative flex items-center h-[68px] px-6 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus-within:border-blue-500 transition-colors">
+                <div className="relative flex items-center h-[68px] px-6 w-full bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus-within:border-blue-500 transition-colors">
                   <input
                     type="search"
                     placeholder="Search across Products, Services & Solutions"
