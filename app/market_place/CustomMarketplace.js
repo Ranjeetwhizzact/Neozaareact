@@ -199,7 +199,7 @@ export default function Home() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=solutions&action_for=customer&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=solution&action_for=both&limit=10`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -235,7 +235,7 @@ export default function Home() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=customer&limit=8`,
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=both&limit=8`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -275,7 +275,7 @@ export default function Home() {
     try {
       setLoading(prev => ({ ...prev, marketplace: true }));
       
-      let query = `?action_type=${type}&action_for=customer&page=${page}&limit=20`;
+      let query = `?action_type=${type}&action_for=both&page=${page}&limit=20`;
 
       if (search.trim()) {
         query += `&search=${encodeURIComponent(search.trim())}`;
