@@ -1031,7 +1031,7 @@ export default function CustomSlider() {
                     >
                       <div className="w-full h-[258px] relative">
                         <Image
-                          src={product.product_logo || "/placeholder-image.png"}
+                          src={product.product_logo || "/brand-log/neozaardefault.jpg"}
                           alt={product.name || "Product Image"}
                           fill
                           className="object-cover"
@@ -1039,8 +1039,8 @@ export default function CustomSlider() {
                         />
                       </div>
 
-                      <div className="p-4">
-                        <p className="uppercase text-base text-black tracking-wider mb-2">
+                      <div className="p-4 ">
+                        <p className="uppercase text-base text-black tracking-wider mb-2 h-12 overflow-hidden">
                           {product.category || "Product"}
                         </p>
 
