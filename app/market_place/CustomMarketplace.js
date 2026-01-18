@@ -199,7 +199,7 @@ export default function Home() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=solutions&action_for=customer&limit=10`,
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=solution&action_for=both&limit=10`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -235,7 +235,7 @@ export default function Home() {
       }
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=customer&limit=8`,
+        `${process.env.NEXT_PUBLIC_API_BASE}catalog/marketplace/products?action_type=service&action_for=both&limit=8`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -275,7 +275,7 @@ export default function Home() {
     try {
       setLoading(prev => ({ ...prev, marketplace: true }));
       
-      let query = `?action_type=${type}&action_for=customer&page=${page}&limit=20`;
+      let query = `?action_type=${type}&action_for=both&page=${page}&limit=20`;
 
       if (search.trim()) {
         query += `&search=${encodeURIComponent(search.trim())}`;
@@ -562,7 +562,7 @@ export default function Home() {
           <div className="w-full bg-white">
             <div className="flex items-center flex-wrap lg:flex-nowrap gap-2 px-4 py-3 max-w-[1400px] mx-auto">
               {/* AI Assistant Button */}
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full">
 
               <div className="relative bg-white shrink-0 w-[100px] h-[68px] rounded-[20px] overflow-hidden flex items-center justify-center">
                 <Image
@@ -575,7 +575,7 @@ export default function Home() {
 
               {/* Search Input Container */}
               <div className="flex-1 relative">
-                <div className="relative flex items-center h-[68px] px-6 bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus-within:border-blue-500 transition-colors">
+                <div className="relative flex items-center h-[68px] px-6 w-full bg-white border-2 border-gray-200 rounded-[20px] hover:border-gray-300 focus-within:border-blue-500 transition-colors">
                   <input
                     type="search"
                     placeholder="Search across Products, Services & Solutions"
